@@ -16,6 +16,7 @@ const VALID_SECTIONS = [
   "travel",
   "opinion",
   "india",
+  "grid-intelligence",
 ];
 
 import { NAV_SECTIONS } from "@/lib/sections";
@@ -25,7 +26,7 @@ interface Props {
 }
 
 export function generateStaticParams() {
-  return NAV_SECTIONS.map((section) => ({ slug: section.slug }));
+  return VALID_SECTIONS.map((section) => ({ slug: section }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
