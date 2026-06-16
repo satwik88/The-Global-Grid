@@ -41,6 +41,7 @@ export interface Article {
   imageCaption?: string;
   readersToday?: number;
   updatedAt?: string;
+  isBreaking?: boolean;
   body: string[];
   pullQuotes?: string[];
   tags: string[];

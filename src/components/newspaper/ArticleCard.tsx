@@ -23,7 +23,10 @@ export function ArticleCard({ article, variant = "standard" }: ArticleCardProps)
             priority
           />
         </div>
-        <span className="ui-text text-accent">{getSectionLabel(article.section)}</span>
+        <span className="ui-text text-accent flex items-center gap-2">
+          {article.isBreaking && <span className="bg-accent text-paper px-1.5 py-0.5 text-[0.6rem] font-bold tracking-widest uppercase">Breaking</span>}
+          {getSectionLabel(article.section)}
+        </span>
         <h2 className="headline-lg mt-2 group-hover:text-accent transition-colors duration-300">
           <Link href={`/article/${article.slug}`} className="after:absolute after:inset-0">
             {article.headline}
@@ -36,6 +39,12 @@ export function ArticleCard({ article, variant = "standard" }: ArticleCardProps)
           </span>
           <span>·</span>
           <span>{article.readingTime} min read</span>
+          {article.updatedAt && (
+            <>
+              <span>·</span>
+              <span className="text-accent">{article.updatedAt}</span>
+            </>
+          )}
         </div>
       </article>
     );
@@ -45,13 +54,15 @@ export function ArticleCard({ article, variant = "standard" }: ArticleCardProps)
     return (
       <article className="group border-b border-border pb-4 mb-4 last:border-0">
         <Link href={`/article/${article.slug}`} className="block">
-          <span className="ui-text text-accent text-[0.625rem]">
+          <span className="ui-text text-accent text-[0.625rem] flex items-center gap-2">
+            {article.isBreaking && <span className="text-[0.55rem] font-bold bg-accent text-paper px-1 py-0.5 uppercase tracking-widest">Breaking</span>}
             {getSectionLabel(article.section)}
           </span>
           <h3 className="headline-md mt-1 group-hover:text-accent transition-colors duration-300">
             {article.headline}
           </h3>
           <p className="caption-text mt-1 line-clamp-2 text-justify-print">{article.deck}</p>
+          {article.updatedAt && <p className="ui-text text-[0.6rem] text-accent mt-2">{article.updatedAt}</p>}
         </Link>
       </article>
     );
@@ -68,7 +79,8 @@ export function ArticleCard({ article, variant = "standard" }: ArticleCardProps)
           sizes="(max-width: 768px) 100vw, 33vw"
         />
       </div>
-      <span className="ui-text text-accent text-[0.625rem]">
+      <span className="ui-text text-accent text-[0.625rem] flex items-center gap-2">
+        {article.isBreaking && <span className="bg-accent text-paper px-1 py-0.5 font-bold uppercase tracking-widest text-[0.55rem]">Breaking</span>}
         {getSectionLabel(article.section)}
       </span>
       <h3 className="headline-md mt-1 group-hover:text-accent transition-colors duration-300">
@@ -81,6 +93,7 @@ export function ArticleCard({ article, variant = "standard" }: ArticleCardProps)
       </p>
       <div className="caption-text mt-2 hover:text-accent transition-colors relative z-10">
         <Link href={`/author/${article.author.slug}`}>By {article.author.name}</Link> · {article.readingTime} min
+        {article.updatedAt && <span className="text-accent ml-2">· {article.updatedAt}</span>}
       </div>
     </article>
   );

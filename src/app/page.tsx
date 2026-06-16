@@ -25,8 +25,8 @@ export default async function HomePage() {
   const techNews = await fetchLiveNewsFeed("technology");
   const gridIntelligence = await fetchLiveNewsFeed("grid-intelligence");
   
-  const breakingNews = worldNews.length > 0 ? worldNews[0] : null;
   const latestNews = await fetchLiveNewsFeed(); // Gets all
+  const breakingNews = latestNews.find(a => a.isBreaking) || worldNews[0] || null;
 
   const mobilePages = [
     <div key="p1">

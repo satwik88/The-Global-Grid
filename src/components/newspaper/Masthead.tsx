@@ -4,6 +4,7 @@ import Link from "next/link";
 import { formatEditionDate, getEditionNumber, isWeekendEdition } from "@/lib/utils";
 import { NAV_SECTIONS } from "@/lib/sections";
 import { GlobalPulse } from "./GlobalPulse";
+import { GlobeSeal } from "./GlobeSeal";
 import { useTheme } from "@/lib/context/ThemeContext";
 import { Sun, Moon } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -64,7 +65,8 @@ export function Masthead({ showNav = true }: MastheadProps) {
         <hr className="rule-thin mb-4 mt-6 sm:mt-0" />
 
         <div className="text-center">
-          <Link href="/" className="group inline-block">
+          <Link href="/" className="group inline-flex items-center justify-center gap-3 md:gap-5">
+            <GlobeSeal className="w-10 h-10 md:w-14 md:h-14 text-ink group-hover:text-accent transition-colors duration-300" />
             <h1 className="font-[family-name:var(--font-playfair)] text-4xl md:text-6xl font-bold tracking-tight text-ink group-hover:text-accent transition-colors duration-300">
               THE GLOBAL GRID
             </h1>

@@ -9,24 +9,20 @@ import { ArticleReveal, ReadingProgress } from "@/components/newspaper/Animation
 import { BookmarkButton } from "@/components/newspaper/BookmarkButton";
 import { ArticleCard } from "@/components/newspaper/ArticleCard";
 import type { Article } from "@/lib/types";
-import {
-  getArticleBySlug,
-  getRelatedArticles,
-  articles,
-} from "@/lib/content/articles";
+import { getRelatedArticles, articles } from "@/lib/content/articles";
+import { fetchArticle } from "@/lib/services/newsService";
 import { getSectionLabel } from "@/lib/sections";
 
 interface Props {
   params: Promise<{ slug: string }>;
 }
 
-export function generateStaticParams() {
-  return articles.map((article) => ({ slug: article.slug }));
-}
+// Removed generateStaticParams to allow dynamic fetching of live articles
+// Next.js will server-render these pages on demand
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const article = getArticleBySlug(slug);
+  const article = await fetchArticle(slug);
   if (!article) return { title: "Article Not Found" };
 
   return {
@@ -43,7 +39,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ArticlePage({ params }: Props) {
   const { slug } = await params;
-  const found = getArticleBySlug(slug);
+  const found = await fetchArticle(slug);
   if (!found) notFound();
   const article: Article = found;
 

@@ -21,10 +21,24 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const toggleTheme = () => {
+    // Disable all transitions globally for the toggle
+    const css = document.createElement("style");
+    css.appendChild(
+      document.createTextNode(
+        "* { -webkit-transition: none !important; -moz-transition: none !important; -o-transition: none !important; -ms-transition: none !important; transition: none !important; }"
+      )
+    );
+    document.head.appendChild(css);
+
     const newTheme = theme === "light" ? "dark" : "light";
     setTheme(newTheme);
     document.documentElement.classList.toggle("dark", newTheme === "dark");
     localStorage.setItem("theme", newTheme);
+
+    // Remove the style tag after the current event loop and React render
+    setTimeout(() => {
+      document.head.removeChild(css);
+    }, 10);
   };
 
   return (
