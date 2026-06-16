@@ -268,19 +268,23 @@ export default async function HomePage() {
                 </div>
               ))}
 
-              <hr className="rule-thin my-6" />
-              
-              <h2 className="ui-text mb-4 pb-2 border-b border-border">
-                Latest Updates
-              </h2>
+            </div>
+
+          </div>
+
+          <hr className="rule-thick my-12" />
+
+          {/* Latest Updates Horizontal Strip */}
+          <section className="mb-12">
+            <h2 className="ui-text mb-6">Latest Updates</h2>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               {latestNews.slice(2, 6).map((article) => (
-                <div key={article.slug} className="mb-4">
+                <div key={article.slug} className="border-t border-border pt-4">
                   <ArticleCard article={article} variant="compact" />
                 </div>
               ))}
             </div>
-
-          </div>
+          </section>
 
           <hr className="rule-thick my-12" />
 

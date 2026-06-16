@@ -63,9 +63,11 @@ export default async function SectionPage({ params }: Props) {
 
         <hr className="rule-thin mb-8" />
 
-        <section className="grid md:grid-cols-3 gap-8">
+        <section className="newspaper-columns gap-8">
           {rest.map((article) => (
-            <ArticleCard key={article.slug} article={article} variant="standard" />
+            <div key={article.slug} className="mb-8 break-inside-avoid">
+              <ArticleCard article={article} variant="standard" />
+            </div>
           ))}
         </section>
 
