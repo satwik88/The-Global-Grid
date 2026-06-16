@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-const markets = [
+const INITIAL_MARKETS = [
   { name: "NEW DELHI", status: "up" },
   { name: "LONDON", status: "up" },
   { name: "NEW YORK", status: "down" },
@@ -15,9 +15,28 @@ const topics = ["AI", "GEOPOLITICS", "MARKETS", "SPACE", "CLIMATE", "CYBERSECURI
 
 export function GlobalPulse() {
   const [mounted, setMounted] = useState(false);
+  const [markets, setMarkets] = useState(INITIAL_MARKETS);
 
   useEffect(() => {
     setMounted(true);
+
+    // Simulate live market fluctuations every 5-10 seconds
+    const interval = setInterval(() => {
+      setMarkets((prev) =>
+        prev.map((market) => {
+          // 30% chance a market flips its status
+          if (Math.random() > 0.7) {
+            return {
+              ...market,
+              status: market.status === "up" ? "down" : "up",
+            };
+          }
+          return market;
+        })
+      );
+    }, 4500);
+
+    return () => clearInterval(interval);
   }, []);
 
   if (!mounted) return null;
