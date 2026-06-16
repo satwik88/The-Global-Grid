@@ -72,8 +72,8 @@ export function SudokuGame() {
     });
   };
 
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       if (!selected) return;
       const num = parseInt(e.key);
       if (num >= 1 && num <= 9) handleNumberInput(num);
@@ -92,14 +92,10 @@ export function SudokuGame() {
       if (e.key === "ArrowDown" && row < 8) setSelected([row + 1, col]);
       if (e.key === "ArrowLeft" && col > 0) setSelected([row, col - 1]);
       if (e.key === "ArrowRight" && col < 8) setSelected([row, col + 1]);
-    },
-    [selected, fixed] // eslint-disable-line react-hooks/exhaustive-deps
-  );
-
-  useEffect(() => {
+    };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [handleKeyDown]);
+  }, [selected, fixed, pencilMode]);
 
   const checkSolution = () => {
     const newErrors = new Set<string>();

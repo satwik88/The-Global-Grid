@@ -59,9 +59,27 @@ export function BrainTeasersSection() {
 
 export function CrosswordSection() {
   const gridSize = 7;
-  const emptyGrid = Array.from({ length: gridSize }, () =>
-    Array.from({ length: gridSize }, () => "")
+  // 1 = active cell, 0 = black cell
+  const layout = [
+    [1, 1, 1, 1, 1, 1, 0],
+    [1, 0, 1, 0, 1, 0, 0],
+    [1, 0, 1, 0, 1, 0, 0],
+    [0, 0, 1, 0, 1, 0, 0],
+    [1, 1, 1, 1, 1, 0, 0],
+    [0, 0, 0, 0, 1, 0, 0],
+    [0, 0, 0, 0, 1, 0, 0],
+  ];
+
+  const [grid, setGrid] = useState<string[][]>(
+    Array.from({ length: gridSize }, () => Array.from({ length: gridSize }, () => ""))
   );
+
+  const handleInput = (r: number, c: number, val: string) => {
+    const newGrid = [...grid];
+    newGrid[r] = [...newGrid[r]];
+    newGrid[r][c] = val.slice(-1).toUpperCase();
+    setGrid(newGrid);
+  };
 
   return (
     <div className="border border-border p-6">
@@ -70,13 +88,23 @@ export function CrosswordSection() {
         className="grid gap-0 max-w-[280px] mx-auto border-2 border-border mb-6"
         style={{ gridTemplateColumns: `repeat(${gridSize}, 1fr)` }}
       >
-        {emptyGrid.map((row, r) =>
-          row.map((_, c) => (
+        {layout.map((row, r) =>
+          row.map((isActive, c) => (
             <div
               key={`${r}-${c}`}
-              className="aspect-square border border-border flex items-center justify-center font-[family-name:var(--font-inter)] text-sm uppercase"
+              className={`aspect-square flex items-center justify-center font-[family-name:var(--font-inter)] text-lg uppercase ${
+                isActive ? "border border-border bg-paper" : "bg-ink border border-ink"
+              }`}
             >
-              {(r === 0 && c < 6) || (c === 0 && r < 3) || (r === 4 && c < 5) ? "" : ""}
+              {isActive ? (
+                <input
+                  type="text"
+                  maxLength={1}
+                  value={grid[r][c]}
+                  onChange={(e) => handleInput(r, c, e.target.value)}
+                  className="w-full h-full text-center bg-transparent focus:outline-none focus:bg-accent/10 focus:text-accent font-bold"
+                />
+              ) : null}
             </div>
           ))
         )}
@@ -86,21 +114,21 @@ export function CrosswordSection() {
           <h4 className="ui-text mb-2">Across</h4>
           <ol className="body-text text-sm space-y-1 list-decimal list-inside">
             <li>Global climate agreement city (6)</li>
-            <li>Greenhouse ___ (3)</li>
             <li>Quantum computing unit (5)</li>
+            <li>AI brain interface (abbr.) (3)</li>
           </ol>
         </div>
         <div>
           <h4 className="ui-text mb-2">Down</h4>
           <ol className="body-text text-sm space-y-1 list-decimal list-inside">
+            <li>Greenhouse ___ (3)</li>
             <li>Renewable energy source (5)</li>
             <li>Editor&apos;s pick label (7)</li>
-            <li>AI brain interface (3)</li>
           </ol>
         </div>
       </div>
-      <p className="caption-text mt-4 italic text-center">
-        Interactive crossword — full puzzle coming in next edition
+      <p className="caption-text mt-4 italic text-center text-ink-secondary">
+        Select a cell to begin typing
       </p>
     </div>
   );
