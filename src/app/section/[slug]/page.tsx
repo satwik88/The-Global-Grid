@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { Masthead } from "@/components/newspaper/Masthead";
 import { Footer } from "@/components/newspaper/Footer";
 import { ArticleCard } from "@/components/newspaper/ArticleCard";
-import { getArticlesBySection } from "@/lib/content/articles";
+import { fetchLiveNewsFeed } from "@/lib/services/newsService";
 import { getSectionLabel } from "@/lib/sections";
 
 const VALID_SECTIONS = [
@@ -40,7 +40,7 @@ export default async function SectionPage({ params }: Props) {
   const { slug } = await params;
   if (!VALID_SECTIONS.includes(slug)) notFound();
 
-  const sectionArticles = getArticlesBySection(slug);
+  const sectionArticles = await fetchLiveNewsFeed(slug);
   const featured = sectionArticles[0];
   const rest = sectionArticles.slice(1);
 
