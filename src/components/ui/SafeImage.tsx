@@ -19,6 +19,7 @@ export function SafeImage({ src, fallbackSrc = "/fallback-image.jpg", alt, ...pr
       src={finalSrc}
       alt={alt}
       onError={() => setError(true)}
+      unoptimized={error || props.unoptimized}
       {...props}
     />
   );
