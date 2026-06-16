@@ -11,9 +11,8 @@ export function SafeImage({ src, fallbackSrc = "/fallback-image.jpg", alt, ...pr
   const [error, setError] = useState(false);
 
   // If there's an error, use a solid color placeholder or a reliable fallback.
-  // We'll use a reliable fallback from Unsplash that we know works, 
-  // or a placeholder using a generic data URL or color block.
-  const finalSrc = error ? "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=1200&q=80" : src;
+  // We generate a dynamic image using the Next.js OG image generator with the headline text.
+  const finalSrc = error ? `/api/og?title=${encodeURIComponent(alt || "The Global Grid")}` : src;
 
   return (
     <Image
