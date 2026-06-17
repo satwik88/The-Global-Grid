@@ -68,7 +68,7 @@ export function GlobalPulse({ locations }: { locations?: string[] }) {
   if (!mounted) return null;
 
   return (
-    <div className="bg-paper text-ink py-1 border-b-2 border-accent text-[0.625rem] md:text-xs overflow-hidden select-none no-print">
+    <div className="bg-paper text-ink py-1 border-b border-border text-[0.625rem] md:text-xs overflow-hidden select-none no-print">
       <div className="mx-auto max-w-screen-xl px-4 md:px-8 flex items-center justify-between">
         
         {/* Left Side: Pulse Animation */}

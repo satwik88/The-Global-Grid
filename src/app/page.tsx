@@ -112,7 +112,7 @@ export default async function HomePage() {
       {breakingNewsItems && breakingNewsItems.length > 0 && (
         <div className="bg-accent text-white no-print transition-colors duration-500 overflow-hidden">
           <div className="mx-auto max-w-screen-xl px-4 py-2 md:px-8 flex items-center relative">
-            <span className="ui-text !text-white shrink-0 z-10 bg-accent pr-4 relative">Breaking</span>
+            <span className="ui-text !text-white shrink-0 pr-4 relative">Breaking</span>
             <div className="flex-1 overflow-hidden relative">
               <div className="flex w-max animate-marquee items-center">
                 {breakingNewsItems.concat(breakingNewsItems).map((article, idx) => (
@@ -133,7 +133,7 @@ export default async function HomePage() {
       <PageTurnReader pages={mobilePages} />
 
       {/* TODAY IN THE GRID - Editorial Briefing */}
-      <div className="bg-paper text-ink py-8 border-b-4 border-t border-ink no-print relative">
+      <div className="bg-paper text-ink py-8 border-b-4 border-t border-border no-print relative">
         <div className="mx-auto max-w-screen-xl px-4 md:px-8">
           <div className="grid grid-cols-1 md:grid-cols-6 gap-6 md:gap-8 items-stretch">
             <div className="md:col-span-1 border-b md:border-b-0 md:border-r border-border pb-4 md:pb-0 md:pr-6 flex flex-col justify-start">
