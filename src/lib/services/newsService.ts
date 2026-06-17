@@ -4,6 +4,7 @@ import { isRecent, getRelativeTime } from "@/lib/utils/time";
 import type { Article, SectionSlug } from "@/lib/types";
 
 const API_KEY = process.env.NEWSDATA_API_KEY;
+const GNEWS_API_KEY = process.env.GNEWS_API_KEY;
 
 // Fallback to our existing mock articles if API fails
 let cachedArticles: Article[] = [];
@@ -117,6 +118,103 @@ export async function getNews(sectionSlug: SectionSlug = "front-page") {
   }
 }
 
+function mapSectionToGNews(section: string): { type: "top-headlines" | "search", query: string } {
+  switch (section) {
+    case "india": return { type: "top-headlines", query: "category=general&country=in" };
+    case "world": return { type: "top-headlines", query: "category=world" };
+    case "business": return { type: "top-headlines", query: "category=business" };
+    case "technology": return { type: "top-headlines", query: "category=technology" };
+    case "ai": return { type: "search", query: "q=\"artificial intelligence\" OR AI" };
+    case "science": return { type: "top-headlines", query: "category=science" };
+    case "culture": return { type: "top-headlines", query: "category=entertainment" };
+    case "travel": return { type: "search", query: "q=travel" };
+    case "opinion": return { type: "top-headlines", query: "category=nation" };
+    case "games": return { type: "top-headlines", query: "category=entertainment" };
+    case "grid-intelligence": return { type: "top-headlines", query: "category=general" };
+    case "front-page":
+    default:
+      return { type: "top-headlines", query: "category=general" };
+  }
+}
+
+function mapGNewsToArticle(data: any, sectionSlug: SectionSlug): Article {
+  const authorName = data.source?.name || "Staff Writer";
+  
+  let textContent = data.content || data.description || data.title || "";
+  
+  const wordCount = textContent.split(" ").length;
+  const readingTime = Math.max(1, Math.ceil(wordCount / 200));
+
+  const bodyParas = textContent.split(/\\n+/).filter((p: string) => p.trim().length > 0).map((p: string) => p.trim());
+  if (bodyParas.length === 0) bodyParas.push(data.title);
+
+  const cleanHeadline = formatEditorialHeadline(data.title);
+
+  // Generate a pseudo-ID for GNews since they might not provide one
+  const id = data.url ? Buffer.from(data.url).toString('base64').substring(0, 16) : Math.random().toString(36).substring(7);
+
+  return {
+    id: id,
+    slug: id,
+    headline: cleanHeadline,
+    deck: data.description || data.title,
+    author: {
+      name: authorName,
+      slug: authorName.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      role: "Correspondent",
+    },
+    section: sectionSlug,
+    publishedAt: new Date(data.publishedAt).toISOString(),
+    updatedAt: data.publishedAt ? getRelativeTime(data.publishedAt) : undefined,
+    isBreaking: data.publishedAt ? isRecent(data.publishedAt, 4) : false,
+    readingTime: readingTime,
+    image: data.image || "", 
+    body: bodyParas,
+    tags: [sectionSlug],
+    relatedSlugs: [],
+  };
+}
+
+export async function fetchFromGNews(sectionSlug: SectionSlug = "front-page") {
+  if (!GNEWS_API_KEY) {
+    return null;
+  }
+  
+  const { type, query } = mapSectionToGNews(sectionSlug);
+  const url = \`https://gnews.io/api/v4/\${type}?\${query}&lang=en&apikey=\${GNEWS_API_KEY}\`;
+  
+  try {
+    const response = await fetch(url, { next: { revalidate: 900 } });
+    if (!response.ok) {
+      console.error(\`GNews API error: \${response.status} \${response.statusText}\`);
+      return null;
+    }
+    const data = await response.json();
+    if (data.articles) {
+      const mapped = data.articles.map((raw: any) => mapGNewsToArticle(raw, sectionSlug));
+      
+      const uniqueMapped: Article[] = [];
+      const seenHeadlines = new Set();
+      for (const article of mapped) {
+        if (!seenHeadlines.has(article.headline)) {
+          seenHeadlines.add(article.headline);
+          uniqueMapped.push(article);
+        }
+      }
+      
+      const newMap = new Map(cachedArticles.map(a => [a.id, a]));
+      uniqueMapped.forEach((a: Article) => newMap.set(a.id, a));
+      cachedArticles = Array.from(newMap.values());
+      
+      return uniqueMapped;
+    }
+    return null;
+  } catch (error) {
+    console.error("Failed to fetch from GNews:", error);
+    return null;
+  }
+}
+
 // Helper to shuffle mock data
 function shuffleArray<T>(array: T[]): T[] {
   const shuffled = [...array];
@@ -127,43 +225,49 @@ function shuffleArray<T>(array: T[]): T[] {
   return shuffled;
 }
 
-export async function fetchLiveNewsFeed(section?: string): Promise<Article[]> {
-  const liveNews = await getNews((section as SectionSlug) || "front-page");
-  if (liveNews && liveNews.length > 0) {
+export async function getBestAvailableNews(sectionSlug: SectionSlug = "front-page"): Promise<Article[]> {
+  // 1. Try NewsData
+  let liveNews = await getNews(sectionSlug);
+  if (liveNews && liveNews.length >= 3) {
+    console.log(\`\${sectionSlug} section: served from newsdata.io\`);
     return liveNews;
   }
   
-  // Fallback to shuffled mock data if API fails or rate limits
-  if (section) {
-    return shuffleArray(articles.filter((a) => a.section === section));
+  // 2. Try GNews
+  liveNews = await fetchFromGNews(sectionSlug);
+  if (liveNews && liveNews.length >= 3) {
+    console.log(\`\${sectionSlug} section: served from GNews fallback\`);
+    return liveNews;
   }
-  return shuffleArray(articles);
+  
+  // 3. Fallback to mock
+  console.log(\`\${sectionSlug} section: served from mock fallback\`);
+  const mockArticles = sectionSlug === "front-page" 
+    ? articles 
+    : articles.filter(a => a.section === sectionSlug);
+    
+  return shuffleArray(mockArticles);
+}
+
+export async function fetchLiveNewsFeed(section?: string): Promise<Article[]> {
+  return getBestAvailableNews((section as SectionSlug) || "front-page");
 }
 
 export async function fetchCuratedLeadStory(): Promise<Article | null> {
-  const liveNews = await getNews("front-page");
-  if (liveNews && liveNews.length > 0) {
-    return liveNews[0];
-  }
-  // Fallback
-  return shuffleArray(articles)[0] || null;
+  const news = await getBestAvailableNews("front-page");
+  return news[0] || null;
 }
 
 export async function fetchEditorPicks(): Promise<Article[]> {
-  const liveNews = await getNews("front-page");
-  if (liveNews && liveNews.length > 3) {
-    // Grab items 1, 2, 3 as editor picks
-    return liveNews.slice(1, 4);
-  }
-  return shuffleArray(articles).slice(0, 3);
+  const news = await getBestAvailableNews("front-page");
+  if (news.length > 3) return news.slice(1, 4);
+  return news.slice(0, 3);
 }
 
 export async function fetchSecondaryFeatures(): Promise<Article[]> {
-  const liveNews = await getNews("front-page");
-  if (liveNews && liveNews.length > 7) {
-    return liveNews.slice(4, 8);
-  }
-  return shuffleArray(articles).slice(0, 4);
+  const news = await getBestAvailableNews("front-page");
+  if (news.length > 7) return news.slice(4, 8);
+  return news.slice(0, 4);
 }
 
 export async function fetchArticle(slug: string): Promise<Article | undefined> {
@@ -174,12 +278,12 @@ export async function fetchArticle(slug: string): Promise<Article | undefined> {
   // If we are in a fresh request thread and cache is empty, rapidly hydrate it 
   // from Next.js built-in fetch cache (this does NOT hit the network rate limits)
   await Promise.all([
-    getNews("front-page"),
-    getNews("world"),
-    getNews("business"),
-    getNews("technology"),
-    getNews("science"),
-    getNews("india")
+    getBestAvailableNews("front-page"),
+    getBestAvailableNews("world"),
+    getBestAvailableNews("business"),
+    getBestAvailableNews("technology"),
+    getBestAvailableNews("science"),
+    getBestAvailableNews("india")
   ]);
 
   liveMatch = cachedArticles.find(a => a.slug === slug);
