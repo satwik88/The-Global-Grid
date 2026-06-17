@@ -14,7 +14,7 @@ export function WorldClockDisplay({ clocks }: { clocks: Clock[] }) {
     function update() {
       const next: Record<string, string> = {};
       clocks.forEach(({ city, timezone }) => {
-        next[city] = new Intl.DateTimeFormat("en-GB", {
+        next[city] = new Intl.DateTimeFormat("en-US", {
           timeZone: timezone,
           hour: "2-digit",
           minute: "2-digit",
