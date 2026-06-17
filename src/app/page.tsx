@@ -13,6 +13,8 @@ import {
 import Link from "next/link";
 import { SafeImage } from "@/components/ui/SafeImage";
 
+export const dynamic = 'force-dynamic';
+
 export default async function HomePage() {
   const seenHeadlines = new Set<string>();
 

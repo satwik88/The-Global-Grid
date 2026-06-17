@@ -117,17 +117,27 @@ export async function getNews(sectionSlug: SectionSlug = "front-page") {
   }
 }
 
+// Helper to shuffle mock data
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
 export async function fetchLiveNewsFeed(section?: string): Promise<Article[]> {
   const liveNews = await getNews((section as SectionSlug) || "front-page");
   if (liveNews && liveNews.length > 0) {
     return liveNews;
   }
   
-  // Fallback to mock data if API fails or rate limits
+  // Fallback to shuffled mock data if API fails or rate limits
   if (section) {
-    return articles.filter((a) => a.section === section);
+    return shuffleArray(articles.filter((a) => a.section === section));
   }
-  return articles;
+  return shuffleArray(articles);
 }
 
 export async function fetchCuratedLeadStory(): Promise<Article | null> {
@@ -136,7 +146,7 @@ export async function fetchCuratedLeadStory(): Promise<Article | null> {
     return liveNews[0];
   }
   // Fallback
-  return articles[0] || null;
+  return shuffleArray(articles)[0] || null;
 }
 
 export async function fetchEditorPicks(): Promise<Article[]> {
@@ -145,7 +155,7 @@ export async function fetchEditorPicks(): Promise<Article[]> {
     // Grab items 1, 2, 3 as editor picks
     return liveNews.slice(1, 4);
   }
-  return articles.slice(1, 4);
+  return shuffleArray(articles).slice(0, 3);
 }
 
 export async function fetchSecondaryFeatures(): Promise<Article[]> {
@@ -153,7 +163,7 @@ export async function fetchSecondaryFeatures(): Promise<Article[]> {
   if (liveNews && liveNews.length > 7) {
     return liveNews.slice(4, 8);
   }
-  return articles.slice(4, 8);
+  return shuffleArray(articles).slice(0, 4);
 }
 
 export async function fetchArticle(slug: string): Promise<Article | undefined> {

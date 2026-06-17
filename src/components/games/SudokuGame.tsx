@@ -143,7 +143,7 @@ export function SudokuGame() {
         </div>
       </div>
 
-      <div className="grid grid-cols-9 gap-0 max-w-[360px] mx-auto border-2 border-border">
+      <div className="grid grid-cols-9 gap-0 max-w-[400px] w-full mx-auto border-[3px] border-border bg-paper shadow-sm">
         {userGrid.map((row, r) =>
           row.map((cell, c) => {
             const isSelected = selected?.[0] === r && selected?.[1] === c;
@@ -151,16 +151,19 @@ export function SudokuGame() {
             const pencils = pencilGrid[r][c];
             const boxRight = c === 2 || c === 5;
             const boxBottom = r === 2 || r === 5;
+            const isFixed = fixed[r][c];
 
             return (
               <div
                 key={`${r}-${c}`}
                 onClick={() => handleCellClick(r, c)}
-                className={`sudoku-cell ${fixed[r][c] ? "fixed" : ""} ${
-                  isSelected ? "selected" : ""
-                } ${isError ? "error" : ""} ${boxRight ? "box-border-right" : ""} ${
-                  boxBottom ? "box-border-bottom" : ""
-                }`}
+                className={`flex items-center justify-center border-border aspect-square text-lg sm:text-xl font-[family-name:var(--font-cormorant)] cursor-pointer transition-colors select-none
+                  ${isFixed ? "font-bold text-ink" : "text-ink-secondary"}
+                  ${isSelected ? "bg-ink/10" : "hover:bg-ink/5"}
+                  ${isError ? "text-accent bg-accent/10 font-bold" : ""}
+                  ${boxRight ? "border-r-[3px]" : "border-r"}
+                  ${boxBottom ? "border-b-[3px]" : "border-b"}
+                `}
               >
                 {cell !== 0 ? (
                   cell

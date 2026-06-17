@@ -6,6 +6,8 @@ import { ArticleCard } from "@/components/newspaper/ArticleCard";
 import { fetchLiveNewsFeed } from "@/lib/services/newsService";
 import { getSectionLabel } from "@/lib/sections";
 
+export const dynamic = 'force-dynamic';
+
 const VALID_SECTIONS = [
   "world",
   "business",
