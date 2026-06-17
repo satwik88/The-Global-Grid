@@ -75,16 +75,18 @@ export function GlobalPulse() {
           <span className="font-bold tracking-widest text-accent uppercase">Global Pulse</span>
         </div>
 
-        {/* Center: Markets Marquee / Flex */}
-        <div className="hidden md:flex flex-1 items-center justify-center gap-6 border-l border-r border-border/30 px-4">
-          {markets.map((market) => (
-            <span key={market.name} className="flex items-center gap-1 font-[family-name:var(--font-inter)]">
-              {market.name} 
-              <span className={market.status === "up" ? "text-green-500" : "text-red-500"}>
-                {market.status === "up" ? "▲" : "▼"}
+        {/* Center: Markets Marquee */}
+        <div className="hidden md:block flex-1 overflow-hidden border-l border-r border-border/30">
+          <div className="flex w-max animate-marquee-slow hover:[animation-play-state:paused] items-center h-full py-1">
+            {[...markets, ...markets].map((market, idx) => (
+              <span key={`${market.name}-${idx}`} className="flex items-center gap-1 font-[family-name:var(--font-inter)] mx-6 shrink-0">
+                {market.name} 
+                <span className={market.status === "up" ? "text-green-500" : "text-red-500"}>
+                  {market.status === "up" ? "▲" : "▼"}
+                </span>
               </span>
-            </span>
-          ))}
+            ))}
+          </div>
         </div>
 
         {/* Right Side: Exchange Rates */}

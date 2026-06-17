@@ -83,15 +83,22 @@ export default async function HomePage() {
       <Masthead />
 
       {breakingNews && (
-        <div className="bg-ink text-paper no-print transition-colors duration-500">
-          <div className="mx-auto max-w-screen-xl px-4 py-2 md:px-8 flex items-center gap-4">
-            <span className="ui-text !text-paper shrink-0">Breaking</span>
-            <Link
-              href={`/article/${breakingNews.slug}`}
-              className="body-text text-sm hover:underline truncate !text-paper"
-            >
-              {breakingNews.headline}
-            </Link>
+        <div className="bg-ink text-paper no-print transition-colors duration-500 overflow-hidden">
+          <div className="mx-auto max-w-screen-xl px-4 py-2 md:px-8 flex items-center relative">
+            <span className="ui-text !text-paper shrink-0 z-10 bg-ink pr-4 relative">Breaking</span>
+            <div className="flex-1 overflow-hidden relative">
+              <div className="flex w-max animate-marquee hover:[animation-play-state:paused] items-center">
+                {[1, 2].map((key) => (
+                  <Link
+                    key={key}
+                    href={`/article/${breakingNews.slug}`}
+                    className="body-text text-sm hover:underline !text-paper shrink-0 px-16"
+                  >
+                    {breakingNews.headline}
+                  </Link>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       )}
