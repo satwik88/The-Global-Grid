@@ -93,12 +93,22 @@ export async function getNews(sectionSlug: SectionSlug = "front-page") {
     if (data.status === "success" && data.results) {
       const mapped = data.results.map((raw: any) => mapNewsDataToArticle(raw, sectionSlug));
       
+      // Deduplicate by headline to prevent repeated articles
+      const uniqueMapped: Article[] = [];
+      const seenHeadlines = new Set();
+      for (const article of mapped) {
+        if (!seenHeadlines.has(article.headline)) {
+          seenHeadlines.add(article.headline);
+          uniqueMapped.push(article);
+        }
+      }
+      
       // Accumulate into cache so fetchArticle(slug) works across sections
       const newMap = new Map(cachedArticles.map(a => [a.id, a]));
-      mapped.forEach((a: Article) => newMap.set(a.id, a));
+      uniqueMapped.forEach((a: Article) => newMap.set(a.id, a));
       cachedArticles = Array.from(newMap.values());
       
-      return mapped;
+      return uniqueMapped;
     }
     return null;
   } catch (error) {

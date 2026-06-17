@@ -15,17 +15,30 @@ import Link from "next/link";
 import { SafeImage } from "@/components/ui/SafeImage";
 
 export default async function HomePage() {
-  const mainFeature = await fetchCuratedLeadStory();
-  const secondaryFeatures = await fetchSecondaryFeatures();
-  const editorPicks = await fetchEditorPicks();
+  const seenHeadlines = new Set<string>();
+
+  const deduplicate = (articles: any[]) => {
+    if (!articles) return [];
+    return articles.filter(a => {
+      if (!a) return false;
+      if (seenHeadlines.has(a.headline)) return false;
+      seenHeadlines.add(a.headline);
+      return true;
+    });
+  };
+
+  const rawMainFeature = await fetchCuratedLeadStory();
+  const mainFeature = rawMainFeature ? deduplicate([rawMainFeature])[0] : null;
+  const secondaryFeatures = deduplicate(await fetchSecondaryFeatures());
+  const editorPicks = deduplicate(await fetchEditorPicks());
   
   // Simulated news feeds
-  const worldNews = await fetchLiveNewsFeed("world");
-  const indiaNews = await fetchLiveNewsFeed("india");
-  const techNews = await fetchLiveNewsFeed("technology");
-  const gridIntelligence = await fetchLiveNewsFeed("grid-intelligence");
+  const worldNews = deduplicate(await fetchLiveNewsFeed("world"));
+  const indiaNews = deduplicate(await fetchLiveNewsFeed("india"));
+  const techNews = deduplicate(await fetchLiveNewsFeed("technology"));
+  const gridIntelligence = deduplicate(await fetchLiveNewsFeed("grid-intelligence"));
   
-  const latestNews = await fetchLiveNewsFeed(); // Gets all
+  const latestNews = deduplicate(await fetchLiveNewsFeed()); // Gets all
   const breakingNews = latestNews.find(a => a.isBreaking) || worldNews[0] || null;
 
   const mobilePages = [
