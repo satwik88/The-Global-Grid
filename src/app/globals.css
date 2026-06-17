@@ -10,11 +10,11 @@
 }
 
 .dark {
-  --paper: #111111;
-  --ink: #EAE6DD;
-  --ink-secondary: #9B9892;
-  --border: #3A3A3A;
-  --accent: #8A3F3F;
+  --paper: #1a1815;
+  --ink: #ece5d3;
+  --ink-secondary: #a39e8f;
+  --border: #3a352c;
+  --accent: #a8252b;
   --paper-shadow: rgba(0, 0, 0, 0.4);
 }
 

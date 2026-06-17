@@ -106,16 +106,16 @@ export default async function HomePage() {
       <Masthead locations={displayLocations} />
 
       {breakingNewsItems && breakingNewsItems.length > 0 && (
-        <div className="bg-[#8a0303] text-paper no-print transition-colors duration-500 overflow-hidden">
+        <div className="bg-accent text-paper dark:text-ink no-print transition-colors duration-500 overflow-hidden">
           <div className="mx-auto max-w-screen-xl px-4 py-2 md:px-8 flex items-center relative">
-            <span className="ui-text !text-paper shrink-0 z-10 bg-[#8a0303] pr-4 relative">Breaking</span>
+            <span className="ui-text !text-paper dark:!text-ink shrink-0 z-10 bg-accent pr-4 relative">Breaking</span>
             <div className="flex-1 overflow-hidden relative">
               <div className="flex w-max animate-marquee items-center">
                 {breakingNewsItems.concat(breakingNewsItems).map((article, idx) => (
                   <Link
                     key={`${article.slug}-${idx}`}
                     href={`/article/${article.slug}`}
-                    className="body-text text-sm hover:underline !text-paper shrink-0 px-16"
+                    className="body-text text-sm hover:underline !text-paper dark:!text-ink shrink-0 px-16"
                   >
                     {article.headline}
                   </Link>

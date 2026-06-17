@@ -35,13 +35,13 @@ function ThemeToggle() {
     >
       {theme === "light" ? (
         <>
-          <Moon size={14} aria-hidden="true" />
-          <span className="hidden sm:inline">Night Edition</span>
+          <Sun size={14} aria-hidden="true" />
+          <span className="hidden sm:inline">Day Edition</span>
         </>
       ) : (
         <>
-          <Sun size={14} aria-hidden="true" />
-          <span className="hidden sm:inline">Day Edition</span>
+          <Moon size={14} aria-hidden="true" />
+          <span className="hidden sm:inline">Night Edition</span>
         </>
       )}
     </button>

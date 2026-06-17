@@ -86,7 +86,7 @@ export function GlobalPulse({ locations }: { locations?: string[] }) {
             {[...markets, ...markets].map((market, idx) => (
               <span key={`${market.name}-${idx}`} className="flex items-center gap-1 font-[family-name:var(--font-inter)] mx-6 shrink-0">
                 {market.name} 
-                <span className={market.status === "up" ? "text-green-500" : "text-red-500"}>
+                <span className={market.status === "up" ? "text-green-500 dark:text-[#5a9b6e]" : "text-red-500 dark:text-accent"}>
                   {market.status === "up" ? "▲" : "▼"}
                 </span>
               </span>
@@ -101,7 +101,7 @@ export function GlobalPulse({ locations }: { locations?: string[] }) {
               <span className="flex items-center gap-1">
                 <span className="text-ink-secondary">{rate.pair}</span>
                 <span className="font-bold">{rate.rate.toFixed(2)}</span>
-                <span className={rate.status === "up" ? "text-green-500" : "text-red-500"}>
+                <span className={rate.status === "up" ? "text-green-500 dark:text-[#5a9b6e]" : "text-red-500 dark:text-accent"}>
                   {rate.status === "up" ? "▲" : "▼"}
                 </span>
               </span>
