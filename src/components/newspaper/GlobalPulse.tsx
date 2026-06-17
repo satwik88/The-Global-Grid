@@ -11,11 +11,16 @@ const INITIAL_MARKETS = [
   { name: "HONG KONG", status: "up" },
 ];
 
-const topics = ["AI", "GEOPOLITICS", "MARKETS", "SPACE", "CLIMATE", "CYBERSECURITY"];
+const INITIAL_RATES = [
+  { pair: "USD/INR", rate: 83.42, status: "up" },
+  { pair: "EUR/INR", rate: 89.15, status: "down" },
+  { pair: "GBP/INR", rate: 105.30, status: "up" },
+];
 
 export function GlobalPulse() {
   const [mounted, setMounted] = useState(false);
   const [markets, setMarkets] = useState(INITIAL_MARKETS);
+  const [rates, setRates] = useState(INITIAL_RATES);
 
   useEffect(() => {
     setMounted(true);
@@ -32,6 +37,22 @@ export function GlobalPulse() {
             };
           }
           return market;
+        })
+      );
+
+      setRates((prev) =>
+        prev.map((r) => {
+          if (Math.random() > 0.6) {
+            const change = parseFloat((Math.random() * 0.05).toFixed(2));
+            const isUp = Math.random() > 0.5;
+            const newRate = isUp ? r.rate + change : r.rate - change;
+            return {
+              ...r,
+              rate: parseFloat(newRate.toFixed(2)),
+              status: isUp ? "up" : "down",
+            };
+          }
+          return r;
         })
       );
     }, 4500);
@@ -66,12 +87,18 @@ export function GlobalPulse() {
           ))}
         </div>
 
-        {/* Right Side: Topics */}
-        <div className="flex items-center gap-3 pl-4 shrink-0 font-[family-name:var(--font-inter)] tracking-wider">
-          {topics.slice(0, 4).map((topic, i) => (
-            <div key={topic} className="flex items-center gap-3">
-              <span>{topic}</span>
-              {i < 3 && <span className="text-border/50">•</span>}
+        {/* Right Side: Exchange Rates */}
+        <div className="flex items-center gap-4 pl-4 shrink-0 font-[family-name:var(--font-inter)] tracking-wider">
+          {rates.map((rate, i) => (
+            <div key={rate.pair} className="flex items-center gap-3">
+              <span className="flex items-center gap-1">
+                <span className="text-ink-secondary">{rate.pair}</span>
+                <span className="font-bold">{rate.rate.toFixed(2)}</span>
+                <span className={rate.status === "up" ? "text-green-500" : "text-red-500"}>
+                  {rate.status === "up" ? "▲" : "▼"}
+                </span>
+              </span>
+              {i < rates.length - 1 && <span className="text-border/50">•</span>}
             </div>
           ))}
         </div>
