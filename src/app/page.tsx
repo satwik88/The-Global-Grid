@@ -38,9 +38,32 @@ export default async function HomePage() {
   const gridIntelligence = deduplicate(await fetchLiveNewsFeed("grid-intelligence"));
   
   const latestNews = deduplicate(await fetchLiveNewsFeed()); // Gets all
-  const breakingNews = latestNews.find(a => a.isBreaking) || worldNews[0] || null;
+  
+  const breakingNewsItems = latestNews.filter(a => a.isBreaking);
+  if (breakingNewsItems.length === 0) {
+    breakingNewsItems.push(...worldNews.slice(0, 5));
+  }
+  const breakingNews = breakingNewsItems[0] || null;
 
   const topBriefs = [...latestNews, ...worldNews, ...techNews, ...indiaNews];
+
+  const commonLocations = [
+    "New Delhi", "London", "New York", "Tokyo", "Frankfurt", "Hong Kong",
+    "Washington", "Paris", "Beijing", "Moscow", "Kyiv", "Tel Aviv",
+    "Mumbai", "Dubai", "Sydney", "Singapore", "Seoul", "Los Angeles",
+    "Berlin", "Rome", "Toronto", "Chicago", "San Francisco"
+  ];
+
+  const extractedLocations = Array.from(new Set(
+    topBriefs.flatMap(article => {
+      const text = (article.headline + " " + article.deck).toLowerCase();
+      return commonLocations.filter(loc => text.includes(loc.toLowerCase()));
+    })
+  ));
+
+  const displayLocations = extractedLocations.length > 5 
+    ? extractedLocations 
+    : Array.from(new Set([...extractedLocations, ...commonLocations])).slice(0, 15);
 
   const mobilePages = [
     <div key="p1">
@@ -80,21 +103,21 @@ export default async function HomePage() {
 
   return (
     <>
-      <Masthead />
+      <Masthead locations={displayLocations} />
 
-      {breakingNews && (
-        <div className="bg-ink text-paper no-print transition-colors duration-500 overflow-hidden">
+      {breakingNewsItems && breakingNewsItems.length > 0 && (
+        <div className="bg-[#8a0303] text-paper no-print transition-colors duration-500 overflow-hidden">
           <div className="mx-auto max-w-screen-xl px-4 py-2 md:px-8 flex items-center relative">
-            <span className="ui-text !text-paper shrink-0 z-10 bg-ink pr-4 relative">Breaking</span>
+            <span className="ui-text !text-paper shrink-0 z-10 bg-[#8a0303] pr-4 relative">Breaking</span>
             <div className="flex-1 overflow-hidden relative">
-              <div className="flex w-max animate-marquee hover:[animation-play-state:paused] items-center">
-                {[1, 2].map((key) => (
+              <div className="flex w-max animate-marquee items-center">
+                {breakingNewsItems.concat(breakingNewsItems).map((article, idx) => (
                   <Link
-                    key={key}
-                    href={`/article/${breakingNews.slug}`}
+                    key={`${article.slug}-${idx}`}
+                    href={`/article/${article.slug}`}
                     className="body-text text-sm hover:underline !text-paper shrink-0 px-16"
                   >
-                    {breakingNews.headline}
+                    {article.headline}
                   </Link>
                 ))}
               </div>

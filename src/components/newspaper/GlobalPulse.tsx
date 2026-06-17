@@ -17,9 +17,14 @@ const INITIAL_RATES = [
   { pair: "GBP/INR", rate: 105.30, status: "up" },
 ];
 
-export function GlobalPulse() {
+export function GlobalPulse({ locations }: { locations?: string[] }) {
   const [mounted, setMounted] = useState(false);
-  const [markets, setMarkets] = useState(INITIAL_MARKETS);
+  
+  const initialMarkets = locations && locations.length > 0 
+    ? locations.map(loc => ({ name: loc.toUpperCase(), status: Math.random() > 0.5 ? "up" : "down" }))
+    : INITIAL_MARKETS;
+
+  const [markets, setMarkets] = useState(initialMarkets);
   const [rates, setRates] = useState(INITIAL_RATES);
 
   useEffect(() => {
@@ -77,7 +82,7 @@ export function GlobalPulse() {
 
         {/* Center: Markets Marquee */}
         <div className="hidden md:block flex-1 overflow-hidden border-l border-r border-border/30">
-          <div className="flex w-max animate-marquee-slow hover:[animation-play-state:paused] items-center h-full py-1">
+          <div className="flex w-max animate-marquee-slow items-center h-full py-1">
             {[...markets, ...markets].map((market, idx) => (
               <span key={`${market.name}-${idx}`} className="flex items-center gap-1 font-[family-name:var(--font-inter)] mx-6 shrink-0">
                 {market.name} 

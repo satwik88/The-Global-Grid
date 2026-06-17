@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 
 interface MastheadProps {
   showNav?: boolean;
+  locations?: string[];
 }
 
 function ThemeToggle() {
@@ -47,7 +48,7 @@ function ThemeToggle() {
   );
 }
 
-export function Masthead({ showNav = true }: MastheadProps) {
+export function Masthead({ showNav = true, locations }: MastheadProps) {
   const date = new Date();
   const editionNumber = getEditionNumber(date);
   const editionDate = formatEditionDate(date);
@@ -116,8 +117,7 @@ export function Masthead({ showNav = true }: MastheadProps) {
 
         <hr className="rule-thin mt-4" />
       </div>
-      
-      <GlobalPulse />
+      <GlobalPulse locations={locations} />
     </header>
   );
 }
