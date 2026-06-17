@@ -113,13 +113,13 @@ export default async function HomePage() {
         <div className="bg-accent text-white no-print transition-colors duration-500 overflow-hidden">
           <div className="mx-auto max-w-screen-xl px-4 py-2 md:px-8 flex items-center relative">
             <span className="ui-text !text-white shrink-0 pr-4 relative">Breaking</span>
-            <div className="flex-1 overflow-hidden relative">
+            <div className="flex-1 overflow-hidden relative whitespace-nowrap">
               <div className="flex w-max animate-marquee items-center">
                 {breakingNewsItems.concat(breakingNewsItems).map((article, idx) => (
                   <Link
                     key={`${article.slug}-${idx}`}
                     href={`/article/${article.slug}`}
-                    className="body-text text-sm hover:underline !text-white shrink-0 px-16"
+                    className="body-text text-sm hover:underline !text-white shrink-0 mr-12"
                   >
                     {article.headline}
                   </Link>

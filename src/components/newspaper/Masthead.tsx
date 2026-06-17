@@ -66,8 +66,8 @@ export function Masthead({ showNav = true, locations }: MastheadProps) {
         <hr className="rule-thin mb-4 mt-6 sm:mt-0" />
 
         <div className="text-center">
-          <Link href="/" className="group inline-flex items-center justify-center gap-3 md:gap-5">
-            <GlobeSeal className="w-10 h-10 md:w-14 md:h-14 text-ink group-hover:text-accent transition-colors duration-300" />
+          <Link href="/" className="group inline-flex items-center justify-center gap-3 md:gap-5 text-left">
+            <GlobeSeal className="w-10 h-10 md:w-14 md:h-14 text-ink group-hover:text-accent transition-colors duration-300 shrink-0" />
             <h1 className="font-[family-name:var(--font-playfair)] text-4xl md:text-6xl font-bold tracking-tight text-ink group-hover:text-accent transition-colors duration-300">
               THE GLOBAL GRID
             </h1>
@@ -88,9 +88,9 @@ export function Masthead({ showNav = true, locations }: MastheadProps) {
 
         {showNav && (
           <nav className="mt-4 no-print" aria-label="Main sections">
-            <ul className="flex flex-wrap items-center justify-center gap-x-1 gap-y-2 ui-text">
+            <ul className="flex flex-nowrap md:flex-wrap items-center justify-start md:justify-center gap-x-1 md:gap-y-2 ui-text overflow-x-auto md:overflow-x-visible whitespace-nowrap md:whitespace-normal [scrollbar-width:none] [&::-webkit-scrollbar]:hidden px-1 md:px-0">
               {NAV_SECTIONS.map((section, i) => (
-                <li key={section.slug + section.href} className="flex items-center">
+                <li key={section.slug + section.href} className="flex items-center shrink-0">
                   {i > 0 && (
                     <span className="mx-2 text-ink-secondary select-none">|</span>
                   )}
@@ -102,7 +102,7 @@ export function Masthead({ showNav = true, locations }: MastheadProps) {
                   </Link>
                 </li>
               ))}
-              <li className="flex items-center">
+              <li className="flex items-center shrink-0">
                 <span className="mx-2 text-ink-secondary select-none">|</span>
                 <Link
                   href="/archive"
