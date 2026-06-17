@@ -40,8 +40,12 @@ export default async function HomePage() {
   const latestNews = deduplicate(await fetchLiveNewsFeed()); // Gets all
   
   const breakingNewsItems = latestNews.filter(a => a.isBreaking);
-  if (breakingNewsItems.length === 0) {
-    breakingNewsItems.push(...worldNews.slice(0, 5));
+  if (breakingNewsItems.length < 5) {
+    const nonBreakingLatest = latestNews.filter(a => !a.isBreaking);
+    breakingNewsItems.push(...nonBreakingLatest.slice(0, 5 - breakingNewsItems.length));
+  }
+  if (breakingNewsItems.length < 5) {
+    breakingNewsItems.push(...worldNews.slice(0, 5 - breakingNewsItems.length));
   }
   const breakingNews = breakingNewsItems[0] || null;
 
@@ -106,16 +110,16 @@ export default async function HomePage() {
       <Masthead locations={displayLocations} />
 
       {breakingNewsItems && breakingNewsItems.length > 0 && (
-        <div className="bg-accent text-paper dark:text-ink no-print transition-colors duration-500 overflow-hidden">
+        <div className="bg-accent text-white no-print transition-colors duration-500 overflow-hidden">
           <div className="mx-auto max-w-screen-xl px-4 py-2 md:px-8 flex items-center relative">
-            <span className="ui-text !text-paper dark:!text-ink shrink-0 z-10 bg-accent pr-4 relative">Breaking</span>
+            <span className="ui-text !text-white shrink-0 z-10 bg-accent pr-4 relative">Breaking</span>
             <div className="flex-1 overflow-hidden relative">
               <div className="flex w-max animate-marquee items-center">
                 {breakingNewsItems.concat(breakingNewsItems).map((article, idx) => (
                   <Link
                     key={`${article.slug}-${idx}`}
                     href={`/article/${article.slug}`}
-                    className="body-text text-sm hover:underline !text-paper dark:!text-ink shrink-0 px-16"
+                    className="body-text text-sm hover:underline !text-white shrink-0 px-16"
                   >
                     {article.headline}
                   </Link>
