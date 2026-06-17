@@ -9,6 +9,7 @@ import Script from "next/script";
 import { NewspaperProvider } from "@/lib/context/newspaper-context";
 import { ThemeProvider } from "@/lib/context/ThemeContext";
 import { SearchShortcut } from "@/components/newspaper/SearchShortcut";
+import { PullToRefresh } from "@/components/ui/PullToRefresh";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -77,12 +78,12 @@ export default function RootLayout({
             __html: `
               try {
                 let isDark = false;
-                const storedTheme = localStorage.getItem('theme');
+                const storedTheme = sessionStorage.getItem('theme');
                 if (storedTheme) {
                   isDark = storedTheme === 'dark';
                 } else {
                   const currentHour = new Date().getHours();
-                  isDark = window.matchMedia('(prefers-color-scheme: dark)').matches || currentHour >= 18;
+                  isDark = currentHour >= 18 || currentHour < 6;
                 }
                 if (isDark) {
                   document.documentElement.classList.add('dark');
@@ -102,7 +103,9 @@ export default function RootLayout({
         <ThemeProvider>
           <SearchShortcut />
           <NewspaperProvider>
-            <div id="main-content">{children}</div>
+            <PullToRefresh>
+              <div id="main-content">{children}</div>
+            </PullToRefresh>
           </NewspaperProvider>
         </ThemeProvider>
       </body>

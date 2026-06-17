@@ -67,6 +67,11 @@ export function GlobalPulse({ locations }: { locations?: string[] }) {
     // Update rates every 5 minutes
     const rateInterval = setInterval(fetchRates, 300000);
 
+    const handleGlobalRefresh = () => {
+      fetchRates();
+    };
+    window.addEventListener("global-grid-refresh", handleGlobalRefresh);
+
     // Simulate live market fluctuations for locations every 4.5 seconds
     const marketInterval = setInterval(() => {
       setMarkets((prev) =>
@@ -85,6 +90,7 @@ export function GlobalPulse({ locations }: { locations?: string[] }) {
     return () => {
       clearInterval(rateInterval);
       clearInterval(marketInterval);
+      window.removeEventListener("global-grid-refresh", handleGlobalRefresh);
     };
   }, []);
 

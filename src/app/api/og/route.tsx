@@ -1,3 +1,4 @@
+/* eslint-disable react/forbid-dom-props */
 import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
@@ -10,40 +11,15 @@ export async function GET(request: Request) {
     return new ImageResponse(
       (
         <div
-          style={{
-            height: '100%',
-            width: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: '#f5f2eb', // paper color
-            border: '20px solid #1a1a1a', // ink color
-          }}
+          tw="flex flex-col items-center justify-center w-full h-full bg-[#f5f2eb] border-[20px] border-[#1a1a1a]"
         >
           <div
-            style={{
-              display: 'flex',
-              fontSize: 60,
-              fontFamily: 'serif',
-              color: '#1a1a1a',
-              textAlign: 'center',
-              padding: '0 80px',
-              fontWeight: 700,
-            }}
+            tw="flex text-[60px] font-serif text-[#1a1a1a] text-center px-[80px] font-bold"
           >
             {title}
           </div>
           <div
-            style={{
-              display: 'flex',
-              marginTop: 40,
-              fontSize: 30,
-              fontFamily: 'sans-serif',
-              color: '#d32f2f', // accent color
-              textTransform: 'uppercase',
-              letterSpacing: '0.2em',
-            }}
+            tw="flex mt-[40px] text-[30px] font-sans text-[#d32f2f] uppercase tracking-[0.2em]"
           >
             THE GLOBAL GRID
           </div>

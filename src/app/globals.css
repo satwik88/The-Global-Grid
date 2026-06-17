@@ -260,6 +260,7 @@
   border: 1px solid var(--border);
   font-size: 1.25rem;
   cursor: pointer;
+  -webkit-user-select: none;
   user-select: none;
   transition: background 0.15s;
 }
@@ -294,6 +295,10 @@
   border-bottom: 2px solid var(--border);
 }
 
+html, body {
+  overscroll-behavior-y: contain;
+}
+
 body {
   background: var(--paper);
   color: var(--ink);
@@ -306,7 +311,6 @@ body {
 /* Print Typography Utilities */
 .text-justify-print {
   text-align: justify;
-  text-justify: inter-word;
   hyphens: auto;
 }
 

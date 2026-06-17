@@ -85,8 +85,7 @@ export function CrosswordSection() {
     <div className="border border-border p-6">
       <h3 className="headline-md mb-4">Mini Crossword</h3>
       <div
-        className="grid gap-0 max-w-[280px] mx-auto border-2 border-border mb-6"
-        style={{ gridTemplateColumns: `repeat(${gridSize}, 1fr)` }}
+        className="grid gap-0 max-w-[280px] mx-auto border-2 border-border mb-6 grid-cols-7"
       >
         {layout.map((row, r) =>
           row.map((isActive, c) => (
@@ -100,6 +99,9 @@ export function CrosswordSection() {
                 <input
                   type="text"
                   maxLength={1}
+                  title={`Cell ${r}-${c}`}
+                  placeholder=" "
+                  aria-label={`Crossword cell row ${r} column ${c}`}
                   value={grid[r][c]}
                   onChange={(e) => handleInput(r, c, e.target.value)}
                   className="w-full h-full text-center bg-transparent focus:outline-none focus:bg-accent/10 focus:text-accent font-bold"

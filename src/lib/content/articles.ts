@@ -2,7 +2,7 @@ import type { Article, ArchiveEdition } from "@/lib/types";
 
 export const articles: Article[] = [
   {
-    id: "1",
+    id: "1000",
     slug: "global-climate-summit-reaches-historic-accord",
     headline: "Global Climate Summit Reaches Historic Accord After Marathon Negotiations",
     deck: "One hundred and ninety-three nations agree to binding emissions targets, marking the most significant environmental pact since Paris.",
@@ -40,7 +40,7 @@ export const articles: Article[] = [
     },
   },
   {
-    id: "2",
+    id: "1001",
     slug: "central-banks-signal-coordinated-rate-strategy",
     headline: "Central Banks Signal Coordinated Strategy as Markets Seek Direction",
     deck: "The Federal Reserve, ECB, and Bank of England align messaging in an unusual display of monetary policy coordination.",
@@ -70,7 +70,7 @@ export const articles: Article[] = [
     },
   },
   {
-    id: "3",
+    id: "1002",
     slug: "quantum-computing-milestone-achieved",
     headline: "Researchers Achieve Quantum Error Correction at Unprecedented Scale",
     deck: "A team at MIT demonstrates stable logical qubits, bringing practical quantum computing closer to reality.",
@@ -102,7 +102,7 @@ export const articles: Article[] = [
     },
   },
   {
-    id: "4",
+    id: "1003",
     slug: "ai-regulation-framework-proposed",
     headline: "International AI Governance Framework Proposed at Geneva Forum",
     deck: "Forty-seven nations endorse principles for safe AI development, though enforcement mechanisms remain contested.",
@@ -131,7 +131,7 @@ export const articles: Article[] = [
     },
   },
   {
-    id: "5",
+    id: "1004",
     slug: "james-webb-discovers-exoplanet-atmosphere",
     headline: "Webb Telescope Detects Water Vapour in Distant Exoplanet Atmosphere",
     deck: "The discovery, 120 light-years from Earth, offers the clearest evidence yet of conditions that could support life.",
@@ -158,7 +158,7 @@ export const articles: Article[] = [
     },
   },
   {
-    id: "6",
+    id: "1005",
     slug: "venice-biennale-record-attendance",
     headline: "Venice Biennale Draws Record Crowds as Global Art Market Shifts",
     deck: "The sixty-first edition attracts over eight hundred thousand visitors, signalling a renaissance in physical cultural experiences.",
@@ -178,7 +178,7 @@ export const articles: Article[] = [
     editorPick: true,
   },
   {
-    id: "7",
+    id: "1006",
     slug: "kyoto-temple-restoration-complete",
     headline: "Centuries-Old Kyoto Temple Completes Meticulous Restoration",
     deck: "A twenty-year project returns Kinkaku-ji's lesser-known sister temple to its fifteenth-century splendour.",
@@ -197,7 +197,7 @@ export const articles: Article[] = [
     relatedSlugs: ["venice-biennale-record-attendance"],
   },
   {
-    id: "8",
+    id: "1007",
     slug: "the-case-for-slow-journalism",
     headline: "The Case for Slow Journalism in an Age of Instant News",
     deck: "In a world of breaking alerts and hot takes, the most valuable commodity may be patience.",
@@ -221,7 +221,7 @@ export const articles: Article[] = [
     editorPick: true,
   },
   {
-    id: "9",
+    id: "1008",
     slug: "renewable-energy-investment-surges",
     headline: "Global Renewable Energy Investment Surpasses Fossil Fuels for First Time",
     deck: "Two point four trillion dollars flowed into clean energy projects last year, reshaping the global energy landscape.",
@@ -239,7 +239,7 @@ export const articles: Article[] = [
     relatedSlugs: ["global-climate-summit-reaches-historic-accord"],
   },
   {
-    id: "10",
+    id: "1009",
     slug: "arctic-ice-melt-accelerates",
     headline: "Arctic Sea Ice Reaches Second-Lowest Extent on Record",
     deck: "Scientists warn that summer ice-free conditions could arrive decades earlier than previous models predicted.",
@@ -257,7 +257,7 @@ export const articles: Article[] = [
     relatedSlugs: ["global-climate-summit-reaches-historic-accord"],
   },
   {
-    id: "11",
+    id: "1010",
     slug: "neural-interface-breakthrough",
     headline: "Neural Interface Allows Paralysed Patient to Compose Music by Thought",
     deck: "Brain-computer interface technology achieves a milestone in creative expression.",
@@ -275,7 +275,7 @@ export const articles: Article[] = [
     relatedSlugs: ["ai-regulation-framework-proposed"],
   },
   {
-    id: "12",
+    id: "1011",
     slug: "ancient-library-discovered-egypt",
     headline: "Archaeologists Uncover Ancient Library Beneath Alexandria Ruins",
     deck: "Thousands of papyrus fragments may rewrite our understanding of Hellenistic scholarship.",
@@ -293,7 +293,7 @@ export const articles: Article[] = [
     relatedSlugs: ["venice-biennale-record-attendance"],
   },
   {
-    id: "13",
+    id: "1012",
     slug: "india-central-bank-holds-rates",
     headline: "Reserve Bank of India Holds Interest Rates Steady, Citing Resilient Growth",
     deck: "The MPC points to robust domestic demand and manageable inflation as justification for the pause.",
@@ -311,7 +311,7 @@ export const articles: Article[] = [
     relatedSlugs: ["central-banks-signal-coordinated-rate-strategy"],
   },
   {
-    id: "14",
+    id: "1013",
     slug: "bengaluru-startups-ai-surge",
     headline: "Bengaluru Transforms into Global Hub for Custom Silicon and AI",
     deck: "A new wave of deep-tech startups is moving beyond software services to design hardware tailored for artificial intelligence workloads.",
@@ -330,7 +330,7 @@ export const articles: Article[] = [
     editorPick: true,
   },
   {
-    id: "15",
+    id: "1014",
     slug: "iit-global-expansion",
     headline: "Indian Institutes of Technology Expand Global Footprint with New Campuses",
     deck: "The prestigious engineering network opens locations in the Middle East and East Africa, signaling a new era of educational diplomacy.",
@@ -348,7 +348,7 @@ export const articles: Article[] = [
     relatedSlugs: [],
   },
   {
-    id: "16",
+    id: "1015",
     slug: "geopolitics-of-rare-earth-minerals",
     headline: "The Geopolitics of Rare Earth Minerals: A New Cold War",
     deck: "As the transition to green energy accelerates, control over essential minerals is reshaping global alliances.",
@@ -367,7 +367,7 @@ export const articles: Article[] = [
     featured: true,
   },
   {
-    id: "17",
+    id: "1016",
     slug: "cybersecurity-quantum-threat",
     headline: "The Quantum Threat to Global Cryptography",
     deck: "Financial institutions and intelligence agencies are racing to implement 'post-quantum' encryption before current standards become obsolete.",

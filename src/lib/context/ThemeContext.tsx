@@ -15,9 +15,26 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>("light");
 
   useEffect(() => {
-    // Synchronize with the HTML class set by the inline script
-    const isDark = document.documentElement.classList.contains("dark");
-    setTheme(isDark ? "dark" : "light");
+    const updateTheme = () => {
+      const storedTheme = sessionStorage.getItem("theme");
+      if (storedTheme) {
+        const isDark = storedTheme === "dark";
+        setTheme(isDark ? "dark" : "light");
+        document.documentElement.classList.toggle("dark", isDark);
+      } else {
+        const currentHour = new Date().getHours();
+        const isDark = currentHour >= 18 || currentHour < 6;
+        setTheme(isDark ? "dark" : "light");
+        document.documentElement.classList.toggle("dark", isDark);
+      }
+    };
+
+    // Initial check
+    updateTheme();
+
+    // Re-evaluate every 30 minutes (1800000 ms) in case the day turns to night
+    const intervalId = setInterval(updateTheme, 1800000);
+    return () => clearInterval(intervalId);
   }, []);
 
   const toggleTheme = () => {
@@ -33,7 +50,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const newTheme = theme === "light" ? "dark" : "light";
     setTheme(newTheme);
     document.documentElement.classList.toggle("dark", newTheme === "dark");
-    localStorage.setItem("theme", newTheme);
+    sessionStorage.setItem("theme", newTheme);
 
     // Remove the style tag after the current event loop and React render
     setTimeout(() => {
