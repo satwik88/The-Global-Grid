@@ -243,7 +243,7 @@ export async function getBestAvailableNews(sectionSlug: SectionSlug = "front-pag
   // 3. Fallback to mock
   console.log(\`\${sectionSlug} section: served from mock fallback\`);
   const mockArticles = sectionSlug === "front-page" 
-    ? articles 
+    ? articles.filter(a => parseInt(a.id) < 5000) 
     : articles.filter(a => a.section === sectionSlug);
     
   return shuffleArray(mockArticles);
