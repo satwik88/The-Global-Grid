@@ -1,6 +1,7 @@
 import { articles } from "@/lib/content/articles";
 import { formatEditorialHeadline } from "@/lib/utils/editorial";
 import { isRecent, getRelativeTime } from "@/lib/utils/time";
+import { normalizeTitle } from "@/lib/utils/dedup";
 import type { Article, SectionSlug } from "@/lib/types";
 
 const API_KEY = process.env.NEWSDATA_API_KEY;
@@ -96,10 +97,11 @@ export async function getNews(sectionSlug: SectionSlug = "front-page") {
       
       // Deduplicate by headline to prevent repeated articles
       const uniqueMapped: Article[] = [];
-      const seenHeadlines = new Set();
+      const seenHeadlines = new Set<string>();
       for (const article of mapped) {
-        if (!seenHeadlines.has(article.headline)) {
-          seenHeadlines.add(article.headline);
+        const norm = normalizeTitle(article.headline);
+        if (!seenHeadlines.has(norm)) {
+          seenHeadlines.add(norm);
           uniqueMapped.push(article);
         }
       }
@@ -194,10 +196,11 @@ export async function fetchFromGNews(sectionSlug: SectionSlug = "front-page") {
       const mapped = data.articles.map((raw: any) => mapGNewsToArticle(raw, sectionSlug));
       
       const uniqueMapped: Article[] = [];
-      const seenHeadlines = new Set();
+      const seenHeadlines = new Set<string>();
       for (const article of mapped) {
-        if (!seenHeadlines.has(article.headline)) {
-          seenHeadlines.add(article.headline);
+        const norm = normalizeTitle(article.headline);
+        if (!seenHeadlines.has(norm)) {
+          seenHeadlines.add(norm);
           uniqueMapped.push(article);
         }
       }
@@ -226,27 +229,47 @@ function shuffleArray<T>(array: T[]): T[] {
 }
 
 export async function getBestAvailableNews(sectionSlug: SectionSlug = "front-page"): Promise<Article[]> {
+  const combined: Article[] = [];
+  const seen = new Set<string>();
+  
+  const addArticles = (sourceArticles: Article[]) => {
+    for (const a of sourceArticles) {
+      const norm = normalizeTitle(a.headline);
+      if (!seen.has(norm)) {
+        seen.add(norm);
+        combined.push(a);
+      } else {
+        console.warn(`[NewsService] Duplicate skipped during fetch merge: ${a.headline}`);
+      }
+    }
+  };
+
   // 1. Try NewsData
   let liveNews = await getNews(sectionSlug);
-  if (liveNews && liveNews.length >= 3) {
+  if (liveNews) {
     console.log(`${sectionSlug} section: served from newsdata.io`);
-    return liveNews;
+    addArticles(liveNews);
   }
+  
+  if (combined.length >= 3) return combined;
   
   // 2. Try GNews
   liveNews = await fetchFromGNews(sectionSlug);
-  if (liveNews && liveNews.length >= 3) {
-    console.log(`${sectionSlug} section: served from GNews fallback`);
-    return liveNews;
+  if (liveNews) {
+    console.log(`${sectionSlug} section: served from GNews fallback (supplemented)`);
+    addArticles(liveNews);
   }
   
+  if (combined.length >= 3) return combined;
+  
   // 3. Fallback to mock
-  console.log(`${sectionSlug} section: served from mock fallback`);
+  console.log(`${sectionSlug} section: served from mock fallback (supplemented)`);
   const mockArticles = sectionSlug === "front-page" 
     ? articles.filter(a => parseInt(a.id) < 5000) 
     : articles.filter(a => a.section === sectionSlug);
     
-  return shuffleArray(mockArticles);
+  addArticles(shuffleArray(mockArticles));
+  return combined;
 }
 
 export async function fetchLiveNewsFeed(section?: string): Promise<Article[]> {

@@ -12,6 +12,7 @@ import {
 } from "@/lib/services/newsService";
 import Link from "next/link";
 import { SafeImage } from "@/components/ui/SafeImage";
+import { normalizeTitle } from "@/lib/utils/dedup";
 
 export const dynamic = 'force-dynamic';
 
@@ -22,8 +23,12 @@ export default async function HomePage() {
     if (!articles) return [];
     return articles.filter(a => {
       if (!a) return false;
-      if (seenHeadlines.has(a.headline)) return false;
-      seenHeadlines.add(a.headline);
+      const norm = normalizeTitle(a.headline);
+      if (seenHeadlines.has(norm)) {
+        console.warn(`[Page Assembly] Cross-section duplicate skipped: ${a.headline}`);
+        return false;
+      }
+      seenHeadlines.add(norm);
       return true;
     });
   };
