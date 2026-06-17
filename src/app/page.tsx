@@ -101,8 +101,8 @@ export default async function HomePage() {
       {/* TODAY IN THE GRID - Editorial Briefing */}
       <div className="bg-paper text-ink py-8 border-b-4 border-t border-ink no-print relative">
         <div className="mx-auto max-w-screen-xl px-4 md:px-8">
-          <div className="flex flex-col md:flex-row gap-8 items-start">
-            <div className="md:w-1/4 shrink-0 border-b md:border-b-0 md:border-r border-border pb-4 md:pb-0 pr-6">
+          <div className="grid grid-cols-1 md:grid-cols-6 gap-6 md:gap-8 items-stretch">
+            <div className="md:col-span-1 border-b md:border-b-0 md:border-r border-border pb-4 md:pb-0 md:pr-6 flex flex-col justify-start">
               <h2 className="font-[family-name:var(--font-playfair)] text-3xl font-bold tracking-tight text-accent mb-2">
                 Today in the Grid
               </h2>
@@ -112,22 +112,20 @@ export default async function HomePage() {
               <div className="w-12 h-1 bg-accent" />
             </div>
             
-            <div className="flex-1 grid grid-cols-1 md:grid-cols-5 gap-6">
-              {topBriefs.slice(0, 5).map((article, i) => (
-                <Link key={article.slug} href={`/article/${article.slug}`} className="group flex flex-col h-full">
-                  <div className="flex items-center gap-2 mb-2 text-ink-secondary">
-                    <span className="font-[family-name:var(--font-playfair)] text-accent font-bold text-lg leading-none">0{i + 1}</span>
-                    <span className="ui-text text-[0.6rem] uppercase tracking-widest">{article.section.replace("-", " ")}</span>
-                  </div>
-                  <h3 className="font-[family-name:var(--font-playfair)] text-lg font-bold leading-snug group-hover:text-accent transition-colors mb-2">
-                    {article.headline}
-                  </h3>
-                  <p className="font-[family-name:var(--font-inter)] text-xs text-ink-secondary line-clamp-3 mt-auto">
-                    {article.deck}
-                  </p>
-                </Link>
-              ))}
-            </div>
+            {topBriefs.slice(0, 5).map((article, i) => (
+              <Link key={article.slug} href={`/article/${article.slug}`} className="md:col-span-1 group flex flex-col h-full">
+                <div className="flex items-center gap-2 mb-2 text-ink-secondary">
+                  <span className="font-[family-name:var(--font-playfair)] text-accent font-bold text-lg leading-none">0{i + 1}</span>
+                  <span className="ui-text text-[0.6rem] uppercase tracking-widest">{article.section.replace("-", " ")}</span>
+                </div>
+                <h3 className="font-[family-name:var(--font-playfair)] text-lg font-bold leading-snug group-hover:text-accent transition-colors mb-2">
+                  {article.headline}
+                </h3>
+                <p className="font-[family-name:var(--font-inter)] text-xs text-ink-secondary line-clamp-3 mt-auto">
+                  {article.deck}
+                </p>
+              </Link>
+            ))}
           </div>
         </div>
       </div>
