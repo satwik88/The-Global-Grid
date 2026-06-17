@@ -30,11 +30,47 @@ export function GlobalPulse({ locations }: { locations?: string[] }) {
   useEffect(() => {
     setMounted(true);
 
-    // Simulate live market fluctuations every 5-10 seconds
-    const interval = setInterval(() => {
+    const fetchRates = async () => {
+      try {
+        const response = await fetch("https://open.er-api.com/v6/latest/USD");
+        const data = await response.json();
+        
+        if (data && data.rates) {
+          const inr = data.rates.INR;
+          const eur = data.rates.EUR;
+          const gbp = data.rates.GBP;
+          
+          if (inr && eur && gbp) {
+            setRates(prev => {
+              const currentUsd = prev.find(r => r.pair === "USD/INR")?.rate || 83.42;
+              const currentEur = prev.find(r => r.pair === "EUR/INR")?.rate || 89.15;
+              const currentGbp = prev.find(r => r.pair === "GBP/INR")?.rate || 105.30;
+
+              const newUsd = inr;
+              const newEur = inr / eur;
+              const newGbp = inr / gbp;
+
+              return [
+                { pair: "USD/INR", rate: parseFloat(newUsd.toFixed(2)), status: newUsd >= currentUsd ? "up" : "down" },
+                { pair: "EUR/INR", rate: parseFloat(newEur.toFixed(2)), status: newEur >= currentEur ? "up" : "down" },
+                { pair: "GBP/INR", rate: parseFloat(newGbp.toFixed(2)), status: newGbp >= currentGbp ? "up" : "down" },
+              ];
+            });
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch exchange rates", err);
+      }
+    };
+
+    fetchRates();
+    // Update rates every 5 minutes
+    const rateInterval = setInterval(fetchRates, 300000);
+
+    // Simulate live market fluctuations for locations every 4.5 seconds
+    const marketInterval = setInterval(() => {
       setMarkets((prev) =>
         prev.map((market) => {
-          // 30% chance a market flips its status
           if (Math.random() > 0.7) {
             return {
               ...market,
@@ -44,25 +80,12 @@ export function GlobalPulse({ locations }: { locations?: string[] }) {
           return market;
         })
       );
-
-      setRates((prev) =>
-        prev.map((r) => {
-          if (Math.random() > 0.6) {
-            const change = parseFloat((Math.random() * 0.05).toFixed(2));
-            const isUp = Math.random() > 0.5;
-            const newRate = isUp ? r.rate + change : r.rate - change;
-            return {
-              ...r,
-              rate: parseFloat(newRate.toFixed(2)),
-              status: isUp ? "up" : "down",
-            };
-          }
-          return r;
-        })
-      );
     }, 4500);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(rateInterval);
+      clearInterval(marketInterval);
+    };
   }, []);
 
   if (!mounted) return null;
