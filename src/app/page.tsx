@@ -3,7 +3,6 @@ import { Footer } from "@/components/newspaper/Footer";
 import { ArticleCard } from "@/components/newspaper/ArticleCard";
 import { MarketTracker, WorldClockPanel, IndiaMarketTracker } from "@/components/newspaper/SidebarPanels";
 import { NewspaperOpening } from "@/components/newspaper/Animations";
-import { PrintButton } from "@/components/newspaper/PrintButton";
 import { PageTurnReader } from "@/components/newspaper/PageTurnReader";
 import {
   fetchCuratedLeadStory,
@@ -41,6 +40,8 @@ export default async function HomePage() {
   const latestNews = deduplicate(await fetchLiveNewsFeed()); // Gets all
   const breakingNews = latestNews.find(a => a.isBreaking) || worldNews[0] || null;
 
+  const topBriefs = [...latestNews, ...worldNews, ...techNews, ...indiaNews];
+
   const mobilePages = [
     <div key="p1">
       <span className="ui-text text-accent">Breaking</span>
@@ -69,7 +70,7 @@ export default async function HomePage() {
     </div>,
     <div key="p3">
       <span className="ui-text">Latest</span>
-      {latestNews.slice(0, 4).map((a) => (
+      {topBriefs.slice(0, 4).map((a) => (
         <div key={a.slug} className="mb-3">
           <h3 className="body-text font-semibold text-justify-print">{a.headline}</h3>
         </div>
@@ -100,9 +101,6 @@ export default async function HomePage() {
       {/* TODAY IN THE GRID - Editorial Briefing */}
       <div className="bg-paper text-ink py-8 border-b-4 border-t border-ink no-print relative">
         <div className="mx-auto max-w-screen-xl px-4 md:px-8">
-          <div className="flex justify-end mb-6">
-            <PrintButton />
-          </div>
           <div className="flex flex-col md:flex-row gap-8 items-start">
             <div className="md:w-1/4 shrink-0 border-b md:border-b-0 md:border-r border-border pb-4 md:pb-0 pr-6">
               <h2 className="font-[family-name:var(--font-playfair)] text-3xl font-bold tracking-tight text-accent mb-2">
@@ -115,7 +113,7 @@ export default async function HomePage() {
             </div>
             
             <div className="flex-1 grid grid-cols-1 md:grid-cols-5 gap-6">
-              {latestNews.slice(0, 5).map((article, i) => (
+              {topBriefs.slice(0, 5).map((article, i) => (
                 <Link key={article.slug} href={`/article/${article.slug}`} className="group flex flex-col h-full">
                   <div className="flex items-center gap-2 mb-2 text-ink-secondary">
                     <span className="font-[family-name:var(--font-playfair)] text-accent font-bold text-lg leading-none">0{i + 1}</span>
@@ -291,7 +289,7 @@ export default async function HomePage() {
           <section className="mb-12">
             <h2 className="ui-text mb-6">Latest Updates</h2>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              {latestNews.slice(2, 6).map((article) => (
+              {topBriefs.slice(5, 9).map((article) => (
                 <div key={article.slug} className="border-t border-border pt-4">
                   <ArticleCard article={article} variant="compact" />
                 </div>
