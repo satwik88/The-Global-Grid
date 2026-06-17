@@ -181,12 +181,12 @@ export async function fetchFromGNews(sectionSlug: SectionSlug = "front-page") {
   }
   
   const { type, query } = mapSectionToGNews(sectionSlug);
-  const url = \`https://gnews.io/api/v4/\${type}?\${query}&lang=en&apikey=\${GNEWS_API_KEY}\`;
+  const url = `https://gnews.io/api/v4/${type}?${query}&lang=en&apikey=${GNEWS_API_KEY}`;
   
   try {
     const response = await fetch(url, { next: { revalidate: 900 } });
     if (!response.ok) {
-      console.error(\`GNews API error: \${response.status} \${response.statusText}\`);
+      console.error(`GNews API error: ${response.status} ${response.statusText}`);
       return null;
     }
     const data = await response.json();
@@ -229,19 +229,19 @@ export async function getBestAvailableNews(sectionSlug: SectionSlug = "front-pag
   // 1. Try NewsData
   let liveNews = await getNews(sectionSlug);
   if (liveNews && liveNews.length >= 3) {
-    console.log(\`\${sectionSlug} section: served from newsdata.io\`);
+    console.log(`${sectionSlug} section: served from newsdata.io`);
     return liveNews;
   }
   
   // 2. Try GNews
   liveNews = await fetchFromGNews(sectionSlug);
   if (liveNews && liveNews.length >= 3) {
-    console.log(\`\${sectionSlug} section: served from GNews fallback\`);
+    console.log(`${sectionSlug} section: served from GNews fallback`);
     return liveNews;
   }
   
   // 3. Fallback to mock
-  console.log(\`\${sectionSlug} section: served from mock fallback\`);
+  console.log(`${sectionSlug} section: served from mock fallback`);
   const mockArticles = sectionSlug === "front-page" 
     ? articles.filter(a => parseInt(a.id) < 5000) 
     : articles.filter(a => a.section === sectionSlug);
