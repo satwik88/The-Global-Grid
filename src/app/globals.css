@@ -28,7 +28,7 @@
   --font-feature: var(--font-cormorant);
   --font-body: var(--font-source-serif);
   --font-ui: var(--font-inter);
-  
+
   --animate-marquee: marquee 25s linear infinite;
   --animate-marquee-slow: marquee 45s linear infinite;
 }
@@ -368,4 +368,9 @@ body {
   padding-top: 0.2rem;
   color: var(--ink);
   font-weight: 700;
+}
+
+::view-transition-old(root), ::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
 }

@@ -6,9 +6,10 @@ import { NAV_SECTIONS } from "@/lib/sections";
 import { GlobalPulse } from "./GlobalPulse";
 import { GlobeSeal } from "./GlobeSeal";
 import { useTheme } from "@/lib/context/ThemeContext";
-import { Sun, Moon, RefreshCcw } from "lucide-react";
+import { RefreshCcw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 
 interface MastheadProps {
   showNav?: boolean;
@@ -16,7 +17,7 @@ interface MastheadProps {
 }
 
 function ThemeToggle() {
-  const { theme, toggleTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -24,28 +25,25 @@ function ThemeToggle() {
   }, []);
 
   if (!mounted) {
-    return <div className="w-6 h-6" />; // placeholder
+    return <div className="w-[100px] h-6" />; // placeholder
   }
 
   return (
-    <button
-      onClick={toggleTheme}
-      className="p-1 text-ink-secondary hover:text-accent transition-colors duration-300 flex items-center gap-2 ui-text"
-      aria-label={theme === "light" ? "Switch to Night Edition (dark mode)" : "Switch to Day Edition (light mode)"}
-      title={theme === "light" ? "Switch to Night Edition" : "Switch to Day Edition"}
-    >
-      {theme === "light" ? (
-        <>
-          <Sun size={14} aria-hidden="true" />
-          <span className="hidden sm:inline">Day Edition</span>
-        </>
-      ) : (
-        <>
-          <Moon size={14} aria-hidden="true" />
-          <span className="hidden sm:inline">Night Edition</span>
-        </>
-      )}
-    </button>
+    <div className="flex items-center gap-2 ui-text text-ink-secondary hover:text-accent transition-colors duration-300">
+      <AnimatedThemeToggler
+        theme={theme}
+        onThemeChange={(newTheme) => {
+          setTheme(newTheme);
+          sessionStorage.setItem("theme", newTheme);
+        }}
+        className="p-1 rounded-full flex items-center justify-center"
+        aria-label={theme === "light" ? "Switch to Night Edition (dark mode)" : "Switch to Day Edition (light mode)"}
+        title={theme === "light" ? "Switch to Night Edition" : "Switch to Day Edition"}
+      />
+      <span className="hidden sm:inline select-none">
+        {theme === "light" ? "Day Edition" : "Night Edition"}
+      </span>
+    </div>
   );
 }
 
