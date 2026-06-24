@@ -108,7 +108,7 @@ export function GlobalPulse({ locations }: { locations?: string[] }) {
         </div>
 
         <div className="hidden md:block flex-1 overflow-hidden border-l border-r border-border/30">
-          <div className="flex w-max animate-marquee-slow items-center h-full py-1">
+          <div className="flex w-max animate-marquee-slow items-center h-full py-1 will-change-transform">
             {[...markets, ...markets].map((market, idx) => (
               <span key={`${market.name}-${idx}`} className="flex items-center gap-1 font-[family-name:var(--font-inter)] mx-6 shrink-0">
                 {market.name} 

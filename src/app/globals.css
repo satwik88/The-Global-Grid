@@ -380,3 +380,8 @@ html[data-magicui-theme-vt="active"] ::before,
 html[data-magicui-theme-vt="active"] ::after {
   transition: none !important;
 }
+
+/* GPU Acceleration */
+.will-change-transform {
+  will-change: transform;
+}

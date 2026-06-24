@@ -151,14 +151,14 @@ export function PageTurnReader({ pages }: PageTurnReaderProps) {
       >
         <div
           ref={pageContainerRef}
-          className="bg-paper border border-border p-6 min-h-[60vh] origin-center relative"
+          className="bg-paper border border-border p-6 min-h-[60vh] origin-center relative will-change-transform"
         >
           {pages[currentPage]}
 
           {(isDragging || (isAnimating && dragX !== 0 && !isSnapping)) && (
             <div 
               ref={overlayRef}
-              className="absolute inset-0 pointer-events-none"
+              className="absolute inset-0 pointer-events-none will-change-transform"
             />
           )}
         </div>

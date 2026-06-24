@@ -35,10 +35,6 @@ export function PullToRefresh({ children }: PullToRefreshProps) {
     if (diff > 0) {
       const distance = Math.min(Math.pow(diff, 0.85), MAX_PULL);
       setPullDistance(distance);
-
-      if (e.cancelable) {
-        e.preventDefault();
-      }
     } else {
       isPulling.current = false;
       setPullDistance(0);
@@ -78,8 +74,8 @@ export function PullToRefresh({ children }: PullToRefreshProps) {
     const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
     if (isTouch) {
-      document.addEventListener("touchstart", handleTouchStart, { passive: false });
-      document.addEventListener("touchmove", handleTouchMove, { passive: false });
+      document.addEventListener("touchstart", handleTouchStart, { passive: true });
+      document.addEventListener("touchmove", handleTouchMove, { passive: true });
       document.addEventListener("touchend", handleTouchEnd);
 
       return () => {

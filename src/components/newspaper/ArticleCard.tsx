@@ -77,6 +77,7 @@ export function ArticleCard({ article, variant = "standard" }: ArticleCardProps)
           fill
           className="object-cover grayscale-[30%] group-hover:grayscale-0 transition-all duration-500"
           sizes="(max-width: 768px) 100vw, 33vw"
+          loading="lazy"
         />
       </div>
       <span className="ui-text text-accent text-[0.625rem] flex items-center gap-2">
