@@ -17,9 +17,6 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
-// Removed generateStaticParams to allow dynamic fetching of live articles
-// Next.js will server-render these pages on demand
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const article = await fetchArticle(slug);
@@ -57,7 +54,7 @@ export default async function ArticlePage({ params }: Props) {
 
       <ArticleReveal>
         <article className="mx-auto max-w-7xl px-4 py-8 md:px-8">
-          {/* Newspaper spread layout on desktop */}
+
           <div className="newspaper-spread mb-8">
             <div className="p-6 md:p-10">
               <Link
@@ -85,8 +82,7 @@ export default async function ArticlePage({ params }: Props) {
                   </div>
                   <BookmarkButton slug={article.slug} />
                 </div>
-                
-                {/* Reading Statistics Layer */}
+
                 <div className="flex flex-wrap items-center gap-4 ui-text text-[0.65rem] text-ink-secondary uppercase tracking-widest font-bold bg-paper/50 p-2 border border-border/50 rounded-sm w-fit">
                   <span>{publishedDate}</span>
                   <span className="text-border/50">•</span>

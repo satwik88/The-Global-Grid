@@ -5,12 +5,11 @@ let content = fs.readFileSync(path, 'utf8');
 
 const sections = ["world", "business", "technology", "ai", "science", "culture", "travel", "opinion", "india", "grid-intelligence", "games"];
 
-// Generate mock articles
 let newArticles = [];
 let idCounter = 5000;
 
 sections.forEach(section => {
-  // Add 24 articles per section
+
   for (let i = 0; i < 24; i++) {
     const title = `In-Depth Report on ${section.toUpperCase()} - Story ${i + 1}`;
     newArticles.push(`  {

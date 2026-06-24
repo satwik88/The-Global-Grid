@@ -1,7 +1,7 @@
 export default function Loading() {
   return (
     <div className="min-h-screen paper-texture flex flex-col">
-      {/* Skeleton Masthead */}
+
       <div className="border-b-4 border-ink py-4 px-4 md:px-8">
         <div className="mx-auto max-w-screen-xl">
           <div className="flex items-center justify-between mb-3">
@@ -18,10 +18,8 @@ export default function Loading() {
         </div>
       </div>
 
-      {/* Skeleton Pulse Bar */}
       <div className="bg-ink/5 h-8 animate-pulse" />
 
-      {/* Skeleton Hero */}
       <main className="mx-auto max-w-screen-xl px-4 py-8 md:px-8 w-full">
         <div className="grid grid-cols-12 gap-8 mb-8">
           <div className="col-span-12 lg:col-span-8">

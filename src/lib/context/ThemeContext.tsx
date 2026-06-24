@@ -30,16 +30,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       }
     };
 
-    // Initial check
     updateTheme();
 
-    // Re-evaluate every 30 minutes (1800000 ms) in case the day turns to night
     const intervalId = setInterval(updateTheme, 1800000);
     return () => clearInterval(intervalId);
   }, []);
 
   const toggleTheme = () => {
-    // Disable all transitions globally for the toggle
+
     const css = document.createElement("style");
     css.appendChild(
       document.createTextNode(
@@ -53,7 +51,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     document.documentElement.classList.toggle("dark", newTheme === "dark");
     sessionStorage.setItem("theme", newTheme);
 
-    // Remove the style tag after the current event loop and React render
     setTimeout(() => {
       document.head.removeChild(css);
     }, 10);

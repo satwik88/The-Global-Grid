@@ -25,7 +25,7 @@ function ThemeToggle() {
   }, []);
 
   if (!mounted) {
-    return <div className="w-[100px] h-6" />; // placeholder
+    return <div className="w-[100px] h-6" />; 
   }
 
   return (
@@ -98,8 +98,7 @@ export function Masthead({ showNav = true, locations }: MastheadProps) {
   return (
     <header className="border-b border-border">
       <div className="mx-auto max-w-screen-xl px-4 py-6 md:px-8 relative">
-        
-        {/* Top bar with Toggle */}
+
         <div className="absolute top-6 right-4 md:right-8 no-print flex items-center gap-4 md:gap-6">
           <RefreshButton />
           <ThemeToggle />

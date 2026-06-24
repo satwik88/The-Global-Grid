@@ -44,13 +44,11 @@ export default function ArchivePage() {
                     sizes="(max-width: 768px) 100vw, 33vw"
                   />
                 )}
-                
-                {/* Overlay Gradient */}
+
                 <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-transparent opacity-90 group-hover:opacity-80 transition-opacity duration-500" />
-                
-                {/* Content Overlay */}
+
                 <div className="absolute inset-0 flex flex-col justify-between p-6 text-paper">
-                  {/* Top Bar */}
+
                   <div className="flex items-center justify-between ui-text text-[0.625rem] pb-3 border-b border-paper/30 uppercase tracking-widest font-bold">
                     <span>
                       {new Date(edition.date).toLocaleDateString("en-GB", {
@@ -62,7 +60,6 @@ export default function ArchivePage() {
                     <span>No. {edition.editionNumber}</span>
                   </div>
 
-                  {/* Masthead */}
                   <div className="text-center mt-6">
                     <p className="font-[family-name:var(--font-playfair)] text-4xl font-bold tracking-tight drop-shadow-md">
                       THE GLOBAL GRID
@@ -72,7 +69,6 @@ export default function ArchivePage() {
                     </p>
                   </div>
 
-                  {/* Bottom / Cover Story */}
                   <div className="text-center mt-auto pb-4">
                     <h2 className="font-[family-name:var(--font-playfair)] text-3xl font-bold leading-tight mb-3 drop-shadow-lg group-hover:text-accent transition-colors">
                       {edition.coverHeadline}

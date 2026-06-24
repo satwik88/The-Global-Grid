@@ -6,7 +6,7 @@ import { NAV_SECTIONS } from "@/lib/sections";
 const BASE_URL = "https://theglobalgrid.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  // Static pages
+
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: BASE_URL,
@@ -28,7 +28,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
-  // Section pages
   const sectionPages: MetadataRoute.Sitemap = NAV_SECTIONS.map((section) => ({
     url: `${BASE_URL}/section/${section.slug}`,
     lastModified: new Date(),
@@ -36,7 +35,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.9,
   }));
 
-  // Article pages
   const articlePages: MetadataRoute.Sitemap = articles.map((article) => ({
     url: `${BASE_URL}/article/${article.slug}`,
     lastModified: new Date(article.publishedAt),
@@ -44,7 +42,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  // Author pages — unique authors only
   const uniqueAuthorSlugs = [...new Set(articles.map((a) => a.author.slug))];
   const authorPages: MetadataRoute.Sitemap = uniqueAuthorSlugs.map((slug) => ({
     url: `${BASE_URL}/author/${slug}`,
@@ -53,7 +50,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   }));
 
-  // Edition pages
   const editionPages: MetadataRoute.Sitemap = archiveEditions.map((edition) => ({
     url: `${BASE_URL}/edition/${edition.id}`,
     lastModified: new Date(edition.date),

@@ -4,7 +4,7 @@ import { fetchLiveNewsFeed } from "@/lib/services/newsService";
 export async function GET() {
   const sections = ["front-page", "world", "india", "business", "technology", "science", "games"];
   const report: Record<string, any> = {};
-  
+
   for (const section of sections) {
     try {
       const articles = await fetchLiveNewsFeed(section);

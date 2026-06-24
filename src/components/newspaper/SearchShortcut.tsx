@@ -9,13 +9,13 @@ export function SearchShortcut() {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Don't trigger if user is typing in an input or textarea
+
       if (
         e.target instanceof HTMLInputElement ||
         e.target instanceof HTMLTextAreaElement ||
         e.target instanceof HTMLSelectElement
       ) {
-        // Only handle Escape if they are in the search page input
+
         if (e.key === "Escape" && pathname === "/search") {
           e.preventDefault();
           (e.target as HTMLElement).blur();

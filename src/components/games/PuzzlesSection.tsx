@@ -59,7 +59,7 @@ export function BrainTeasersSection() {
 
 export function CrosswordSection() {
   const gridSize = 7;
-  // 1 = active cell, 0 = black cell
+
   const layout = [
     [1, 1, 1, 1, 1, 1, 0],
     [1, 0, 1, 0, 1, 0, 0],

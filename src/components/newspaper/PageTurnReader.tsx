@@ -14,10 +14,10 @@ export function PageTurnReader({ pages }: PageTurnReaderProps) {
   const [isAnimating, setIsAnimating] = useState(false);
   const [isSnapping, setIsSnapping] = useState(false);
   const [windowWidth, setWindowWidth] = useState(500);
-  
+
   const startX = useRef(0);
   const currentX = useRef(0);
-  
+
   const THRESHOLD = 80;
   const ANIM_DURATION = 300;
 
@@ -38,8 +38,7 @@ export function PageTurnReader({ pages }: PageTurnReaderProps) {
     if (!isDragging || isAnimating) return;
     currentX.current = e.touches[0].clientX;
     const diff = currentX.current - startX.current;
-    
-    // Add resistance if trying to swipe past boundaries
+
     if ((currentPage === 0 && diff > 0) || (currentPage === pages.length - 1 && diff < 0)) {
       setDragX(diff * 0.25);
     } else {
@@ -50,9 +49,9 @@ export function PageTurnReader({ pages }: PageTurnReaderProps) {
   const handleTouchEnd = () => {
     if (!isDragging || isAnimating) return;
     setIsDragging(false);
-    
+
     if ((currentPage === 0 && dragX > 0) || (currentPage === pages.length - 1 && dragX < 0)) {
-      // Snap back if at boundaries
+
       setIsAnimating(true);
       setDragX(0);
       setTimeout(() => setIsAnimating(false), ANIM_DURATION);
@@ -73,18 +72,16 @@ export function PageTurnReader({ pages }: PageTurnReaderProps) {
   const turnPage = (direction: number) => {
     if (isAnimating) return;
     setIsAnimating(true);
-    
-    // Animate current page off screen
+
     const offScreenX = direction > 0 ? -windowWidth : windowWidth;
     setDragX(offScreenX);
-    
+
     setTimeout(() => {
-      // Teleport to opposite side
+
       setIsSnapping(true);
       setCurrentPage(prev => prev + direction);
       setDragX(direction > 0 ? windowWidth : -windowWidth);
-      
-      // Allow browser to apply the snap instantly, then slide in
+
       setTimeout(() => {
         setIsSnapping(false);
         setDragX(0);
@@ -99,6 +96,27 @@ export function PageTurnReader({ pages }: PageTurnReaderProps) {
   const boxShadow = isDragging || (isAnimating && dragX !== 0 && !isSnapping)
     ? `0 20px 40px rgba(0,0,0,${shadowIntensity}), 0 0 10px rgba(0,0,0,${shadowIntensity * 0.5}) inset`
     : 'none';
+
+  const pageContainerRef = useRef<HTMLDivElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (pageContainerRef.current) {
+      pageContainerRef.current.style.transform = `translateX(${dragX}px)`;
+      pageContainerRef.current.style.transition = isDragging || isSnapping 
+        ? 'none' 
+        : `transform 300ms ease-out, box-shadow 300ms ease-out`;
+      pageContainerRef.current.style.boxShadow = boxShadow;
+      pageContainerRef.current.style.willChange = 'transform';
+    }
+  }, [dragX, isDragging, isSnapping, boxShadow]);
+
+  useEffect(() => {
+    if (overlayRef.current) {
+      overlayRef.current.style.background = `linear-gradient(${dragX < 0 ? '90deg' : '270deg'}, rgba(0,0,0,0) 0%, rgba(0,0,0,${shadowIntensity}) 100%)`;
+      overlayRef.current.style.opacity = Math.min(Math.abs(dragX) / 100, 1).toString();
+    }
+  }, [dragX, shadowIntensity, isDragging, isAnimating, isSnapping]);
 
   return (
     <div className="page-turn-container relative mx-auto max-w-lg min-h-[70vh] no-print md:hidden overflow-hidden">
@@ -125,33 +143,22 @@ export function PageTurnReader({ pages }: PageTurnReaderProps) {
       </div>
 
       <div 
-        className="relative w-full touch-pan-y"
+        className="relative overflow-hidden touch-pan-y"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
         onTouchCancel={handleTouchEnd}
       >
         <div
+          ref={pageContainerRef}
           className="bg-paper border border-border p-6 min-h-[60vh] origin-center relative"
-          style={{ 
-            transform: `translateX(${dragX}px)`,
-            transition: isDragging || isSnapping 
-              ? 'none' 
-              : `transform ${ANIM_DURATION}ms ease-out, box-shadow ${ANIM_DURATION}ms ease-out`,
-            boxShadow,
-            willChange: 'transform'
-          }}
         >
           {pages[currentPage]}
-          
-          {/* Subtle page curl gradient overlay when dragging */}
+
           {(isDragging || (isAnimating && dragX !== 0 && !isSnapping)) && (
             <div 
+              ref={overlayRef}
               className="absolute inset-0 pointer-events-none"
-              style={{
-                background: `linear-gradient(${dragX < 0 ? '90deg' : '270deg'}, rgba(0,0,0,0) 0%, rgba(0,0,0,${shadowIntensity}) 100%)`,
-                opacity: Math.min(Math.abs(dragX) / 100, 1)
-              }}
             />
           )}
         </div>

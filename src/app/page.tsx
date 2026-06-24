@@ -37,15 +37,14 @@ export default async function HomePage() {
   const mainFeature = rawMainFeature ? deduplicate([rawMainFeature])[0] : null;
   const secondaryFeatures = deduplicate(await fetchSecondaryFeatures());
   const editorPicks = deduplicate(await fetchEditorPicks());
-  
-  // Simulated news feeds
+
   const worldNews = deduplicate(await fetchLiveNewsFeed("world"));
   const indiaNews = deduplicate(await fetchLiveNewsFeed("india"));
   const techNews = deduplicate(await fetchLiveNewsFeed("technology"));
   const gridIntelligence = deduplicate(await fetchLiveNewsFeed("grid-intelligence"));
-  
-  const latestNews = deduplicate(await fetchLiveNewsFeed()); // Gets all
-  
+
+  const latestNews = deduplicate(await fetchLiveNewsFeed()); 
+
   const breakingNewsItems = latestNews.filter(a => a.isBreaking);
   if (breakingNewsItems.length < 5) {
     const nonBreakingLatest = latestNews.filter(a => !a.isBreaking);
@@ -139,7 +138,6 @@ export default async function HomePage() {
 
       <PageTurnReader pages={mobilePages} />
 
-      {/* TODAY IN THE GRID - Editorial Briefing */}
       <div className="bg-paper text-ink py-8 border-b-4 border-t border-border no-print relative">
         <div className="mx-auto max-w-screen-xl px-4 md:px-8">
           <div className="grid grid-cols-1 md:grid-cols-6 gap-6 md:gap-8 items-stretch">
@@ -152,7 +150,7 @@ export default async function HomePage() {
               </p>
               <div className="w-12 h-1 bg-accent" />
             </div>
-            
+
             {topBriefs.slice(0, 5).map((article, i) => (
               <Link key={article.slug} href={`/article/${article.slug}`} className="md:col-span-1 group flex flex-col h-full">
                 <div className="flex items-center gap-2 mb-2 text-ink-secondary">
@@ -173,14 +171,11 @@ export default async function HomePage() {
 
       <NewspaperOpening>
         <main className="mx-auto max-w-screen-xl px-4 py-8 md:px-8 hidden md:block">
-          
-          {/* Main Content Area - Broadsheet Grid */}
+
           <div className="grid grid-cols-12 gap-8 relative">
-            
-            {/* Centerpiece & Left Flow (9 cols) */}
+
             <div className="col-span-9 pr-2">
-              
-              {/* Massive Hero Block */}
+
               {mainFeature && (
                 <article className="mb-10 group border-b border-thick border-border pb-8">
                   <div className="mb-6 text-center">
@@ -209,26 +204,37 @@ export default async function HomePage() {
                     </Link>
                   </div>
 
-                  {/* Multi-column deck/intro underneath hero image */}
-                  <div className="newspaper-columns gap-8 text-justify-print text-ink transition-colors duration-500 text-lg">
-                    <p className="body-text">
-                      <span className="drop-cap">{mainFeature.deck.charAt(0)}</span>
-                      {mainFeature.deck.substring(1)}
-                    </p>
-                    <p className="body-text mt-4">
-                      The implications of this event resonate far beyond the immediate horizon, marking a pivotal moment in our shared timeline. With the world watching closely, leaders and citizens alike are preparing for the profound changes that are sure to follow in the wake of these historic developments.
-                    </p>
-                    <p className="body-text mt-4">
-                      As global markets react and political analysts scramble to interpret the shifts, the true magnitude of this paradigm shift is only beginning to be understood by the public at large.
-                    </p>
+                  <div className="relative mt-6">
+                    <div className="newspaper-columns gap-8 text-justify-print text-ink transition-colors duration-500 text-lg max-h-[300px] sm:max-h-[400px] overflow-hidden">
+                      <p className="body-text">
+                        <span className="drop-cap">{mainFeature.deck.charAt(0)}</span>
+                        {mainFeature.deck.substring(1)}
+                      </p>
+                      <p className="body-text mt-4">
+                        The implications of this event resonate far beyond the immediate horizon, marking a pivotal moment in our shared timeline. With the world watching closely, leaders and citizens alike are preparing for the profound changes that are sure to follow in the wake of these historic developments.
+                      </p>
+                      <p className="body-text mt-4">
+                        As global markets react and political analysts scramble to interpret the shifts, the true magnitude of this paradigm shift is only beginning to be understood by the public at large.
+                      </p>
+                    </div>
+
+                    <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-paper to-transparent pointer-events-none"></div>
+                  </div>
+                  <div className="mt-6 flex justify-center border-t border-border pt-4 no-print">
+                    <Link 
+                      href={`/article/${mainFeature.slug}`}
+                      className="ui-text bg-accent text-paper hover:bg-ink transition-colors duration-300 px-8 py-3 tracking-widest text-sm uppercase font-bold"
+                    >
+                      See More
+                    </Link>
                   </div>
                 </article>
               )}
-              
+
               <div className="grid grid-cols-3 gap-8">
-                {/* Left inner rail: Editor's Letter & Intelligence */}
+
                 <div className="col-span-1 border-r border-border pr-8">
-                  {/* Editor's Letter */}
+
                   <div className="mb-10 bg-paper p-6 border border-border relative">
                     <div className="absolute top-0 left-0 w-full h-1 bg-accent" />
                     <h3 className="ui-text mb-4 text-accent">Editor&apos;s Letter</h3>
@@ -266,7 +272,6 @@ export default async function HomePage() {
                   </div>
                 </div>
 
-                {/* Right inner rail: General News flow */}
                 <div className="col-span-2">
                   <h2 className="ui-text mb-4 pb-2 border-b border-border">
                     In Today&apos;s Paper
@@ -279,7 +284,6 @@ export default async function HomePage() {
                     ))}
                   </div>
 
-                  {/* INDIA HIGHLIGHTS BLOCK */}
                   <hr className="rule-thick my-8" />
                   <div className="mb-8">
                     <div className="flex items-center justify-between mb-4 pb-2 border-b border-border">
@@ -299,16 +303,15 @@ export default async function HomePage() {
 
             </div>
 
-            {/* Right Rail (3 cols) */}
             <div className="col-span-3 pl-6 border-l border-border">
               <MarketTracker />
               <IndiaMarketTracker />
               <div className="mt-8">
                 <WorldClockPanel />
               </div>
-              
+
               <hr className="rule-double my-6" />
-              
+
               <h2 className="ui-text mb-4 pb-2 border-b border-border">
                 Editor&apos;s Picks
               </h2>
@@ -324,7 +327,6 @@ export default async function HomePage() {
 
           <hr className="rule-thick my-12" />
 
-          {/* Latest Updates Horizontal Strip */}
           <section className="mb-12">
             <h2 className="ui-text mb-6">Latest Updates</h2>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -338,7 +340,6 @@ export default async function HomePage() {
 
           <hr className="rule-thick my-12" />
 
-          {/* Categories Grid */}
           <section className="mb-12">
             <h2 className="ui-text mb-6 text-center">Sections</h2>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-px bg-border border border-border">

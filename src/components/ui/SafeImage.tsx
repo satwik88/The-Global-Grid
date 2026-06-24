@@ -12,8 +12,6 @@ export function SafeImage({ src, fallbackSrc = "/fallback-image.jpg", alt, ...pr
 
   const isMissing = !src;
 
-  // If there's an error, use a solid color placeholder or a reliable fallback.
-  // We generate a dynamic image using the Next.js OG image generator with the headline text.
   const finalSrc = (error || isMissing) ? `/api/og?title=${encodeURIComponent(alt || "The Global Grid")}` : src;
 
   return (

@@ -7,23 +7,23 @@ export async function GET() {
     const results = await Promise.all(tickers.map(async (ticker) => {
       try {
         const res = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${ticker}`, {
-          next: { revalidate: 300 }, // Cache server-side for 5 minutes
+          next: { revalidate: 300 }, 
           headers: {
             'User-Agent': 'Mozilla/5.0'
           }
         });
         if (!res.ok) return null;
-        
+
         const data = await res.json();
         const result = data.chart?.result?.[0];
         if (!result) return null;
-        
+
         const meta = result.meta;
         const price = meta.regularMarketPrice;
         const prevClose = meta.chartPreviousClose || meta.previousClose;
         const change = price - prevClose;
         const changePercent = (change / prevClose) * 100;
-        
+
         return {
           symbol: ticker,
           price,
@@ -34,7 +34,7 @@ export async function GET() {
         return null;
       }
     }));
-    
+
     return NextResponse.json({ data: results.filter(Boolean) });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to fetch market data' }, { status: 500 });

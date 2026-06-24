@@ -1,8 +1,7 @@
 export function getRelativeTime(dateString: string): string {
   const date = new Date(dateString);
   const now = new Date();
-  
-  // Use UTC timestamps to avoid timezone differences if any
+
   const diffInMs = now.getTime() - date.getTime();
   const diffInMins = Math.floor(diffInMs / (1000 * 60));
   const diffInHours = Math.floor(diffInMins / 60);
@@ -14,8 +13,7 @@ export function getRelativeTime(dateString: string): string {
   } else if (diffInHours < 24) {
     return `Updated ${diffInHours} hour${diffInHours > 1 ? 's' : ''} ago`;
   } else {
-    // If it's more than a day old, we don't need a live "updated" badge usually,
-    // but just in case, we can format it.
+
     const days = Math.floor(diffInHours / 24);
     return `Updated ${days} day${days > 1 ? 's' : ''} ago`;
   }

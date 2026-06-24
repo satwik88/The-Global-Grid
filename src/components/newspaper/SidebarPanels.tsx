@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback } from "react";
 import { worldClocks } from "@/lib/content/articles";
 import { WorldClockDisplay } from "./WorldClockDisplay";
 
-// Mapping Yahoo symbols to our display names
 const GLOBAL_MARKETS_MAP: Record<string, string> = {
   '^GSPC': 'S&P 500',
   '^FTSE': 'FTSE 100',
@@ -18,7 +17,7 @@ const INDIA_MARKETS_MAP: Record<string, string> = {
   '^NSEI': 'NIFTY 50',
   '^BSESN': 'SENSEX',
   'USDINR=X': 'INR/USD',
-  'GC=F': 'Gold (India)', // We can reuse Gold for India
+  'GC=F': 'Gold (India)', 
 };
 
 interface MarketItem {
@@ -29,7 +28,6 @@ interface MarketItem {
   stale?: boolean;
 }
 
-// Initial static fallback data
 const fallbackGlobal: MarketItem[] = [
   { name: "S&P 500", value: "5,842.31", change: "+1.82%", up: true },
   { name: "FTSE 100", value: "8,291.45", change: "+0.94%", up: true },
@@ -48,7 +46,7 @@ const fallbackIndia: MarketItem[] = [
 
 function formatPrice(symbol: string, price: number): string {
   if (symbol === 'GC=F' && !symbol.includes('India')) return `$${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-  if (symbol === 'GC=F' && symbol.includes('India')) return `₹${(price * 83.42).toLocaleString(undefined, { maximumFractionDigits: 0 })}`; // Rough conversion for Indian Gold representation if needed, though GC=F is USD/oz
+  if (symbol === 'GC=F' && symbol.includes('India')) return `₹${(price * 83.42).toLocaleString(undefined, { maximumFractionDigits: 0 })}`; 
   if (symbol === 'USDINR=X') return price.toFixed(2);
   return price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
@@ -84,18 +82,18 @@ export function MarketTracker() {
       }
     } catch (e) {
       console.error("Failed to fetch global markets", e);
-      // Mark as stale
+
       setData(prev => prev.map(item => ({ ...item, stale: true })));
     }
   }, []);
 
   useEffect(() => {
     fetchMarkets();
-    const interval = setInterval(fetchMarkets, 10 * 60 * 1000); // Every 10 mins
-    
+    const interval = setInterval(fetchMarkets, 10 * 60 * 1000); 
+
     const handleRefresh = () => fetchMarkets();
     window.addEventListener("global-grid-refresh", handleRefresh);
-    
+
     return () => {
       clearInterval(interval);
       window.removeEventListener("global-grid-refresh", handleRefresh);
@@ -159,7 +157,7 @@ export function IndiaMarketTracker() {
               if (idx >= 0) {
                 let val = formatPrice(item.symbol, item.price);
                 if (item.symbol === 'GC=F') val = `₹${(item.price * 83.5).toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
-                
+
                 next[idx] = {
                   name,
                   value: val,
@@ -182,10 +180,10 @@ export function IndiaMarketTracker() {
   useEffect(() => {
     fetchMarkets();
     const interval = setInterval(fetchMarkets, 10 * 60 * 1000);
-    
+
     const handleRefresh = () => fetchMarkets();
     window.addEventListener("global-grid-refresh", handleRefresh);
-    
+
     return () => {
       clearInterval(interval);
       window.removeEventListener("global-grid-refresh", handleRefresh);

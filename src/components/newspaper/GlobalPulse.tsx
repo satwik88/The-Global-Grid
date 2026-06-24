@@ -19,7 +19,7 @@ const INITIAL_RATES = [
 
 export function GlobalPulse({ locations }: { locations?: string[] }) {
   const [mounted, setMounted] = useState(false);
-  
+
   const initialMarkets = locations && locations.length > 0 
     ? locations.map(loc => ({ name: loc.toUpperCase(), status: Math.random() > 0.5 ? "up" : "down" }))
     : INITIAL_MARKETS;
@@ -34,12 +34,12 @@ export function GlobalPulse({ locations }: { locations?: string[] }) {
       try {
         const response = await fetch("https://open.er-api.com/v6/latest/USD");
         const data = await response.json();
-        
+
         if (data && data.rates) {
           const inr = data.rates.INR;
           const eur = data.rates.EUR;
           const gbp = data.rates.GBP;
-          
+
           if (inr && eur && gbp) {
             setRates(prev => {
               const currentUsd = prev.find(r => r.pair === "USD/INR")?.rate || 83.42;
@@ -64,7 +64,7 @@ export function GlobalPulse({ locations }: { locations?: string[] }) {
     };
 
     fetchRates();
-    // Update rates every 5 minutes
+
     const rateInterval = setInterval(fetchRates, 300000);
 
     const handleGlobalRefresh = () => {
@@ -72,7 +72,6 @@ export function GlobalPulse({ locations }: { locations?: string[] }) {
     };
     window.addEventListener("global-grid-refresh", handleGlobalRefresh);
 
-    // Simulate live market fluctuations for locations every 4.5 seconds
     const marketInterval = setInterval(() => {
       setMarkets((prev) =>
         prev.map((market) => {
@@ -99,8 +98,7 @@ export function GlobalPulse({ locations }: { locations?: string[] }) {
   return (
     <div className="bg-paper text-ink py-1 border-b border-border text-[0.625rem] md:text-xs overflow-hidden select-none no-print">
       <div className="mx-auto max-w-screen-xl px-4 md:px-8 flex items-center justify-between">
-        
-        {/* Left Side: Pulse Animation */}
+
         <div className="flex items-center gap-2 shrink-0 pr-4">
           <div className="flex h-2 w-2 relative">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
@@ -109,7 +107,6 @@ export function GlobalPulse({ locations }: { locations?: string[] }) {
           <span className="font-bold tracking-widest text-accent uppercase">Global Pulse</span>
         </div>
 
-        {/* Center: Markets Marquee */}
         <div className="hidden md:block flex-1 overflow-hidden border-l border-r border-border/30">
           <div className="flex w-max animate-marquee-slow items-center h-full py-1">
             {[...markets, ...markets].map((market, idx) => (
@@ -123,7 +120,6 @@ export function GlobalPulse({ locations }: { locations?: string[] }) {
           </div>
         </div>
 
-        {/* Right Side: Exchange Rates */}
         <div className="flex items-center gap-4 pl-4 shrink-0 font-[family-name:var(--font-inter)] tracking-wider">
           {rates.map((rate, i) => (
             <div key={rate.pair} className="flex items-center gap-3">

@@ -17,7 +17,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const authorArticle = articles.find((a) => a.author.slug === slug);
-  
+
   if (!authorArticle) return { title: "Author Not Found" };
 
   return {
@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function AuthorPage({ params }: Props) {
   const { slug } = await params;
   const authorArticles = articles.filter((a) => a.author.slug === slug);
-  
+
   if (authorArticles.length === 0) notFound();
 
   const author = authorArticles[0].author;
@@ -41,8 +41,7 @@ export default async function AuthorPage({ params }: Props) {
       <Masthead />
 
       <main className="mx-auto max-w-screen-xl px-4 py-12 md:px-8">
-        
-        {/* Author Bio Header */}
+
         <header className="mb-16 pb-12 border-b-4 border-ink flex flex-col md:flex-row gap-8 items-start">
           <div className="w-full md:w-1/3">
             <h1 className="font-[family-name:var(--font-playfair)] text-5xl md:text-6xl font-bold tracking-tight text-ink mb-2">
@@ -68,14 +67,13 @@ export default async function AuthorPage({ params }: Props) {
           </div>
         </header>
 
-        {/* Author's Investigations / Articles */}
         <div className="grid grid-cols-12 gap-12">
-          
+
           <div className="col-span-12 lg:col-span-8">
             <h2 className="ui-text mb-8 pb-2 border-b border-thick border-border text-2xl">
               Latest from {author.name}
             </h2>
-            
+
             {featuredArticle && (
               <div className="mb-12">
                 <ArticleCard article={featuredArticle} variant="featured" />
@@ -91,7 +89,6 @@ export default async function AuthorPage({ params }: Props) {
             </div>
           </div>
 
-          {/* Right Rail */}
           <div className="col-span-12 lg:col-span-4 bg-paper/50 p-6 border border-border h-fit">
             <h3 className="ui-text mb-6 pb-2 border-b border-border text-lg">
               Contact & Pitching

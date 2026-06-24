@@ -7,7 +7,6 @@ import type { Article, SectionSlug } from "@/lib/types";
 const API_KEY = process.env.NEWSDATA_API_KEY;
 const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY;
 
-// Fallback to our existing mock articles if API fails
 let cachedArticles: Article[] = [];
 
 function mapSectionToCategory(section: string): { category: string, country?: string } {
@@ -31,21 +30,18 @@ function mapSectionToCategory(section: string): { category: string, country?: st
 
 function mapNewsDataToArticle(data: any, sectionSlug: SectionSlug): Article {
   const authorName = (data.creator && data.creator.length > 0) ? data.creator[0] : (data.source_id || "Staff Writer");
-  
-  // Use content if valid, otherwise fallback to description
+
   let textContent = data.description || data.title || "";
   if (data.content && data.content !== "ONLY AVAILABLE IN PAID PLANS" && data.content.length > textContent.length) {
     textContent = data.content;
   }
-  
+
   const wordCount = textContent.split(" ").length;
   const readingTime = Math.max(1, Math.ceil(wordCount / 200));
 
-  // Mocking body paragraphs by splitting long text
   const bodyParas = textContent.split(/\n+/).filter((p: string) => p.trim().length > 0).map((p: string) => p.trim());
   if (bodyParas.length === 0) bodyParas.push(data.title);
 
-  // Apply Editorial Formatting
   const cleanHeadline = formatEditorialHeadline(data.title);
 
   return {
@@ -61,7 +57,7 @@ function mapNewsDataToArticle(data: any, sectionSlug: SectionSlug): Article {
     section: sectionSlug,
     publishedAt: new Date(data.pubDate).toISOString(),
     updatedAt: data.pubDate ? getRelativeTime(data.pubDate) : undefined,
-    isBreaking: data.pubDate ? isRecent(data.pubDate, 4) : false, // Consider breaking if published within last 4 hours
+    isBreaking: data.pubDate ? isRecent(data.pubDate, 4) : false, 
     readingTime: readingTime,
     image: data.image_url || "", 
     body: bodyParas,
@@ -77,18 +73,18 @@ export async function getNews(sectionSlug: SectionSlug = "front-page", tryDomain
   }
 
   const { category, country } = mapSectionToCategory(sectionSlug);
-  
+
   let url = `https://newsdata.io/api/1/news?apikey=${API_KEY}&category=${category}&language=en`;
   if (country) {
     url += `&country=${country}`;
   }
-  
+
   if (sectionSlug === "india" && tryDomainPref) {
     url += `&domainurl=thehindu.com`;
   }
 
   try {
-    // 900 seconds = 15 minutes cache for auto-refresh
+
     const response = await fetch(url, { next: { revalidate: 900 } });
     if (!response.ok) {
       console.error(`NewsData API error: ${response.status} ${response.statusText}`);
@@ -106,8 +102,7 @@ export async function getNews(sectionSlug: SectionSlug = "front-page", tryDomain
       }
 
       const mapped = data.results.map((raw: any) => mapNewsDataToArticle(raw, sectionSlug));
-      
-      // Deduplicate by headline to prevent repeated articles
+
       const uniqueMapped: Article[] = [];
       const seenHeadlines = new Set<string>();
       for (const article of mapped) {
@@ -117,12 +112,11 @@ export async function getNews(sectionSlug: SectionSlug = "front-page", tryDomain
           uniqueMapped.push(article);
         }
       }
-      
-      // Accumulate into cache so fetchArticle(slug) works across sections
+
       const newMap = new Map(cachedArticles.map(a => [a.id, a]));
       uniqueMapped.forEach((a: Article) => newMap.set(a.id, a));
       cachedArticles = Array.from(newMap.values());
-      
+
       return uniqueMapped;
     }
     return null;
@@ -137,9 +131,9 @@ export async function getNews(sectionSlug: SectionSlug = "front-page", tryDomain
 
 function mapRapidApiToArticle(data: any, sectionSlug: SectionSlug): Article {
   const authorName = data.source || "The Hindu";
-  
+
   let textContent = data.description || data.summary || data.title || "";
-  
+
   const wordCount = textContent.split(" ").length;
   const readingTime = Math.max(1, Math.ceil(wordCount / 200));
 
@@ -176,9 +170,9 @@ export async function fetchFromTheHinduRapidAPI() {
   if (!RAPIDAPI_KEY) {
     return null;
   }
-  
+
   const url = `https://the-hindu-national-news.p.rapidapi.com/`;
-  
+
   try {
     const response = await fetch(url, { 
       headers: {
@@ -192,13 +186,12 @@ export async function fetchFromTheHinduRapidAPI() {
       return null;
     }
     const data = await response.json();
-    
-    // The RapidAPI endpoint usually returns an array of articles directly or nested in an object
+
     const articlesArray = Array.isArray(data) ? data : data.articles || data.data;
-    
+
     if (articlesArray && Array.isArray(articlesArray)) {
       const mapped = articlesArray.map((raw: any) => mapRapidApiToArticle(raw, "india"));
-      
+
       const uniqueMapped: Article[] = [];
       const seenHeadlines = new Set<string>();
       for (const article of mapped) {
@@ -208,11 +201,11 @@ export async function fetchFromTheHinduRapidAPI() {
           uniqueMapped.push(article);
         }
       }
-      
+
       const newMap = new Map(cachedArticles.map(a => [a.id, a]));
       uniqueMapped.forEach((a: Article) => newMap.set(a.id, a));
       cachedArticles = Array.from(newMap.values());
-      
+
       return uniqueMapped;
     }
     return null;
@@ -222,7 +215,6 @@ export async function fetchFromTheHinduRapidAPI() {
   }
 }
 
-// Helper to shuffle mock data
 function shuffleArray<T>(array: T[]): T[] {
   const shuffled = [...array];
   for (let i = shuffled.length - 1; i > 0; i--) {
@@ -235,7 +227,7 @@ function shuffleArray<T>(array: T[]): T[] {
 export async function getBestAvailableNews(sectionSlug: SectionSlug = "front-page"): Promise<Article[]> {
   const combined: Article[] = [];
   const seen = new Set<string>();
-  
+
   const addArticles = (sourceArticles: Article[]) => {
     for (const a of sourceArticles) {
       const norm = normalizeTitle(a.headline);
@@ -248,16 +240,14 @@ export async function getBestAvailableNews(sectionSlug: SectionSlug = "front-pag
     }
   };
 
-  // 1. Try NewsData
   let liveNews = await getNews(sectionSlug);
   if (liveNews) {
     console.log(`${sectionSlug} section: served from newsdata.io`);
     addArticles(liveNews);
   }
-  
+
   if (combined.length >= 3) return combined;
-  
-  // 2. Try The Hindu API only for India
+
   if (sectionSlug === "india") {
     liveNews = await fetchFromTheHinduRapidAPI();
     if (liveNews) {
@@ -265,15 +255,14 @@ export async function getBestAvailableNews(sectionSlug: SectionSlug = "front-pag
       addArticles(liveNews);
     }
   }
-  
+
   if (combined.length >= 3) return combined;
-  
-  // 3. Fallback to mock
+
   console.log(`${sectionSlug} section: served from mock fallback (supplemented)`);
   const mockArticles = sectionSlug === "front-page" 
     ? articles.filter(a => parseInt(a.id) < 5000) 
     : articles.filter(a => a.section === sectionSlug);
-    
+
   addArticles(shuffleArray(mockArticles));
   return combined;
 }
@@ -300,12 +289,10 @@ export async function fetchSecondaryFeatures(): Promise<Article[]> {
 }
 
 export async function fetchArticle(slug: string): Promise<Article | undefined> {
-  // Check our live cache first
+
   let liveMatch = cachedArticles.find(a => a.slug === slug);
   if (liveMatch) return liveMatch;
 
-  // If we are in a fresh request thread and cache is empty, rapidly hydrate it 
-  // from Next.js built-in fetch cache (this does NOT hit the network rate limits)
   await Promise.all([
     getBestAvailableNews("front-page"),
     getBestAvailableNews("world"),
@@ -318,14 +305,13 @@ export async function fetchArticle(slug: string): Promise<Article | undefined> {
   liveMatch = cachedArticles.find(a => a.slug === slug);
   if (liveMatch) return liveMatch;
 
-  // Fallback to mock
   return articles.find((a) => a.slug === slug);
 }
 
 export async function fetchSearch(query: string): Promise<Article[]> {
-  // Client side search across whatever we have cached
+
   const q = query.toLowerCase();
-  
+
   const matches = cachedArticles.filter(a => 
     a.headline.toLowerCase().includes(q) || 
     a.deck.toLowerCase().includes(q)
@@ -333,7 +319,6 @@ export async function fetchSearch(query: string): Promise<Article[]> {
 
   if (matches.length > 0) return matches;
 
-  // Fallback to mock
   return articles.filter(a => 
     a.headline.toLowerCase().includes(q) || 
     a.deck.toLowerCase().includes(q)

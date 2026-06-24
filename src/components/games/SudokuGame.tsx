@@ -34,7 +34,7 @@ export function SudokuGame() {
 
   useEffect(() => {
     newGame();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []); 
 
   const handleCellClick = (row: number, col: number) => {
     if (fixed[row][col]) return;

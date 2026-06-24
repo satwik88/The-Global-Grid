@@ -18,7 +18,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const edition = archiveEditions.find((e) => e.id === id);
-  
+
   if (!edition) return { title: "Edition Not Found" };
 
   return {
@@ -30,10 +30,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function EditionPage({ params }: Props) {
   const { id } = await params;
   const edition = archiveEditions.find((e) => e.id === id);
-  
+
   if (!edition) notFound();
 
-  // Deterministic article selection seeded by edition id hash
   const seed = edition.id.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
   const editionArticles = [...articles].sort((a, b) =>
     (a.id.charCodeAt(0) + seed) % 13 - (b.id.charCodeAt(0) + seed) % 13
@@ -54,8 +53,7 @@ export default async function EditionPage({ params }: Props) {
       <Masthead />
 
       <main className="mx-auto max-w-screen-xl px-4 py-8 md:px-8">
-        
-        {/* Edition Header */}
+
         <header className="mb-12 border-b-4 border-ink pb-8 text-center">
           <div className="inline-block bg-ink text-paper px-6 py-2 mb-6">
             <span className="ui-text uppercase tracking-widest text-sm">
@@ -70,10 +68,8 @@ export default async function EditionPage({ params }: Props) {
           </p>
         </header>
 
-        {/* Edition Content Layout */}
         <div className="grid grid-cols-12 gap-8 relative">
-          
-          {/* Centerpiece (8 cols) */}
+
           <div className="col-span-12 lg:col-span-8 pr-0 lg:pr-8 lg:border-r border-border">
             {mainFeature && (
               <article className="mb-12 group">
@@ -103,20 +99,31 @@ export default async function EditionPage({ params }: Props) {
                   </Link>
                 </div>
 
-                <div className="newspaper-columns-2 gap-8 text-justify-print text-ink text-lg">
-                  <p className="body-text">
-                    <span className="drop-cap">{mainFeature.deck.charAt(0)}</span>
-                    {mainFeature.deck.substring(1)}
-                  </p>
-                  <p className="body-text mt-4">
-                    This featured cover story from our archives highlights the most critical developments of the day. The historical context provided by these reports offers a window into the past, preserving the narrative of a world in rapid transition.
-                  </p>
+                <div className="relative mt-6">
+                  <div className="newspaper-columns-2 gap-8 text-justify-print text-ink text-lg max-h-[300px] overflow-hidden">
+                    <p className="body-text">
+                      <span className="drop-cap">{mainFeature.deck.charAt(0)}</span>
+                      {mainFeature.deck.substring(1)}
+                    </p>
+                    <p className="body-text mt-4">
+                      This featured cover story from our archives highlights the most critical developments of the day. The historical context provided by these reports offers a window into the past, preserving the narrative of a world in rapid transition.
+                    </p>
+                  </div>
+                  <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-paper to-transparent pointer-events-none"></div>
+                </div>
+                <div className="mt-6 flex justify-center border-t border-border pt-4 no-print">
+                  <Link 
+                    href={`/article/${mainFeature.slug}`}
+                    className="ui-text bg-accent text-paper hover:bg-ink transition-colors duration-300 px-8 py-3 tracking-widest text-sm uppercase font-bold"
+                  >
+                    See More
+                  </Link>
                 </div>
               </article>
             )}
 
             <hr className="rule-thick my-8" />
-            
+
             <h2 className="ui-text mb-6 pb-2 border-b border-border text-2xl">
               Front Page Features
             </h2>
@@ -129,7 +136,6 @@ export default async function EditionPage({ params }: Props) {
             </div>
           </div>
 
-          {/* Right Rail (4 cols) */}
           <div className="col-span-12 lg:col-span-4 pl-0 lg:pl-8">
             <h2 className="ui-text mb-6 pb-2 border-b border-border text-2xl">
               Also Inside This Edition
