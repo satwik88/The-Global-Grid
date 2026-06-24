@@ -29,8 +29,8 @@
   --font-body: var(--font-source-serif);
   --font-ui: var(--font-inter);
 
-  --animate-marquee: marquee 25s linear infinite;
-  --animate-marquee-slow: marquee 45s linear infinite;
+  --animate-marquee: marquee 50s linear infinite;
+  --animate-marquee-slow: marquee 90s linear infinite;
 }
 
 @keyframes marquee {
