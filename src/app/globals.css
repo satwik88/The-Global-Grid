@@ -403,3 +403,14 @@ html[data-magicui-theme-vt="active"] ::after {
 .will-change-transform {
   will-change: transform;
 }
+
+/* Globe Logo Styling */
+html:not(.dark) .globe-logo {
+  filter: brightness(0);
+  mix-blend-mode: multiply;
+}
+
+html.dark .globe-logo {
+  filter: brightness(0) invert(1);
+  mix-blend-mode: screen;
+}
