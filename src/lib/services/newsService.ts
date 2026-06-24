@@ -5,7 +5,7 @@ import { normalizeTitle } from "@/lib/utils/dedup";
 import type { Article, SectionSlug } from "@/lib/types";
 
 const API_KEY = process.env.NEWSDATA_API_KEY;
-const GNEWS_API_KEY = process.env.GNEWS_API_KEY;
+const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY;
 
 // Fallback to our existing mock articles if API fails
 let cachedArticles: Article[] = [];
@@ -70,7 +70,7 @@ function mapNewsDataToArticle(data: any, sectionSlug: SectionSlug): Article {
   };
 }
 
-export async function getNews(sectionSlug: SectionSlug = "front-page") {
+export async function getNews(sectionSlug: SectionSlug = "front-page", tryDomainPref: boolean = true): Promise<Article[] | null> {
   if (!API_KEY) {
     console.warn("NEWSDATA_API_KEY is not defined. Falling back to mocks.");
     return null;
@@ -82,17 +82,29 @@ export async function getNews(sectionSlug: SectionSlug = "front-page") {
   if (country) {
     url += `&country=${country}`;
   }
+  
+  if (sectionSlug === "india" && tryDomainPref) {
+    url += `&domainurl=thehindu.com`;
+  }
 
   try {
     // 900 seconds = 15 minutes cache for auto-refresh
     const response = await fetch(url, { next: { revalidate: 900 } });
     if (!response.ok) {
       console.error(`NewsData API error: ${response.status} ${response.statusText}`);
+      if (sectionSlug === "india" && tryDomainPref) {
+        return getNews(sectionSlug, false);
+      }
       return null;
     }
 
     const data = await response.json();
     if (data.status === "success" && data.results) {
+      if (sectionSlug === "india" && tryDomainPref && data.results.length < 5) {
+        console.log(`India section: The Hindu returned ${data.results.length} articles, falling back to general India fetch.`);
+        return getNews(sectionSlug, false);
+      }
+
       const mapped = data.results.map((raw: any) => mapNewsDataToArticle(raw, sectionSlug));
       
       // Deduplicate by headline to prevent repeated articles
@@ -116,84 +128,76 @@ export async function getNews(sectionSlug: SectionSlug = "front-page") {
     return null;
   } catch (error) {
     console.error("Failed to fetch from NewsData:", error);
+    if (sectionSlug === "india" && tryDomainPref) {
+      return getNews(sectionSlug, false);
+    }
     return null;
   }
 }
 
-function mapSectionToGNews(section: string): { type: "top-headlines" | "search", query: string } {
-  switch (section) {
-    case "india": return { type: "top-headlines", query: "category=general&country=in" };
-    case "world": return { type: "top-headlines", query: "category=world" };
-    case "business": return { type: "top-headlines", query: "category=business" };
-    case "technology": return { type: "top-headlines", query: "category=technology" };
-    case "ai": return { type: "search", query: "q=\"artificial intelligence\" OR AI" };
-    case "science": return { type: "top-headlines", query: "category=science" };
-    case "culture": return { type: "top-headlines", query: "category=entertainment" };
-    case "travel": return { type: "search", query: "q=travel" };
-    case "opinion": return { type: "top-headlines", query: "category=nation" };
-    case "games": return { type: "top-headlines", query: "category=entertainment" };
-    case "grid-intelligence": return { type: "top-headlines", query: "category=general" };
-    case "front-page":
-    default:
-      return { type: "top-headlines", query: "category=general" };
-  }
-}
-
-function mapGNewsToArticle(data: any, sectionSlug: SectionSlug): Article {
-  const authorName = data.source?.name || "Staff Writer";
+function mapRapidApiToArticle(data: any, sectionSlug: SectionSlug): Article {
+  const authorName = data.source || "The Hindu";
   
-  let textContent = data.content || data.description || data.title || "";
+  let textContent = data.description || data.summary || data.title || "";
   
   const wordCount = textContent.split(" ").length;
   const readingTime = Math.max(1, Math.ceil(wordCount / 200));
 
-  const bodyParas = textContent.split(/\\n+/).filter((p: string) => p.trim().length > 0).map((p: string) => p.trim());
+  const bodyParas = textContent.split(/\n+/).filter((p: string) => p.trim().length > 0).map((p: string) => p.trim());
   if (bodyParas.length === 0) bodyParas.push(data.title);
 
   const cleanHeadline = formatEditorialHeadline(data.title);
 
-  // Generate a pseudo-ID for GNews since they might not provide one
   const id = data.url ? Buffer.from(data.url).toString('base64').substring(0, 16) : Math.random().toString(36).substring(7);
 
   return {
     id: id,
     slug: id,
     headline: cleanHeadline,
-    deck: data.description || data.title,
+    deck: data.description || data.summary || data.title,
     author: {
       name: authorName,
       slug: authorName.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
       role: "Correspondent",
     },
     section: sectionSlug,
-    publishedAt: new Date(data.publishedAt).toISOString(),
+    publishedAt: data.publishedAt ? new Date(data.publishedAt).toISOString() : new Date().toISOString(),
     updatedAt: data.publishedAt ? getRelativeTime(data.publishedAt) : undefined,
     isBreaking: data.publishedAt ? isRecent(data.publishedAt, 4) : false,
     readingTime: readingTime,
-    image: data.image || "", 
+    image: data.image || data.imageUrl || "", 
     body: bodyParas,
     tags: [sectionSlug],
     relatedSlugs: [],
   };
 }
 
-export async function fetchFromGNews(sectionSlug: SectionSlug = "front-page") {
-  if (!GNEWS_API_KEY) {
+export async function fetchFromTheHinduRapidAPI() {
+  if (!RAPIDAPI_KEY) {
     return null;
   }
   
-  const { type, query } = mapSectionToGNews(sectionSlug);
-  const url = `https://gnews.io/api/v4/${type}?${query}&lang=en&apikey=${GNEWS_API_KEY}`;
+  const url = `https://the-hindu-national-news.p.rapidapi.com/`;
   
   try {
-    const response = await fetch(url, { next: { revalidate: 900 } });
+    const response = await fetch(url, { 
+      headers: {
+        "X-RapidAPI-Key": RAPIDAPI_KEY,
+        "X-RapidAPI-Host": "the-hindu-national-news.p.rapidapi.com"
+      },
+      next: { revalidate: 900 } 
+    });
     if (!response.ok) {
-      console.error(`GNews API error: ${response.status} ${response.statusText}`);
+      console.error(`RapidAPI error: ${response.status} ${response.statusText}`);
       return null;
     }
     const data = await response.json();
-    if (data.articles) {
-      const mapped = data.articles.map((raw: any) => mapGNewsToArticle(raw, sectionSlug));
+    
+    // The RapidAPI endpoint usually returns an array of articles directly or nested in an object
+    const articlesArray = Array.isArray(data) ? data : data.articles || data.data;
+    
+    if (articlesArray && Array.isArray(articlesArray)) {
+      const mapped = articlesArray.map((raw: any) => mapRapidApiToArticle(raw, "india"));
       
       const uniqueMapped: Article[] = [];
       const seenHeadlines = new Set<string>();
@@ -213,7 +217,7 @@ export async function fetchFromGNews(sectionSlug: SectionSlug = "front-page") {
     }
     return null;
   } catch (error) {
-    console.error("Failed to fetch from GNews:", error);
+    console.error("Failed to fetch from RapidAPI:", error);
     return null;
   }
 }
@@ -253,11 +257,13 @@ export async function getBestAvailableNews(sectionSlug: SectionSlug = "front-pag
   
   if (combined.length >= 3) return combined;
   
-  // 2. Try GNews
-  liveNews = await fetchFromGNews(sectionSlug);
-  if (liveNews) {
-    console.log(`${sectionSlug} section: served from GNews fallback (supplemented)`);
-    addArticles(liveNews);
+  // 2. Try The Hindu API only for India
+  if (sectionSlug === "india") {
+    liveNews = await fetchFromTheHinduRapidAPI();
+    if (liveNews) {
+      console.log(`${sectionSlug} section: served from The Hindu RapidAPI fallback (supplemented)`);
+      addArticles(liveNews);
+    }
   }
   
   if (combined.length >= 3) return combined;

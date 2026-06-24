@@ -193,7 +193,7 @@ export const AnimatedThemeToggler = ({
       const newTheme = !isDark
       // Always toggle the class synchronously so the View Transitions API
       // snapshots the new theme inside the startViewTransition callback.
-      document.documentElement.classList.toggle("dark")
+      document.documentElement.classList.toggle("dark", newTheme)
       if (isControlled) {
         onThemeChange?.(newTheme ? "dark" : "light")
       } else {
@@ -267,8 +267,14 @@ export const AnimatedThemeToggler = ({
       className={cn(className)}
       {...props}
     >
-      {isDark ? <Sun /> : <Moon />}
-      <span className="sr-only">Toggle theme</span>
+      {props.children ? (
+        props.children
+      ) : (
+        <>
+          {isDark ? <Sun /> : <Moon />}
+          <span className="sr-only">Toggle theme</span>
+        </>
+      )}
     </button>
   )
 }

@@ -6,7 +6,7 @@ import { NAV_SECTIONS } from "@/lib/sections";
 import { GlobalPulse } from "./GlobalPulse";
 import { GlobeSeal } from "./GlobeSeal";
 import { useTheme } from "@/lib/context/ThemeContext";
-import { RefreshCcw } from "lucide-react";
+import { RefreshCcw, Sun, Moon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
@@ -29,21 +29,21 @@ function ThemeToggle() {
   }
 
   return (
-    <div className="flex items-center gap-2 ui-text text-ink-secondary hover:text-accent transition-colors duration-300">
-      <AnimatedThemeToggler
-        theme={theme}
-        onThemeChange={(newTheme) => {
-          setTheme(newTheme);
-          sessionStorage.setItem("theme", newTheme);
-        }}
-        className="p-1 rounded-full flex items-center justify-center"
-        aria-label={theme === "light" ? "Switch to Night Edition (dark mode)" : "Switch to Day Edition (light mode)"}
-        title={theme === "light" ? "Switch to Night Edition" : "Switch to Day Edition"}
-      />
-      <span className="hidden sm:inline select-none">
+    <AnimatedThemeToggler
+      theme={theme}
+      onThemeChange={(newTheme) => {
+        setTheme(newTheme);
+        sessionStorage.setItem("theme", newTheme);
+      }}
+      className="p-1 flex items-center gap-2 ui-text text-ink-secondary hover:text-accent transition-colors duration-300 cursor-pointer"
+      aria-label={theme === "light" ? "Switch to Night Edition (dark mode)" : "Switch to Day Edition (light mode)"}
+      title={theme === "light" ? "Switch to Night Edition" : "Switch to Day Edition"}
+    >
+      {theme === "dark" ? <Sun size={14} className="pointer-events-none" /> : <Moon size={14} className="pointer-events-none" />}
+      <span className="hidden sm:inline select-none pointer-events-none">
         {theme === "light" ? "Day Edition" : "Night Edition"}
       </span>
-    </div>
+    </AnimatedThemeToggler>
   );
 }
 
