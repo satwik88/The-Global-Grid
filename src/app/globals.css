@@ -406,11 +406,11 @@ html[data-magicui-theme-vt="active"] ::after {
 
 /* Globe Logo Styling */
 html:not(.dark) .globe-logo {
-  filter: grayscale(1) contrast(5);
+  filter: grayscale(1);
   mix-blend-mode: multiply;
 }
 
 html.dark .globe-logo {
-  filter: grayscale(1) invert(1) contrast(5);
+  filter: grayscale(1) invert(1);
   mix-blend-mode: screen;
 }
