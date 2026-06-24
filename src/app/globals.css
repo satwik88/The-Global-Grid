@@ -30,12 +30,17 @@
   --font-ui: var(--font-inter);
 
   --animate-marquee: marquee 50s linear infinite;
-  --animate-marquee-slow: marquee 90s linear infinite;
+  --animate-marquee-slow: marquee 60s linear infinite;
 }
 
 @keyframes marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 /* Paper grain texture */
@@ -68,6 +73,7 @@
 }
 
 @media (max-width: 640px) {
+
   .newspaper-columns,
   .newspaper-columns-2 {
     column-count: 1;
@@ -176,9 +182,11 @@
   body {
     background: white !important;
   }
+
   .no-print {
     display: none !important;
   }
+
   .paper-texture {
     background-image: none;
   }
@@ -207,7 +215,7 @@
   border: 1px solid var(--border);
 }
 
-.newspaper-spread > *:first-child {
+.newspaper-spread>*:first-child {
   border-right: 1px solid var(--border);
 }
 
@@ -215,7 +223,8 @@
   .newspaper-spread {
     grid-template-columns: 1fr;
   }
-  .newspaper-spread > *:first-child {
+
+  .newspaper-spread>*:first-child {
     border-right: none;
     border-bottom: 1px solid var(--border);
   }
@@ -295,7 +304,8 @@
   border-bottom: 2px solid var(--border);
 }
 
-html, body {
+html,
+body {
   overscroll-behavior-y: contain;
 }
 
@@ -331,26 +341,33 @@ body {
     margin: 1.5cm;
     size: A4;
   }
+
   body {
     background-color: white !important;
     color: black !important;
     background-image: none !important;
   }
+
   .no-print {
     display: none !important;
   }
+
   /* Remove box shadows and thick borders for printing */
-  .border-thick, .rule-thick {
+  .border-thick,
+  .rule-thick {
     border-width: 1px !important;
   }
+
   .bg-ink {
     background-color: white !important;
     color: black !important;
     border: 1px solid black !important;
   }
+
   .text-paper {
     color: black !important;
   }
+
   /* Ensure images print well */
   img {
     filter: grayscale(100%) !important;
@@ -370,9 +387,10 @@ body {
   font-weight: 700;
 }
 
-::view-transition-old(root), ::view-transition-new(root) {
-    animation: none;
-    mix-blend-mode: normal;
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
 }
 
 html[data-magicui-theme-vt="active"] *,
