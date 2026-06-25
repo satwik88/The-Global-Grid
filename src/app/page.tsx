@@ -328,6 +328,22 @@ export default async function HomePage() {
           <hr className="rule-thick my-12" />
 
           <section className="mb-12">
+            <div className="flex items-center justify-between mb-6 pb-2 border-b-2 border-ink">
+              <h2 className="ui-text text-accent text-xl">India Edition</h2>
+              <Link href="/india" className="ui-text hover:text-accent transition-colors uppercase tracking-widest text-sm">Full Coverage →</Link>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 gap-y-10">
+              {indiaNews.slice(0, 8).map((article) => (
+                <div key={article.slug} className="border-t border-border pt-4">
+                  <ArticleCard article={article} variant="compact" />
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <hr className="rule-thick my-12" />
+
+          <section className="mb-12">
             <h2 className="ui-text mb-6">Latest Updates</h2>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               {topBriefs.slice(5, 9).map((article) => (
@@ -344,7 +360,7 @@ export default async function HomePage() {
             <h2 className="ui-text mb-6 text-center">Sections</h2>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-px bg-border border border-border">
               {[
-                { label: "India", href: "/section/india" },
+                { label: "India", href: "/india" },
                 { label: "World", href: "/section/world" },
                 { label: "Business", href: "/section/business" },
                 { label: "Technology", href: "/section/technology" },

@@ -69,8 +69,8 @@ export function ArticleCard({ article, variant = "standard" }: ArticleCardProps)
   }
 
   return (
-    <article className="group relative">
-      <div className="relative aspect-[3/2] mb-3 overflow-hidden">
+    <article className="group relative flex flex-col h-full">
+      <div className="relative aspect-[3/2] mb-3 overflow-hidden flex-shrink-0">
         <SafeImage
           src={article.thumbnailImage || article.image || ""}
           alt={article.headline}
@@ -89,10 +89,10 @@ export function ArticleCard({ article, variant = "standard" }: ArticleCardProps)
           {article.headline}
         </Link>
       </h3>
-      <p className="body-text text-sm mt-2 text-ink-secondary line-clamp-3 text-justify-print">
+      <p className="body-text text-sm mt-2 text-ink-secondary line-clamp-3 text-justify-print flex-grow">
         {article.deck}
       </p>
-      <div className="caption-text mt-2 hover:text-accent transition-colors relative z-10">
+      <div className="caption-text mt-3 hover:text-accent transition-colors relative z-10 border-t border-border pt-3">
         <Link href={`/author/${article.author.slug}`}>By {article.author.name}</Link> · {article.readingTime} min
         {article.updatedAt && <span className="text-accent ml-2">· {article.updatedAt}</span>}
       </div>

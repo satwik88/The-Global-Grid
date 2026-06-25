@@ -66,7 +66,7 @@ function mapNewsDataToArticle(data: any, sectionSlug: SectionSlug): Article {
   };
 }
 
-export async function getNews(sectionSlug: SectionSlug = "front-page", tryDomainPref: boolean = true): Promise<Article[] | null> {
+export async function getNews(sectionSlug: SectionSlug = "front-page", tryDomainPref: boolean = true, query?: string): Promise<Article[] | null> {
   if (!API_KEY) {
     console.warn("NEWSDATA_API_KEY is not defined. Falling back to mocks.");
     return null;
@@ -78,8 +78,11 @@ export async function getNews(sectionSlug: SectionSlug = "front-page", tryDomain
   if (country) {
     url += `&country=${country}`;
   }
+  if (query) {
+    url += `&q=${encodeURIComponent(query)}`;
+  }
 
-  if (sectionSlug === "india" && tryDomainPref) {
+  if (sectionSlug === "india" && tryDomainPref && !query) {
     url += `&domainurl=thehindu.com`;
   }
 
@@ -88,17 +91,17 @@ export async function getNews(sectionSlug: SectionSlug = "front-page", tryDomain
     const response = await fetch(url, { next: { revalidate: 900 } });
     if (!response.ok) {
       console.error(`NewsData API error: ${response.status} ${response.statusText}`);
-      if (sectionSlug === "india" && tryDomainPref) {
-        return getNews(sectionSlug, false);
+      if (sectionSlug === "india" && tryDomainPref && !query) {
+        return getNews(sectionSlug, false, query);
       }
       return null;
     }
 
     const data = await response.json();
     if (data.status === "success" && data.results) {
-      if (sectionSlug === "india" && tryDomainPref && data.results.length < 5) {
+      if (sectionSlug === "india" && tryDomainPref && !query && data.results.length < 5) {
         console.log(`India section: The Hindu returned ${data.results.length} articles, falling back to general India fetch.`);
-        return getNews(sectionSlug, false);
+        return getNews(sectionSlug, false, query);
       }
 
       const mapped = data.results.map((raw: any) => mapNewsDataToArticle(raw, sectionSlug));
@@ -122,8 +125,8 @@ export async function getNews(sectionSlug: SectionSlug = "front-page", tryDomain
     return null;
   } catch (error) {
     console.error("Failed to fetch from NewsData:", error);
-    if (sectionSlug === "india" && tryDomainPref) {
-      return getNews(sectionSlug, false);
+    if (sectionSlug === "india" && tryDomainPref && !query) {
+      return getNews(sectionSlug, false, query);
     }
     return null;
   }
@@ -166,7 +169,7 @@ function mapRapidApiToArticle(data: any, sectionSlug: SectionSlug): Article {
   };
 }
 
-export async function fetchFromTheHinduRapidAPI() {
+export async function fetchFromTheHinduRapidAPI(query?: string) {
   if (!RAPIDAPI_KEY) {
     return null;
   }
@@ -191,10 +194,15 @@ export async function fetchFromTheHinduRapidAPI() {
 
     if (articlesArray && Array.isArray(articlesArray)) {
       const mapped = articlesArray.map((raw: any) => mapRapidApiToArticle(raw, "india"));
+      let filtered = mapped;
+      if (query) {
+        const q = query.toLowerCase();
+        filtered = mapped.filter(a => a.headline.toLowerCase().includes(q) || a.deck.toLowerCase().includes(q));
+      }
 
       const uniqueMapped: Article[] = [];
       const seenHeadlines = new Set<string>();
-      for (const article of mapped) {
+      for (const article of filtered) {
         const norm = normalizeTitle(article.headline);
         if (!seenHeadlines.has(norm)) {
           seenHeadlines.add(norm);
@@ -224,7 +232,7 @@ function shuffleArray<T>(array: T[]): T[] {
   return shuffled;
 }
 
-export async function getBestAvailableNews(sectionSlug: SectionSlug = "front-page"): Promise<Article[]> {
+export async function getBestAvailableNews(sectionSlug: SectionSlug = "front-page", tryDomainPref: boolean = true, query?: string): Promise<Article[]> {
   const combined: Article[] = [];
   const seen = new Set<string>();
 
@@ -240,7 +248,7 @@ export async function getBestAvailableNews(sectionSlug: SectionSlug = "front-pag
     }
   };
 
-  let liveNews = await getNews(sectionSlug);
+  let liveNews = await getNews(sectionSlug, tryDomainPref, query);
   if (liveNews) {
     console.log(`${sectionSlug} section: served from newsdata.io`);
     addArticles(liveNews);
@@ -249,7 +257,7 @@ export async function getBestAvailableNews(sectionSlug: SectionSlug = "front-pag
   if (combined.length >= 3) return combined;
 
   if (sectionSlug === "india") {
-    liveNews = await fetchFromTheHinduRapidAPI();
+    liveNews = await fetchFromTheHinduRapidAPI(query);
     if (liveNews) {
       console.log(`${sectionSlug} section: served from The Hindu RapidAPI fallback (supplemented)`);
       addArticles(liveNews);
@@ -263,8 +271,22 @@ export async function getBestAvailableNews(sectionSlug: SectionSlug = "front-pag
     ? articles.filter(a => parseInt(a.id) < 5000) 
     : articles.filter(a => a.section === sectionSlug);
 
-  addArticles(shuffleArray(mockArticles));
+  let finalMocks = mockArticles;
+  if (query) {
+    const q = query.toLowerCase();
+    finalMocks = mockArticles.filter(a => 
+      a.subcategory?.toLowerCase() === q || 
+      a.headline.toLowerCase().includes(q) || 
+      a.deck.toLowerCase().includes(q)
+    );
+  }
+
+  addArticles(shuffleArray(finalMocks));
   return combined;
+}
+
+export async function fetchIndiaSubcategoryNews(subcategory: string): Promise<Article[]> {
+  return getBestAvailableNews("india", true, subcategory);
 }
 
 export async function fetchLiveNewsFeed(section?: string): Promise<Article[]> {
@@ -323,4 +345,55 @@ export async function fetchSearch(query: string): Promise<Article[]> {
     a.headline.toLowerCase().includes(q) || 
     a.deck.toLowerCase().includes(q)
   );
+}
+
+// Global Intelligence Center Additions
+export async function getGlobalArticleCounts(): Promise<Record<string, number>> {
+  // In a real implementation this would aggregate from the DB/API.
+  // We'll mock a realistic distribution for the interactive heatmap.
+  return {
+    "United States": 145,
+    "India": 112,
+    "China": 98,
+    "United Kingdom": 76,
+    "France": 54,
+    "Germany": 48,
+    "Japan": 67,
+    "Russia": 89,
+    "Ukraine": 65,
+    "Israel": 78,
+    "Palestine": 70,
+    "Brazil": 34,
+    "South Africa": 22,
+    "Australia": 41,
+    "Canada": 38,
+    "Mexico": 29,
+    "South Korea": 45,
+    "Taiwan": 33,
+    "Iran": 55,
+    "Saudi Arabia": 37,
+    "United Arab Emirates": 25,
+    "Indonesia": 31,
+    "Pakistan": 44,
+    "Egypt": 28,
+    "Nigeria": 19
+  };
+}
+
+export async function getGlobalBreakingCounts(): Promise<Record<string, number>> {
+  // In a real implementation this would count articles with isBreaking=true grouped by country.
+  // Mocking realistic current events hotspots.
+  return {
+    "United States": 3,
+    "India": 2,
+    "China": 1,
+    "Russia": 4,
+    "Ukraine": 3,
+    "Israel": 5,
+    "Palestine": 4,
+    "United Kingdom": 1,
+    "France": 1,
+    "Iran": 2,
+    "Taiwan": 1
+  };
 }

@@ -33,6 +33,7 @@ export interface Article {
   deck: string;
   author: Author;
   section: SectionSlug;
+  subcategory?: string;
   publishedAt: string;
   readingTime: number;
   image: string;

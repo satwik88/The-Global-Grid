@@ -5,6 +5,7 @@ import { formatEditionDate, getEditionNumber, isWeekendEdition } from "@/lib/uti
 import { NAV_SECTIONS } from "@/lib/sections";
 import { GlobalPulse } from "./GlobalPulse";
 import { GlobeSeal } from "./GlobeSeal";
+import { IndiaMegaMenu } from "./IndiaMegaMenu";
 
 import { useTheme } from "@/lib/context/ThemeContext";
 import { RefreshCcw, Sun, Moon } from "lucide-react";
@@ -131,26 +132,36 @@ export function Masthead({ showNav = true, locations }: MastheadProps) {
         {showNav && (
           <nav className="mt-4 no-print" aria-label="Main sections">
             <ul className="flex flex-nowrap md:flex-wrap items-center justify-start md:justify-center gap-x-1 md:gap-y-2 ui-text overflow-x-auto md:overflow-x-visible whitespace-nowrap md:whitespace-normal [scrollbar-width:none] [&::-webkit-scrollbar]:hidden px-1 md:px-0">
-              {NAV_SECTIONS.map((section, i) => (
-                <li key={section.slug + section.href} className="flex items-center shrink-0">
-                  {i > 0 && (
-                    <span className="mx-2 text-ink-secondary select-none">|</span>
-                  )}
-                  <Link
-                    href={section.href}
-                    className="hover:text-accent transition-colors duration-200 px-1"
-                  >
-                    {section.label.toUpperCase()}
-                  </Link>
-                </li>
-              ))}
+              {NAV_SECTIONS.map((section, i) => {
+                if (section.slug === "india") {
+                  return (
+                    <li key={section.slug} className="flex items-center shrink-0">
+                      {i > 0 && <span className="mx-2 text-ink-secondary select-none">|</span>}
+                      <IndiaMegaMenu />
+                    </li>
+                  );
+                }
+                return (
+                  <li key={section.slug + section.href} className="flex items-center shrink-0">
+                    {i > 0 && (
+                      <span className="mx-2 text-ink-secondary select-none">|</span>
+                    )}
+                    <Link
+                      href={section.href}
+                      className="hover:text-accent transition-colors duration-200 px-1"
+                    >
+                      {section.label.toUpperCase()}
+                    </Link>
+                  </li>
+                );
+              })}
               <li className="flex items-center shrink-0">
                 <span className="mx-2 text-ink-secondary select-none">|</span>
                 <Link
-                  href="/archive"
+                  href="/world-map"
                   className="hover:text-accent transition-colors duration-200 px-1"
                 >
-                  ARCHIVE
+                  WORLD MAP
                 </Link>
               </li>
             </ul>
