@@ -25,8 +25,11 @@ interface RawRapidApiItem {
   summary?: string;
   source?: string;
   link?: string;
+  url?: string;
   image?: string;
+  imageUrl?: string;
   pubDate?: string;
+  publishedAt?: string;
 }
 
 const API_KEY = process.env.NEWSDATA_API_KEY;
@@ -80,7 +83,7 @@ function mapNewsDataToArticle(data: RawNewsDataItem, sectionSlug: SectionSlug): 
       role: "Correspondent",
     },
     section: sectionSlug,
-    publishedAt: new Date(data.pubDate).toISOString(),
+    publishedAt: data.pubDate ? new Date(data.pubDate).toISOString() : new Date().toISOString(),
     updatedAt: data.pubDate ? getRelativeTime(data.pubDate) : undefined,
     isBreaking: data.pubDate ? isRecent(data.pubDate, 4) : false, 
     readingTime: readingTime,
