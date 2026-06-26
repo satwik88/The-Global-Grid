@@ -71,8 +71,8 @@ export function CurrencyChart({ countryName, ticker }: { countryName: string; ti
   const strokeColor = isPositive ? "#15803d" : "var(--accent)";
 
   // Format date for tooltip and axis
-  const dateFormatter = (tickItem: number) => {
-    const d = new Date(tickItem);
+  const dateFormatter = (tickItem: number | string) => {
+    const d = new Date(typeof tickItem === "string" ? parseInt(tickItem, 10) : tickItem);
     return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
   };
 
@@ -139,8 +139,14 @@ export function CurrencyChart({ countryName, ticker }: { countryName: string; ti
                 borderRadius: "0px",
                 boxShadow: "0 4px 6px var(--paper-shadow)"
               }}
-              labelFormatter={dateFormatter}
-              formatter={(value: number) => [`₹${value.toFixed(4)}`, "Rate"]}
+              labelFormatter={(label) => {
+                const ms = typeof label === "number" ? label : parseInt(String(label), 10);
+                return new Date(ms).toLocaleDateString(undefined, { month: "short", day: "numeric" });
+              }}
+              formatter={(value) => {
+                const num = typeof value === "number" ? value : parseFloat(String(value));
+                return [`₹${num.toFixed(4)}`, "Rate"] as [string, string];
+              }}
               isAnimationActive={false}
             />
             <ReferenceLine y={data.chartData[0]?.price} stroke="var(--ink-secondary)" strokeDasharray="3 3" opacity={0.5} />

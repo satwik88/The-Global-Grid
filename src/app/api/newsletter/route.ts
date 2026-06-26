@@ -37,13 +37,13 @@ export async function POST(request: Request) {
       const fileData = fs.readFileSync(filePath, 'utf-8');
       try {
         subscribers = JSON.parse(fileData);
-      } catch (e) {
+      } catch {
         subscribers = [];
       }
     }
 
     // Check for duplicate email
-    const existingIndex = subscribers.findIndex((sub: any) => sub.email === email);
+    const existingIndex = subscribers.findIndex((sub: { email: string; preferences: string[] }) => sub.email === email);
     if (existingIndex > -1) {
       // Update preferences
       subscribers[existingIndex].preferences = Array.from(new Set([...subscribers[existingIndex].preferences, ...preferences]));

@@ -20,7 +20,7 @@ export default function WorldMapWrapper({
   const [currentMode, setCurrentMode] = useState<MapMode>(initialMode);
   const [articleCounts, setArticleCounts] = useState<Record<string, number>>({});
   const [breakingCounts, setBreakingCounts] = useState<Record<string, number>>({});
-  const [currencyData, setCurrencyData] = useState<Record<string, any>>({});
+  const [currencyData, setCurrencyData] = useState<Record<string, { changePercent: number; currentRate: number; symbol: string }>>({});
 
   useEffect(() => {
     // In a real app we'd fetch this from our API

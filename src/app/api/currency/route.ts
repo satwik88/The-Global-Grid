@@ -37,7 +37,7 @@ export async function GET(request: Request) {
         time: ts * 1000, // Convert to milliseconds
         price: closePrices[i]
       }))
-      .filter((point: any) => point.price !== null && point.price !== undefined);
+      .filter((point: { time: number; price: number | null | undefined }) => point.price !== null && point.price !== undefined);
 
     const meta = result.meta;
     const currentPrice = meta.regularMarketPrice;

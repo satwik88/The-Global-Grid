@@ -28,16 +28,15 @@ const WorldMapInteractive = ({
 }: WorldMapInteractiveProps) => {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
-  const [hoveredGeo, setHoveredGeo] = useState<any>(null);
+  const [hoveredGeo, setHoveredGeo] = useState<{ properties: { name: string } } | null>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const handleCountryClick = (geo: any) => {
+  const handleCountryClick = (geo: { properties: { name: string } }) => {
     const countryName = geo.properties.name;
     if (countryName) {
-      // Use the region route, fall back to simple lowercase hyphenated slug
       const slug = countryName.toLowerCase().replace(/\s+/g, '-');
       router.push(`/region/${slug}`, { scroll: false });
     }

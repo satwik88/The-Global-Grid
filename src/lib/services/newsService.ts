@@ -4,6 +4,31 @@ import { isRecent, getRelativeTime } from "@/lib/utils/time";
 import { normalizeTitle } from "@/lib/utils/dedup";
 import type { Article, SectionSlug } from "@/lib/types";
 
+// Raw API response shapes — typed so we never use `any`
+interface RawNewsDataItem {
+  article_id: string;
+  title: string;
+  description?: string;
+  content?: string;
+  creator?: string[];
+  source_id?: string;
+  link?: string;
+  image_url?: string;
+  pubDate?: string;
+  keywords?: string[];
+  country?: string[];
+}
+
+interface RawRapidApiItem {
+  title: string;
+  description?: string;
+  summary?: string;
+  source?: string;
+  link?: string;
+  image?: string;
+  pubDate?: string;
+}
+
 const API_KEY = process.env.NEWSDATA_API_KEY;
 const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY;
 
@@ -28,7 +53,7 @@ function mapSectionToCategory(section: string): { category: string, country?: st
   }
 }
 
-function mapNewsDataToArticle(data: any, sectionSlug: SectionSlug): Article {
+function mapNewsDataToArticle(data: RawNewsDataItem, sectionSlug: SectionSlug): Article {
   const authorName = (data.creator && data.creator.length > 0) ? data.creator[0] : (data.source_id || "Staff Writer");
 
   let textContent = data.description || data.title || "";
@@ -104,7 +129,7 @@ export async function getNews(sectionSlug: SectionSlug = "front-page", tryDomain
         return getNews(sectionSlug, false, query);
       }
 
-      const mapped = data.results.map((raw: any) => mapNewsDataToArticle(raw, sectionSlug));
+      const mapped = data.results.map((raw: RawNewsDataItem) => mapNewsDataToArticle(raw, sectionSlug));
 
       const uniqueMapped: Article[] = [];
       const seenHeadlines = new Set<string>();
@@ -132,10 +157,10 @@ export async function getNews(sectionSlug: SectionSlug = "front-page", tryDomain
   }
 }
 
-function mapRapidApiToArticle(data: any, sectionSlug: SectionSlug): Article {
+function mapRapidApiToArticle(data: RawRapidApiItem, sectionSlug: SectionSlug): Article {
   const authorName = data.source || "The Hindu";
 
-  let textContent = data.description || data.summary || data.title || "";
+  const textContent = data.description || data.summary || data.title || "";
 
   const wordCount = textContent.split(" ").length;
   const readingTime = Math.max(1, Math.ceil(wordCount / 200));
@@ -193,7 +218,7 @@ export async function fetchFromTheHinduRapidAPI(query?: string) {
     const articlesArray = Array.isArray(data) ? data : data.articles || data.data;
 
     if (articlesArray && Array.isArray(articlesArray)) {
-      const mapped = articlesArray.map((raw: any) => mapRapidApiToArticle(raw, "india"));
+      const mapped = articlesArray.map((raw: RawRapidApiItem) => mapRapidApiToArticle(raw, "india"));
       let filtered = mapped;
       if (query) {
         const q = query.toLowerCase();
