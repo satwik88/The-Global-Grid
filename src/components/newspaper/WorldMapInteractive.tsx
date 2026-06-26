@@ -7,7 +7,7 @@ import { Tooltip } from "react-tooltip";
 import { MapMode } from "./MapModeSelector";
 import "react-tooltip/dist/react-tooltip.css";
 
-const geoUrl = "/features.json";
+import geoUrl from "../../../public/features.json";
 
 interface WorldMapInteractiveProps {
   currentMode: MapMode;
