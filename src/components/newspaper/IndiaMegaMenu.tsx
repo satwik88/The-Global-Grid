@@ -106,7 +106,6 @@ export function IndiaMegaMenu() {
       {!isMobile && isOpen && (
         <div 
           className="absolute top-[calc(100%+0.5rem)] left-0 md:left-auto md:-left-4 z-50 w-[800px] bg-paper text-ink shadow-2xl border border-accent/20 animate-in fade-in slide-in-from-top-2 duration-200"
-          role="menu"
         >
           {/* Top golden accent bar */}
           <div className="absolute top-0 left-0 w-full h-1 bg-accent" />
@@ -239,7 +238,7 @@ export function IndiaMegaMenu() {
             <h2 className="font-[family-name:var(--font-playfair)] text-2xl text-ink font-bold uppercase tracking-widest">
               India Hub
             </h2>
-            <button onClick={closeMenu} className="p-2 text-ink hover:text-accent transition-colors">
+            <button onClick={closeMenu} aria-label="Close menu" title="Close menu" className="p-2 text-ink hover:text-accent transition-colors">
               <X size={24} />
             </button>
           </div>

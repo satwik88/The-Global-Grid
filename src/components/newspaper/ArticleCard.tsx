@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+
 import { SafeImage } from "@/components/ui/SafeImage";
 import type { Article } from "@/lib/types";
 import { getSectionLabel } from "@/lib/sections";
@@ -92,7 +92,7 @@ export function ArticleCard({ article, variant = "standard" }: ArticleCardProps)
         </Link>
       </h3>
       <div className="relative mt-3 flex-grow">
-        <p className="font-[family-name:var(--font-inter)] text-base text-ink-secondary text-justify-print m-0 overflow-hidden" style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' }}>
+        <p className="font-[family-name:var(--font-inter)] text-base text-ink-secondary text-justify-print m-0 overflow-hidden line-clamp-3">
           {article.deck}
         </p>
         <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-paper to-transparent pointer-events-none" />

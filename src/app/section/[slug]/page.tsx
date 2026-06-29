@@ -54,30 +54,25 @@ export default async function SectionPage({ params }: Props) {
       <>
         <Masthead />
         <main
-          className="min-h-screen py-10 px-4 md:px-8"
-          style={{
-            background: "linear-gradient(180deg, #0a0806 0%, #100e0b 60%, #0a0806 100%)",
-          }}
+          className="min-h-screen py-10 px-4 md:px-8 bg-[linear-gradient(180deg,#0a0806_0%,#100e0b_60%,#0a0806_100%)]"
         >
           <div className="max-w-7xl mx-auto">
             {/* Section header */}
-            <header className="mb-10 pb-6 border-b" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
+            <header className="mb-10 pb-6 border-b border-white/10">
               <div className="flex items-center gap-3 mb-2">
-                <Zap size={20} style={{ color: "#c8a96e" }} />
+                <Zap size={20} className="text-[#c8a96e]" />
                 <span
-                  className="text-xs font-bold uppercase tracking-[0.25em]"
-                  style={{ color: "#c8a96e" }}
+                  className="text-xs font-bold uppercase tracking-[0.25em] text-[#c8a96e]"
                 >
                   The Global Grid
                 </span>
               </div>
               <h1
-                className="font-[family-name:var(--font-playfair)] text-4xl md:text-6xl font-bold tracking-tight"
-                style={{ color: "#f0ead6" }}
+                className="font-[family-name:var(--font-playfair)] text-4xl md:text-6xl font-bold tracking-tight text-[#f0ead6]"
               >
                 Grid Intelligence
               </h1>
-              <p className="mt-2 text-sm" style={{ color: "#6b6152" }}>
+              <p className="mt-2 text-sm text-[#6b6152]">
                 Curated strategic intelligence and geopolitical analysis.
               </p>
             </header>
@@ -100,8 +95,7 @@ export default async function SectionPage({ params }: Props) {
 
             {sectionArticles.length === 0 && (
               <p
-                className="text-center py-20 text-sm tracking-widest uppercase"
-                style={{ color: "#6b6152" }}
+                className="text-center py-20 text-sm tracking-widest uppercase text-[#6b6152]"
               >
                 No intelligence dispatches available.
               </p>

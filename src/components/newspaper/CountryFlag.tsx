@@ -18,17 +18,17 @@ export function CountryFlag({ countryName, className = "", width = 24, height = 
   ];
   
   if (!supportedFlags.includes(slug)) {
-    return <div className={`bg-border ${className}`} style={{ width, height }} />;
+    return <svg className={`bg-border ${className}`} width={width} height={height} />;
   }
 
   return (
-    <div className={`relative overflow-hidden border border-border inline-block ${className}`} style={{ width, height }}>
+    <div className={`relative overflow-hidden border border-border inline-block leading-none ${className}`}>
       <Image
         src={`/flags/${slug}.svg`}
         alt={`${countryName} flag`}
-        fill
+        width={width}
+        height={height}
         className="object-cover"
-        sizes={`${width}px`}
       />
     </div>
   );

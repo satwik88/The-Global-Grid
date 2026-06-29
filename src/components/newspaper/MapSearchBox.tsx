@@ -24,7 +24,7 @@ export function MapSearchBox({ defaultQuery = "" }: { defaultQuery?: string }) {
         onChange={(e) => setQuery(e.target.value)}
         className="w-full bg-transparent p-3 outline-none ui-text text-lg placeholder:text-ink/40"
       />
-      <button type="submit" className="p-3 text-ink hover:text-accent transition-colors">
+      <button type="submit" aria-label="Search country" title="Search country" className="p-3 text-ink hover:text-accent transition-colors">
         <Search size={24} />
       </button>
     </form>

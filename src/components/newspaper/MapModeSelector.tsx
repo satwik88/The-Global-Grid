@@ -17,7 +17,7 @@ export function MapModeSelector({ currentMode, onModeChange }: MapModeSelectorPr
   ] as const;
 
   return (
-    <div className="flex border border-[#3a3020]" style={{ backgroundColor: "#1a1410" }}>
+    <div className="flex border border-[#3a3020] bg-[#1a1410]">
       {modes.map((mode) => {
         const Icon = mode.icon;
         const isActive = currentMode === mode.id;
@@ -26,12 +26,7 @@ export function MapModeSelector({ currentMode, onModeChange }: MapModeSelectorPr
           <button
             key={mode.id}
             onClick={() => onModeChange(mode.id)}
-            style={{
-              backgroundColor: isActive ? "#c8a96e" : "transparent",
-              color: isActive ? "#1a1410" : "#d4c5a0",
-              borderRight: "1px solid #3a3020",
-            }}
-            className="flex-1 flex items-center justify-center gap-2 py-3 px-4 text-xs uppercase tracking-widest font-bold transition-all duration-200 last:border-r-0 hover:brightness-125"
+            className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 text-xs uppercase tracking-widest font-bold transition-all duration-200 border-r border-[#3a3020] last:border-r-0 hover:brightness-125 ${isActive ? 'bg-[#c8a96e] text-[#1a1410]' : 'bg-transparent text-[#d4c5a0]'}`}
           >
             <Icon size={15} />
             <span className="hidden sm:inline">{mode.label}</span>
