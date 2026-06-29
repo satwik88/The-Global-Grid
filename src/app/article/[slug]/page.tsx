@@ -5,6 +5,8 @@ import { SafeImage } from "@/components/ui/SafeImage";
 import { getSectionLabel } from "@/lib/sections";
 import { Masthead } from "@/components/newspaper/Masthead";
 import { Footer } from "@/components/newspaper/Footer";
+import { ShareButtons } from "@/components/newspaper/ShareButtons";
+import { BookmarkButton } from "@/components/newspaper/BookmarkButton";
 
 export const dynamic = 'force-dynamic';
 
@@ -53,6 +55,14 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                   <span className="text-accent">{article.updatedAt}</span>
                 </>
               )}
+            </div>
+            
+            <div className="flex items-center justify-between flex-wrap gap-4 py-4 border-y border-border mt-6">
+              <ShareButtons url={`/article/${article.slug}`} headline={article.headline} />
+              <div className="flex items-center gap-2">
+                <span className="text-xs uppercase tracking-widest font-bold text-ink-secondary">Save:</span>
+                <BookmarkButton article={article} />
+              </div>
             </div>
           </header>
 

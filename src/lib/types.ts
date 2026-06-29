@@ -10,7 +10,8 @@ export type SectionSlug =
   | "opinion"
   | "india"
   | "grid-intelligence"
-  | "games";
+  | "games"
+  | "reading-list";
 
 export interface Section {
   slug: SectionSlug;

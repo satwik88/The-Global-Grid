@@ -1,57 +1,81 @@
 "use client";
 
-import Link from "next/link";
-import { Bookmark } from "lucide-react";
-import { useNewspaper } from "@/lib/context/newspaper-context";
-import { getArticleBySlug } from "@/lib/content/articles";
+import { useState, useEffect } from "react";
+import { Bookmark, BookmarkCheck } from "lucide-react";
 
-export function BookmarkButton({ slug }: { slug: string }) {
-  const { toggleBookmark, isBookmarked } = useNewspaper();
+interface BookmarkButtonProps {
+  article: {
+    slug: string;
+    headline: string;
+    section: string;
+    image?: string;
+    heroImage?: string;
+    deck?: string;
+    publishedAt: string;
+    readingTime?: number;
+    author?: { name: string };
+  };
+  className?: string;
+}
+
+export function BookmarkButton({ article, className = "" }: BookmarkButtonProps) {
+  const [isSaved, setIsSaved] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    try {
+      const saved = localStorage.getItem("gg-saved-articles");
+      if (saved) {
+        const articles = JSON.parse(saved);
+        if (articles.some((a: any) => a.slug === article.slug)) {
+          setIsSaved(true);
+        }
+      }
+    } catch (e) {
+      console.error("Failed to read bookmarks", e);
+    }
+  }, [article.slug]);
+
+  const toggleBookmark = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    setIsAnimating(true);
+    setTimeout(() => setIsAnimating(false), 300);
+
+    try {
+      const saved = localStorage.getItem("gg-saved-articles");
+      let articles = saved ? JSON.parse(saved) : [];
+      
+      if (isSaved) {
+        articles = articles.filter((a: any) => a.slug !== article.slug);
+        setIsSaved(false);
+      } else {
+        articles.push(article);
+        setIsSaved(true);
+      }
+      
+      localStorage.setItem("gg-saved-articles", JSON.stringify(articles));
+      window.dispatchEvent(new Event("gg-bookmarks-updated"));
+    } catch (e) {
+      console.error("Failed to save bookmark", e);
+    }
+  };
+
+  if (!mounted) return null;
 
   return (
     <button
-      onClick={() => toggleBookmark(slug)}
-      className={`flex items-center gap-2 ui-text hover:text-accent transition-colors no-print ${
-        isBookmarked(slug) ? "text-accent" : ""
-      }`}
-      aria-label={isBookmarked(slug) ? "Remove bookmark" : "Bookmark article"}
+      onClick={toggleBookmark}
+      className={`p-1.5 rounded-full bg-paper/80 backdrop-blur-sm border border-border shadow-sm text-ink-secondary hover:text-accent transition-all duration-300 ${
+        isAnimating ? "scale-125" : "scale-100"
+      } ${className}`}
+      aria-label={isSaved ? "Remove from Reading List" : "Save to Reading List"}
+      title={isSaved ? "Remove from Reading List" : "Save to Reading List"}
     >
-      <Bookmark size={14} fill={isBookmarked(slug) ? "currentColor" : "none"} />
-      {isBookmarked(slug) ? "Saved" : "Save"}
+      {isSaved ? <BookmarkCheck size={18} className="text-accent" /> : <Bookmark size={18} />}
     </button>
-  );
-}
-
-export function BookmarksList() {
-  const { bookmarks } = useNewspaper();
-  const articles = bookmarks
-    .map((slug) => getArticleBySlug(slug))
-    .filter(Boolean);
-
-  if (articles.length === 0) {
-    return (
-      <p className="feature-text text-ink-secondary text-center py-12">
-        No saved articles yet. Bookmark stories as you read.
-      </p>
-    );
-  }
-
-  return (
-    <ul className="space-y-4">
-      {articles.map((article) =>
-        article ? (
-          <li key={article.slug} className="border-b border-border pb-4">
-            <Link href={`/article/${article.slug}`} className="group">
-              <h3 className="headline-md group-hover:text-accent transition-colors">
-                {article.headline}
-              </h3>
-              <p className="caption-text mt-1">
-                By {article.author.name} · {article.readingTime} min read
-              </p>
-            </Link>
-          </li>
-        ) : null
-      )}
-    </ul>
   );
 }

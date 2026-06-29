@@ -361,8 +361,14 @@ export async function fetchArticle(slug: string): Promise<Article | undefined> {
 }
 
 export async function fetchSearch(query: string): Promise<Article[]> {
-
   const q = query.toLowerCase();
+  
+  if (q) {
+    const liveResults = await getBestAvailableNews("front-page", false, q);
+    if (liveResults && liveResults.length > 0) {
+      return liveResults;
+    }
+  }
 
   const matches = cachedArticles.filter(a => 
     a.headline.toLowerCase().includes(q) || 

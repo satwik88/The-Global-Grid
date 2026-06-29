@@ -6,6 +6,7 @@ import { NAV_SECTIONS } from "@/lib/sections";
 import { GlobalPulse } from "./GlobalPulse";
 import { GlobeSeal } from "./GlobeSeal";
 import { IndiaMegaMenu } from "./IndiaMegaMenu";
+import { SearchWidget } from "./SearchWidget";
 
 import { useTheme } from "@/lib/context/ThemeContext";
 import { RefreshCcw, Sun, Moon } from "lucide-react";
@@ -163,6 +164,9 @@ export function Masthead({ showNav = true, locations }: MastheadProps) {
                 >
                   WORLD MAP
                 </Link>
+              </li>
+              <li className="flex items-center shrink-0 ml-4">
+                <SearchWidget />
               </li>
             </ul>
           </nav>

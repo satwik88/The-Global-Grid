@@ -1,111 +1,69 @@
-"use client";
-
-import { useState, useEffect, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
-import Link from "next/link";
-import { Search } from "lucide-react";
+import { Suspense } from "react";
 import { Masthead } from "@/components/newspaper/Masthead";
-import { Footer } from "@/components/newspaper/Footer";
-import { searchArticles, trendingSearches } from "@/lib/content/articles";
-import { getSectionLabel } from "@/lib/sections";
+import { ArticleCard } from "@/components/newspaper/ArticleCard";
+import { fetchSearch } from "@/lib/services/newsService";
+import type { Article } from "@/lib/types";
 
-function SearchContent() {
-  const searchParams = useSearchParams();
-  const initialQuery = searchParams.get("q") ?? "";
-  const [query, setQuery] = useState(initialQuery);
-  const [results, setResults] = useState(searchArticles(initialQuery));
+export const metadata = {
+  title: "Search Results | The Global Grid",
+};
 
-  useEffect(() => {
-    setResults(searchArticles(query));
-  }, [query]);
+interface SearchPageProps {
+  searchParams: Promise<{
+    q?: string;
+  }>;
+}
+
+async function SearchResults({ query }: { query: string }) {
+  let articles: Article[] = [];
+  
+  if (query) {
+    articles = await fetchSearch(query);
+  }
 
   return (
-    <>
-      <Masthead />
+    <div className="max-w-7xl mx-auto px-4 md:px-8 py-10">
+      <header className="mb-10 pb-6 border-b border-border">
+        <h1 className="font-[family-name:var(--font-playfair)] text-4xl md:text-5xl font-bold tracking-tight text-ink mb-2">
+          {query ? `Results for: "${query}"` : "Search"}
+        </h1>
+        <p className="ui-text text-ink-secondary">
+          {query ? `${articles.length} article${articles.length !== 1 ? 's' : ''} found` : "Enter a search query to find articles."}
+        </p>
+      </header>
 
-      <main className="mx-auto max-w-3xl px-4 py-8 md:px-8">
-        <header className="text-center mb-10">
-          <h1 className="headline-lg">Search the Archive</h1>
-          <hr className="rule-thin mt-4 max-w-xs mx-auto" />
-        </header>
-
-        <div className="relative mb-8">
-          <Search
-            size={18}
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-ink-secondary"
-          />
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search headlines, topics, authors..."
-            className="w-full border border-border bg-transparent py-3 pl-12 pr-4 body-text focus:outline-none focus:border-accent transition-colors"
-            autoFocus
-          />
+      {query && articles.length === 0 ? (
+        <div className="py-20 text-center">
+          <p className="font-[family-name:var(--font-playfair)] text-2xl text-ink-secondary italic">
+            No articles found for '{query}'
+          </p>
+          <p className="mt-4 ui-text text-ink/60">
+            Try adjusting your search terms or checking for typos.
+          </p>
         </div>
-
-        {!query && (
-          <div className="mb-8">
-            <h2 className="ui-text mb-3">Trending Searches</h2>
-            <div className="flex flex-wrap gap-2">
-              {trendingSearches.map((term) => (
-                <button
-                  key={term}
-                  onClick={() => setQuery(term)}
-                  className="ui-text text-[0.625rem] border border-border px-3 py-1 hover:bg-ink hover:text-paper transition-colors"
-                >
-                  {term}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        <div>
-          {query && (
-            <p className="caption-text mb-4">
-              {results.length} result{results.length !== 1 ? "s" : ""} for &ldquo;{query}&rdquo;
-            </p>
-          )}
-
-          <ul className="space-y-0">
-            {results.map((article) => (
-              <li key={article.slug} className="border-b border-border py-4">
-                <Link href={`/article/${article.slug}`} className="group block">
-                  <span className="ui-text text-accent text-[0.625rem]">
-                    {getSectionLabel(article.section)}
-                  </span>
-                  <h2 className="headline-md mt-1 group-hover:text-accent transition-colors">
-                    {article.headline}
-                  </h2>
-                  <p className="body-text text-sm text-ink-secondary mt-1 line-clamp-2">
-                    {article.deck}
-                  </p>
-                  <p className="caption-text mt-2">
-                    By {article.author.name} · {article.readingTime} min read
-                  </p>
-                </Link>
-              </li>
-            ))}
-          </ul>
-
-          {query && results.length === 0 && (
-            <p className="feature-text text-center text-ink-secondary py-12">
-              No articles found. Try a different search term.
-            </p>
-          )}
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {articles.map((article) => (
+            <ArticleCard key={article.slug} article={article} variant="standard" />
+          ))}
         </div>
-      </main>
-
-      <Footer />
-    </>
+      )}
+    </div>
   );
 }
 
-export default function SearchPage() {
+export default async function SearchPage({ searchParams }: SearchPageProps) {
+  const params = await searchParams;
+  const query = params.q || "";
+
   return (
-    <Suspense>
-      <SearchContent />
-    </Suspense>
+    <div className="min-h-screen bg-paper text-ink transition-colors duration-300">
+      <Masthead showNav={true} />
+      <main>
+        <Suspense fallback={<div className="py-20 text-center ui-text">Searching...</div>}>
+          <SearchResults query={query} />
+        </Suspense>
+      </main>
+    </div>
   );
 }

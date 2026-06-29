@@ -2,6 +2,7 @@ import { Masthead } from "@/components/newspaper/Masthead";
 import { Footer } from "@/components/newspaper/Footer";
 import { ArticleCard } from "@/components/newspaper/ArticleCard";
 import { MarketTracker, WorldClockPanel, IndiaMarketTracker } from "@/components/newspaper/SidebarPanels";
+import { WeatherWidget } from "@/components/newspaper/WeatherWidget";
 import { NewspaperOpening } from "@/components/newspaper/Animations";
 import { PageTurnReader } from "@/components/newspaper/PageTurnReader";
 import {
@@ -307,6 +308,9 @@ export default async function HomePage() {
             </div>
 
             <div className="col-span-3 pl-6 border-l border-border">
+              <div className="mb-8">
+                <WeatherWidget />
+              </div>
               <MarketTracker />
               <IndiaMarketTracker />
               <div className="mt-8">

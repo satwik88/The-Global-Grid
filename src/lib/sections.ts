@@ -9,6 +9,7 @@ export const SECTIONS: Section[] = [
   { slug: "grid-intelligence", label: "Grid Intelligence", href: "/section/grid-intelligence" },
   { slug: "science", label: "Science", href: "/section/science" },
   { slug: "games", label: "Games", href: "/games" },
+  { slug: "reading-list", label: "Reading List", href: "/reading-list" },
 ];
 
 export const NAV_SECTIONS = SECTIONS.filter((s) => s.href !== "/");

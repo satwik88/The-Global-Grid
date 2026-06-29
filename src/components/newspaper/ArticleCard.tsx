@@ -3,6 +3,8 @@ import Link from "next/link";
 import { SafeImage } from "@/components/ui/SafeImage";
 import type { Article } from "@/lib/types";
 import { getSectionLabel } from "@/lib/sections";
+import { BookmarkButton } from "./BookmarkButton";
+import { CardShareButton } from "./CardShareButton";
 
 interface ArticleCardProps {
   article: Article;
@@ -13,6 +15,10 @@ export function ArticleCard({ article, variant = "standard" }: ArticleCardProps)
   if (variant === "featured") {
     return (
       <article className="group relative">
+        <div className="absolute top-2 right-2 z-20 flex items-center gap-2">
+          <CardShareButton url={`/article/${article.slug}`} />
+          <BookmarkButton article={article} />
+        </div>
         <div className="relative aspect-[16/9] mb-4 overflow-hidden">
           <SafeImage
             src={article.heroImage || article.image || ""}
@@ -52,8 +58,12 @@ export function ArticleCard({ article, variant = "standard" }: ArticleCardProps)
 
   if (variant === "compact") {
     return (
-      <article className="group border-b border-border pb-4 mb-4 last:border-0">
-        <Link href={`/article/${article.slug}`} className="block">
+      <article className="group border-b border-border pb-4 mb-4 last:border-0 relative">
+        <div className="absolute top-0 right-0 z-20 flex items-center gap-1">
+          <CardShareButton url={`/article/${article.slug}`} className="!p-1 scale-90" />
+          <BookmarkButton article={article} className="!p-1 scale-90" />
+        </div>
+        <Link href={`/article/${article.slug}`} className="block pr-16">
           <span className="ui-text text-accent text-[0.625rem] flex items-center gap-2">
             {article.isBreaking && <span className="text-[0.55rem] font-bold bg-accent text-paper px-1 py-0.5 uppercase tracking-widest">Breaking</span>}
             {getSectionLabel(article.section)}
@@ -70,6 +80,10 @@ export function ArticleCard({ article, variant = "standard" }: ArticleCardProps)
 
   return (
     <article className="group flex flex-col h-full bg-paper relative">
+      <div className="absolute top-2 right-2 z-20 flex items-center gap-2">
+        <CardShareButton url={`/article/${article.slug}`} />
+        <BookmarkButton article={article} />
+      </div>
       {(article.thumbnailImage || article.image) && (
         <div className="relative aspect-[3/2] mb-4 overflow-hidden flex-shrink-0">
           <SafeImage
