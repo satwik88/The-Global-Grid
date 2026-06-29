@@ -49,6 +49,7 @@ export interface Article {
   relatedSlugs: string[];
   featured?: boolean;
   editorPick?: boolean;
+  sourceUrl?: string;
   aiSummary?: {
     brief: string;
     keyPoints: string[];

@@ -91,6 +91,7 @@ function mapNewsDataToArticle(data: RawNewsDataItem, sectionSlug: SectionSlug): 
     body: bodyParas,
     tags: data.keywords || [sectionSlug],
     relatedSlugs: [],
+    sourceUrl: data.link,
   };
 }
 
@@ -194,6 +195,7 @@ function mapRapidApiToArticle(data: RawRapidApiItem, sectionSlug: SectionSlug): 
     body: bodyParas,
     tags: [sectionSlug],
     relatedSlugs: [],
+    sourceUrl: data.url || data.link,
   };
 }
 

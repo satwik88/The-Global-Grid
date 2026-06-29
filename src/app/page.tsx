@@ -42,6 +42,9 @@ export default async function HomePage() {
   const indiaNews = deduplicate(await fetchLiveNewsFeed("india"));
   const techNews = deduplicate(await fetchLiveNewsFeed("technology"));
   const gridIntelligence = deduplicate(await fetchLiveNewsFeed("grid-intelligence"));
+  const businessNews = deduplicate(await fetchLiveNewsFeed("business"));
+  const aiNews = deduplicate(await fetchLiveNewsFeed("ai"));
+  const scienceNews = deduplicate(await fetchLiveNewsFeed("science"));
 
   const latestNews = deduplicate(await fetchLiveNewsFeed()); 
 
@@ -327,60 +330,29 @@ export default async function HomePage() {
 
           <hr className="rule-thick my-12" />
 
-          <section className="mb-12">
-            <div className="flex items-center justify-between mb-6 pb-2 border-b-2 border-ink">
-              <h2 className="ui-text text-accent text-xl">India Edition</h2>
-              <Link href="/india" className="ui-text hover:text-accent transition-colors uppercase tracking-widest text-sm">Full Coverage →</Link>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 gap-y-10">
-              {indiaNews.slice(0, 8).map((article) => (
-                <div key={article.slug} className="border-t border-border pt-4">
-                  <ArticleCard article={article} variant="compact" />
+          {/* Section Previews */}
+          <div className="flex flex-col gap-16 mb-12">
+            {[
+              { title: "World News", data: worldNews, link: "/section/world" },
+              { title: "India Edition", data: indiaNews, link: "/india" },
+              { title: "Business", data: businessNews, link: "/section/business" },
+              { title: "Technology", data: techNews, link: "/section/technology" },
+              { title: "Artificial Intelligence", data: aiNews, link: "/section/ai" },
+              { title: "Science", data: scienceNews, link: "/section/science" },
+            ].map(section => section.data.length > 0 && (
+              <section key={section.title}>
+                <div className="flex items-center justify-between mb-8 pb-2 border-b-2 border-ink">
+                  <h2 className="ui-text text-accent text-xl">{section.title}</h2>
+                  <Link href={section.link} className="ui-text hover:text-accent transition-colors uppercase tracking-widest text-sm font-bold">Full Coverage →</Link>
                 </div>
-              ))}
-            </div>
-          </section>
-
-          <hr className="rule-thick my-12" />
-
-          <section className="mb-12">
-            <h2 className="ui-text mb-6">Latest Updates</h2>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              {topBriefs.slice(5, 9).map((article) => (
-                <div key={article.slug} className="border-t border-border pt-4">
-                  <ArticleCard article={article} variant="compact" />
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {section.data.slice(0, 3).map((article) => (
+                    <ArticleCard key={article.slug} article={article} variant="standard" />
+                  ))}
                 </div>
-              ))}
-            </div>
-          </section>
-
-          <hr className="rule-thick my-12" />
-
-          <section className="mb-12">
-            <h2 className="ui-text mb-6 text-center">Sections</h2>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-px bg-border border border-border">
-              {[
-                { label: "India", href: "/india" },
-                { label: "World", href: "/section/world" },
-                { label: "Business", href: "/section/business" },
-                { label: "Technology", href: "/section/technology" },
-                { label: "AI", href: "/section/ai" },
-                { label: "Grid Intelligence", href: "/section/grid-intelligence" },
-                { label: "Science", href: "/section/science" },
-                { label: "Culture", href: "/section/culture" },
-                { label: "Travel", href: "/section/travel" },
-                { label: "Opinion", href: "/section/opinion" },
-              ].map((section) => (
-                <Link
-                  key={section.href}
-                  href={section.href}
-                  className="bg-paper p-6 text-center ui-text hover:bg-ink hover:text-paper transition-colors duration-300"
-                >
-                  {section.label}
-                </Link>
-              ))}
-            </div>
-          </section>
+              </section>
+            ))}
+          </div>
         </main>
       </NewspaperOpening>
 

@@ -69,31 +69,39 @@ export function ArticleCard({ article, variant = "standard" }: ArticleCardProps)
   }
 
   return (
-    <article className="group relative flex flex-col h-full">
-      <div className="relative aspect-[3/2] mb-3 overflow-hidden flex-shrink-0">
-        <SafeImage
-          src={article.thumbnailImage || article.image || ""}
-          alt={article.headline}
-          fill
-          className="object-cover grayscale-[30%] group-hover:grayscale-0 transition-all duration-500"
-          sizes="(max-width: 768px) 100vw, 33vw"
-          loading="lazy"
-        />
-      </div>
+    <article className="group flex flex-col h-full bg-paper relative">
+      {(article.thumbnailImage || article.image) && (
+        <div className="relative aspect-[3/2] mb-4 overflow-hidden flex-shrink-0">
+          <SafeImage
+            src={article.thumbnailImage || article.image || ""}
+            alt={article.headline}
+            fill
+            className="object-cover grayscale-[30%] group-hover:grayscale-0 transition-all duration-500"
+            sizes="(max-width: 768px) 100vw, 33vw"
+            loading="lazy"
+          />
+        </div>
+      )}
       <span className="ui-text text-accent text-[0.625rem] flex items-center gap-2">
         {article.isBreaking && <span className="bg-accent text-paper px-1 py-0.5 font-bold uppercase tracking-widest text-[0.55rem]">Breaking</span>}
         {getSectionLabel(article.section)}
       </span>
-      <h3 className="headline-md mt-1 group-hover:text-accent transition-colors duration-300">
+      <h3 className="font-[family-name:var(--font-playfair)] text-xl md:text-2xl lg:text-[1.75rem] font-bold leading-tight mt-2 group-hover:text-accent transition-colors duration-300">
         <Link href={`/article/${article.slug}`} className="after:absolute after:inset-0">
           {article.headline}
         </Link>
       </h3>
-      <p className="body-text text-sm mt-2 text-ink-secondary line-clamp-3 text-justify-print flex-grow">
-        {article.deck}
-      </p>
-      <div className="caption-text mt-3 hover:text-accent transition-colors relative z-10 border-t border-border pt-3">
-        <Link href={`/author/${article.author.slug}`}>By {article.author.name}</Link> · {article.readingTime} min
+      <div className="relative mt-3 flex-grow">
+        <p className="font-[family-name:var(--font-inter)] text-base text-ink-secondary text-justify-print m-0 overflow-hidden" style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' }}>
+          {article.deck}
+        </p>
+        <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-paper to-transparent pointer-events-none" />
+      </div>
+      <div className="mt-3 text-accent font-bold tracking-widest uppercase text-xs z-10 relative">
+        See More &rarr;
+      </div>
+      <div className="caption-text mt-4 text-ink-secondary relative z-10 border-t border-border pt-3">
+        By {article.author.name} · {article.readingTime} min
         {article.updatedAt && <span className="text-accent ml-2">· {article.updatedAt}</span>}
       </div>
     </article>
