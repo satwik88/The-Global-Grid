@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface Clock {
   city: string;
@@ -8,21 +8,31 @@ interface Clock {
 }
 
 export function WorldClockDisplay({ clocks }: { clocks: Clock[] }) {
-  const [times, setTimes] = useState<Record<string, string>>({});
+  const [mounted, setMounted] = useState(false);
+  const clockRefs = useRef<Record<string, HTMLSpanElement | null>>({});
 
   useEffect(() => {
-    function update() {
-      const next: Record<string, string> = {};
-      clocks.forEach(({ city, timezone }) => {
-        next[city] = new Intl.DateTimeFormat("en-US", {
-          timeZone: timezone,
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false,
-        }).format(new Date());
+    setMounted(true);
+    const formatters: Record<string, Intl.DateTimeFormat> = {};
+    clocks.forEach(({ city, timezone }) => {
+      formatters[city] = new Intl.DateTimeFormat("en-US", {
+        timeZone: timezone,
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
       });
-      setTimes(next);
+    });
+
+    function update() {
+      const now = new Date();
+      clocks.forEach(({ city }) => {
+        const el = clockRefs.current[city];
+        if (el) {
+          el.textContent = formatters[city].format(now);
+        }
+      });
     }
+
     update();
     const id = setInterval(update, 1000);
     return () => clearInterval(id);
@@ -35,8 +45,13 @@ export function WorldClockDisplay({ clocks }: { clocks: Clock[] }) {
           <span className="font-[family-name:var(--font-inter)] text-xs uppercase tracking-wider">
             {city}
           </span>
-          <span className="font-[family-name:var(--font-inter)] text-sm tabular-nums">
-            {times[city] ?? "—:—"}
+          <span
+            ref={(el) => {
+              clockRefs.current[city] = el;
+            }}
+            className="font-[family-name:var(--font-inter)] text-sm tabular-nums"
+          >
+            —:—
           </span>
         </li>
       ))}
