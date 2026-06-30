@@ -11,6 +11,7 @@ import { ThemeProvider } from "@/lib/context/ThemeContext";
 import { SearchShortcut } from "@/components/newspaper/SearchShortcut";
 import { PullToRefresh } from "@/components/ui/PullToRefresh";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next";
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -108,6 +109,7 @@ export default function RootLayout({
             </PullToRefresh>
           </NewspaperProvider>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );

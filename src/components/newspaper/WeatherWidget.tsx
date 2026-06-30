@@ -54,7 +54,7 @@ export function WeatherWidget() {
               const geoJson = await geoRes.json();
               finalCity = geoJson.address?.city || geoJson.address?.town || geoJson.address?.village || geoJson.address?.state || "Unknown Location";
             }
-          } catch (e) {
+          } catch {
             finalCity = "Unknown Location";
           }
         }
@@ -65,7 +65,7 @@ export function WeatherWidget() {
           code: current.weathercode,
           city: finalCity || "Unknown Location",
         });
-      } catch (err) {
+      } catch {
         setError("Unable to load weather.");
       }
     };
@@ -76,7 +76,7 @@ export function WeatherWidget() {
           (pos) => {
             fetchWeather(pos.coords.latitude, pos.coords.longitude);
           },
-          (err) => {
+          () => {
             // Fallback to New Delhi if denied or error
             console.warn("Geolocation denied/failed, falling back to New Delhi.");
             fetchWeather(28.6139, 77.2090, "New Delhi");
