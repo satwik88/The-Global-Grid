@@ -112,9 +112,9 @@ export function Masthead({ showNav = true, locations }: MastheadProps) {
         <div className="text-center">
           <Link href="/" className="group inline-flex items-center justify-center gap-2 sm:gap-3 md:gap-5 text-left">
             <GlobeSeal className="w-8 h-8 sm:w-10 sm:h-10 md:w-14 md:h-14 text-ink group-hover:text-accent transition-colors duration-300 shrink-0" />
-            <h1 className="font-[family-name:var(--font-playfair)] text-2xl sm:text-4xl md:text-6xl whitespace-nowrap font-bold tracking-tight text-ink group-hover:text-accent transition-colors duration-300">
+            <div className="font-[family-name:var(--font-playfair)] text-2xl sm:text-4xl md:text-6xl whitespace-nowrap font-bold tracking-tight text-ink group-hover:text-accent transition-colors duration-300">
               THE GLOBAL GRID
-            </h1>
+            </div>
           </Link>
           <p className="font-[family-name:var(--font-cormorant)] text-lg md:text-xl text-ink-secondary mt-1 italic">
             Connecting the World&apos;s Stories

@@ -140,9 +140,9 @@ export default async function HomePage() {
         <div className="mx-auto max-w-screen-xl px-4 md:px-8">
           <div className="grid grid-cols-1 md:grid-cols-6 gap-6 md:gap-8 items-stretch">
             <div className="md:col-span-1 border-b md:border-b-0 md:border-r border-border pb-4 md:pb-0 md:pr-6 flex flex-col justify-start">
-              <h2 className="font-[family-name:var(--font-playfair)] text-3xl font-bold tracking-tight text-accent mb-2">
+              <h1 className="font-[family-name:var(--font-playfair)] text-3xl font-bold tracking-tight text-accent mb-2">
                 Today in the Grid
-              </h2>
+              </h1>
               <p className="font-[family-name:var(--font-inter)] text-sm text-ink-secondary uppercase tracking-widest mb-4">
                 The 5 Stories Defining the World Today
               </p>
