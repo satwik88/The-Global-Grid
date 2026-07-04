@@ -40,7 +40,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: 'The Global Grid',
+    default: 'The Global Grid — The Daily Paper for the Modern World',
     template: '%s | The Global Grid',
   },
   description: 'The daily paper for the modern world. Premium international news across World, Business, Technology, Science, Culture and more.',
