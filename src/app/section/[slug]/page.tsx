@@ -58,7 +58,7 @@ export default async function SectionPage({ params }: Props) {
         >
           <div className="max-w-7xl mx-auto">
             {/* Section header */}
-            <header className="mb-10 pb-6 border-b border-white/10">
+            <header className="mb-4 pb-4 border-b border-white/10">
               <div className="flex items-center gap-3 mb-2">
                 <Zap size={20} className="text-[#c8a96e]" />
                 <span
@@ -79,7 +79,7 @@ export default async function SectionPage({ params }: Props) {
 
             {/* Hero card — full width */}
             {featured && (
-              <div className="mb-8">
+              <div className="mb-4">
                 <IntelligenceCard article={featured} size="large" />
               </div>
             )}
