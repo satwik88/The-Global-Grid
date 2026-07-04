@@ -51,6 +51,7 @@ export interface Article {
   featured?: boolean;
   editorPick?: boolean;
   sourceUrl?: string;
+  publication?: string;
   aiSummary?: {
     brief: string;
     keyPoints: string[];

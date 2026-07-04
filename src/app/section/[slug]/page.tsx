@@ -4,7 +4,7 @@ import { Masthead } from "@/components/newspaper/Masthead";
 import { Footer } from "@/components/newspaper/Footer";
 import { ArticleCard } from "@/components/newspaper/ArticleCard";
 import { IntelligenceCard } from "@/components/newspaper/IntelligenceCard";
-import { fetchLiveNewsFeed } from "@/lib/services/newsService";
+import { fetchNews } from "@/lib/news/fetchNews";
 import { getSectionLabel } from "@/lib/sections";
 import { Zap } from "lucide-react";
 
@@ -32,9 +32,20 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
+  const label = getSectionLabel(slug);
   return {
-    title: `${getSectionLabel(slug)} — The Global Grid`,
-    description: `${getSectionLabel(slug)} section — The Global Grid`,
+    title: `${label} News | The Global Grid`,
+    description: `The latest news and analysis from our ${label} section.`,
+    openGraph: {
+      title: `${label} News | The Global Grid`,
+      description: `The latest news and analysis from our ${label} section.`,
+      images: [{ url: `/og-image.png` }],
+    },
+    twitter: {
+      title: `${label} News | The Global Grid`,
+      description: `The latest news and analysis from our ${label} section.`,
+      images: [`/og-image.png`],
+    },
   };
 }
 
@@ -44,7 +55,7 @@ export default async function SectionPage({ params }: Props) {
 
   const isGridIntelligence = slug === "grid-intelligence";
 
-  const sectionArticles = await fetchLiveNewsFeed(slug);
+  const sectionArticles = await fetchNews(slug as any);
   const featured = sectionArticles[0];
   const rest = sectionArticles.slice(1);
 

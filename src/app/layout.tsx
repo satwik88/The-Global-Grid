@@ -39,24 +39,37 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://theglobalgrid.com"),
   title: {
-    default: "The Global Grid — The Daily Paper for the Modern World",
-    template: "%s | The Global Grid",
+    default: 'The Global Grid',
+    template: '%s | The Global Grid',
   },
-  description:
-    "A premium international digital newspaper combining the elegance of traditional print journalism with modern web technology.",
+  description: 'The daily paper for the modern world. Premium international news across World, Business, Technology, Science, Culture and more.',
+  metadataBase: new URL('https://the-global-grid.vercel.app'),
   openGraph: {
-    title: "The Global Grid",
-    description: "The Daily Paper for the Modern World",
-    type: "website",
-    siteName: "The Global Grid",
+    title: 'The Global Grid',
+    description: 'Premium international news across World, Business, Technology, AI, Science and Culture — updated every hour.',
+    url: 'https://the-global-grid.vercel.app',
+    siteName: 'The Global Grid',
+    images: [
+      {
+        url: 'https://the-global-grid.vercel.app/og',
+        width: 1200,
+        height: 630,
+        alt: 'The Global Grid — The daily paper for the modern world',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
   },
   twitter: {
-    card: "summary_large_image",
-    site: "@theglobalgrid",
-    title: "The Global Grid",
-    description: "The Daily Paper for the Modern World",
+    card: 'summary_large_image',
+    title: 'The Global Grid',
+    description: 'Premium international news across World, Business, Technology, AI, Science and Culture — updated every hour.',
+    images: ['https://the-global-grid.vercel.app/og'],
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 
@@ -72,6 +85,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
+        <link rel="canonical" href="https://the-global-grid.vercel.app" />
         <Script
           id="theme-script"
           strategy="beforeInteractive"

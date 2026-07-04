@@ -5,12 +5,7 @@ import { MarketTracker, WorldClockPanel, IndiaMarketTracker } from "@/components
 import { WeatherWidget } from "@/components/newspaper/WeatherWidget";
 import { NewspaperOpening } from "@/components/newspaper/Animations";
 import { PageTurnReader } from "@/components/newspaper/PageTurnReader";
-import {
-  fetchCuratedLeadStory,
-  fetchSecondaryFeatures,
-  fetchEditorPicks,
-  fetchLiveNewsFeed,
-} from "@/lib/services/newsService";
+import { fetchNews } from "@/lib/news/fetchNews";
 import Link from "next/link";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { normalizeTitle } from "@/lib/utils/dedup";
@@ -34,20 +29,19 @@ export default async function HomePage() {
     });
   };
 
-  const rawMainFeature = await fetchCuratedLeadStory();
-  const mainFeature = rawMainFeature ? deduplicate([rawMainFeature])[0] : null;
-  const secondaryFeatures = deduplicate(await fetchSecondaryFeatures());
-  const editorPicks = deduplicate(await fetchEditorPicks());
+  const generalNews = deduplicate(await fetchNews("front-page", { category: "general", country: "in", pageSize: 40 }));
+  const mainFeature = generalNews[0] || null;
+  const secondaryFeatures = generalNews.slice(1, 9);
+  const editorPicks = generalNews.slice(9, 13);
+  const latestNews = generalNews.slice(13, 23);
 
-  const worldNews = deduplicate(await fetchLiveNewsFeed("world"));
-  const indiaNews = deduplicate(await fetchLiveNewsFeed("india"));
-  const techNews = deduplicate(await fetchLiveNewsFeed("technology"));
-  const gridIntelligence = deduplicate(await fetchLiveNewsFeed("grid-intelligence"));
-  const businessNews = deduplicate(await fetchLiveNewsFeed("business"));
-  const aiNews = deduplicate(await fetchLiveNewsFeed("ai"));
-  const scienceNews = deduplicate(await fetchLiveNewsFeed("science"));
-
-  const latestNews = deduplicate(await fetchLiveNewsFeed()); 
+  const worldNews = deduplicate(await fetchNews("world"));
+  const indiaNews = deduplicate(await fetchNews("india"));
+  const techNews = deduplicate(await fetchNews("technology"));
+  const gridIntelligence = deduplicate(await fetchNews("grid-intelligence"));
+  const businessNews = deduplicate(await fetchNews("business"));
+  const aiNews = deduplicate(await fetchNews("ai"));
+  const scienceNews = deduplicate(await fetchNews("science"));
 
   const breakingNewsItems = latestNews.filter(a => a.isBreaking);
   if (breakingNewsItems.length < 5) {

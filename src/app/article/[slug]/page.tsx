@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { fetchArticle } from "@/lib/services/newsService";
+import { fetchArticle } from "@/lib/news/fetchNews";
+import type { Metadata } from "next";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { getSectionLabel } from "@/lib/sections";
 import { Masthead } from "@/components/newspaper/Masthead";
@@ -9,6 +10,36 @@ import { ShareButtons } from "@/components/newspaper/ShareButtons";
 import { BookmarkButton } from "@/components/newspaper/BookmarkButton";
 
 export const dynamic = 'force-dynamic';
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const article = await fetchArticle(slug);
+
+  if (!article) {
+    return {
+      title: "Article Not Found | The Global Grid",
+    };
+  }
+
+  return {
+    title: `${article.headline} | The Global Grid`,
+    description: article.deck,
+    openGraph: {
+      title: article.headline,
+      description: article.deck,
+      type: "article",
+      publishedTime: article.publishedAt,
+      section: article.section,
+      images: article.image ? [{ url: article.image }] : [{ url: "/og-image.png" }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: article.headline,
+      description: article.deck,
+      images: article.image ? [article.image] : ["/og-image.png"],
+    },
+  };
+}
 
 export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -89,14 +120,14 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
           {/* External Link */}
           {article.sourceUrl && (
-            <div className="mt-12 pt-6 border-t border-border">
+            <div className="mt-12 pt-6 border-t border-border flex justify-center no-print">
               <a 
                 href={article.sourceUrl} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="ui-text text-accent hover:text-ink transition-colors font-bold tracking-widest uppercase text-sm flex items-center gap-2"
+                className="ui-text bg-accent text-paper hover:bg-ink transition-colors duration-300 px-8 py-4 tracking-widest text-sm uppercase font-bold flex items-center gap-2"
               >
-                Read full article at {article.author.name} &rarr;
+                Read full article at {article.publication || article.author.name} &rarr;
               </a>
             </div>
           )}
