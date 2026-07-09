@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const fs = require('fs');
 const file = 'src/lib/content/articles.ts';
 let content = fs.readFileSync(file, 'utf8');

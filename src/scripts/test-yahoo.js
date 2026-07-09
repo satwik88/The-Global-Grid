@@ -1,6 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const https = require('https');
 
-const tickers = ['^GSPC','^FTSE','^N225','^GDAXI','^HSI','GC=F','^NSEI','^BSESN','USDINR=X'];
 const url = `https://query1.finance.yahoo.com/v8/finance/chart/^GSPC`;
 
 const options = {

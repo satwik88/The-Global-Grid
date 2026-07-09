@@ -29,7 +29,7 @@ export function BookmarkButton({ article, className = "" }: BookmarkButtonProps)
       const saved = localStorage.getItem("gg-saved-articles");
       if (saved) {
         const articles = JSON.parse(saved);
-        if (articles.some((a: any) => a.slug === article.slug)) {
+        if (articles.some((a: { slug: string }) => a.slug === article.slug)) {
           setIsSaved(true);
         }
       }
@@ -50,7 +50,7 @@ export function BookmarkButton({ article, className = "" }: BookmarkButtonProps)
       let articles = saved ? JSON.parse(saved) : [];
       
       if (isSaved) {
-        articles = articles.filter((a: any) => a.slug !== article.slug);
+        articles = articles.filter((a: { slug: string }) => a.slug !== article.slug);
         setIsSaved(false);
       } else {
         articles.push(article);

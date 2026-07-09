@@ -3,7 +3,7 @@ import { fetchLiveNewsFeed } from "@/lib/services/newsService";
 
 export async function GET() {
   const sections = ["front-page", "world", "india", "business", "technology", "science", "games"];
-  const report: Record<string, any> = {};
+  const report: Record<string, unknown> = {};
 
   for (const section of sections) {
     try {
@@ -12,8 +12,8 @@ export async function GET() {
         count: articles.length,
         firstHeadline: articles.length > 0 ? articles[0].headline : null,
       };
-    } catch (e: any) {
-      report[section] = { error: e.message };
+    } catch (e: unknown) {
+      report[section] = { error: (e as Error).message };
     }
   }
 

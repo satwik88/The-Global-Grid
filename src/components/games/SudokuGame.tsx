@@ -8,7 +8,6 @@ type Difficulty = "easy" | "medium" | "hard";
 
 export function SudokuGame() {
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
-  const [puzzle, setPuzzle] = useState<number[][]>([]);
   const [solution, setSolution] = useState<number[][]>([]);
   const [userGrid, setUserGrid] = useState<number[][]>([]);
   const [pencilGrid, setPencilGrid] = useState<number[][][]>(
@@ -22,7 +21,6 @@ export function SudokuGame() {
 
   const newGame = useCallback((diff: Difficulty = difficulty) => {
     const { puzzle: p, solution: s } = generateSudoku(diff);
-    setPuzzle(p);
     setSolution(s);
     setUserGrid(p.map((row) => [...row]));
     setFixed(p.map((row) => row.map((cell) => cell !== 0)));
@@ -34,6 +32,7 @@ export function SudokuGame() {
 
   useEffect(() => {
     newGame();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); 
 
   const handleCellClick = (row: number, col: number) => {
@@ -95,6 +94,7 @@ export function SudokuGame() {
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selected, fixed, pencilMode]);
 
   const checkSolution = () => {

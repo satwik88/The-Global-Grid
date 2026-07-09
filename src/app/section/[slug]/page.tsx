@@ -55,7 +55,7 @@ export default async function SectionPage({ params }: Props) {
 
   const isGridIntelligence = slug === "grid-intelligence";
 
-  const sectionArticles = await fetchNews(slug as any);
+  const sectionArticles = await fetchNews(slug as Parameters<typeof fetchNews>[0]);
   const featured = sectionArticles[0];
   const rest = sectionArticles.slice(1);
 

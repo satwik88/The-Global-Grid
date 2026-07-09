@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
-import { TrendingUp, TrendingDown, Minus, Activity } from "lucide-react";
+import { TrendingUp, TrendingDown, Activity } from "lucide-react";
 
 interface ChartDataPoint {
   time: number;

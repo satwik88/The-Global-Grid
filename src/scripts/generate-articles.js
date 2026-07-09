@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const fs = require('fs');
 
 const path = 'c:\\Users\\satwi\\The Global Grid\\src\\lib\\content\\articles.ts';
@@ -33,8 +34,6 @@ sections.forEach(section => {
   }
 });
 const newArticlesStr = ",\n" + newArticles.join(",\n");
-
-const targetRegex = /eved"\\],\\s*\\}\\s*\\];/;
 
 const targetIndex = content.indexOf('export function getArticleBySlug(s');
 

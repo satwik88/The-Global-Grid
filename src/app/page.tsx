@@ -9,13 +9,14 @@ import { fetchNews } from "@/lib/news/fetchNews";
 import Link from "next/link";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { normalizeTitle } from "@/lib/utils/dedup";
+import type { Article } from "@/lib/types";
 
 export const dynamic = 'force-dynamic';
 
 export default async function HomePage() {
   const seenHeadlines = new Set<string>();
 
-  const deduplicate = (articles: any[]) => {
+  const deduplicate = (articles: Article[]) => {
     if (!articles) return [];
     return articles.filter(a => {
       if (!a) return false;
@@ -237,7 +238,7 @@ export default async function HomePage() {
                     <div className="absolute top-0 left-0 w-full h-1 bg-accent" />
                     <h3 className="ui-text mb-4 text-accent">Editor&apos;s Letter</h3>
                     <p className="font-[family-name:var(--font-cormorant)] text-xl italic leading-relaxed text-ink mb-4">
-                      "Today's edition explores the consequences of the new climate accord, unprecedented developments in Indian innovation, and the rapid evolution of global artificial intelligence governance."
+                      &quot;Today&apos;s edition explores the consequences of the new climate accord, unprecedented developments in Indian innovation, and the rapid evolution of global artificial intelligence governance.&quot;
                     </p>
                     <div className="ui-text text-right text-ink-secondary">
                       — Marcus Thorne, Editor-in-Chief

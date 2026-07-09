@@ -35,7 +35,7 @@ async function SearchResults({ query }: { query: string }) {
       {query && articles.length === 0 ? (
         <div className="py-20 text-center">
           <p className="font-[family-name:var(--font-playfair)] text-2xl text-ink-secondary italic">
-            No articles found for '{query}'
+            No articles found for &apos;{query}&apos;
           </p>
           <p className="mt-4 ui-text text-ink/60">
             Try adjusting your search terms or checking for typos.

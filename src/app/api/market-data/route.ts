@@ -36,7 +36,7 @@ export async function GET() {
     }));
 
     return NextResponse.json({ data: results.filter(Boolean) });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch market data' }, { status: 500 });
   }
 }

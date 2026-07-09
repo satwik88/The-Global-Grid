@@ -1,4 +1,4 @@
-import { Globe, Zap, BarChart2, TrendingUp, TrendingDown } from "lucide-react";
+import { Globe, Zap, TrendingUp, TrendingDown } from "lucide-react";
 
 interface GlobalDashboardProps {
   countriesTracked: number;

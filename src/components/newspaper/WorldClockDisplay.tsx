@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 interface Clock {
   city: string;
@@ -8,11 +8,9 @@ interface Clock {
 }
 
 export function WorldClockDisplay({ clocks }: { clocks: Clock[] }) {
-  const [mounted, setMounted] = useState(false);
   const clockRefs = useRef<Record<string, HTMLSpanElement | null>>({});
 
   useEffect(() => {
-    setMounted(true);
     const formatters: Record<string, Intl.DateTimeFormat> = {};
     clocks.forEach(({ city, timezone }) => {
       formatters[city] = new Intl.DateTimeFormat("en-US", {
