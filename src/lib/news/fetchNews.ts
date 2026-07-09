@@ -57,6 +57,10 @@ export async function fetchNews(
       category = "general";
       country = "in";
       break;
+    case "grid-intelligence":
+      category = "general";
+      q = "geopolitics";
+      break;
     default:
       // Default fallback for front-page or unmapped sections
       category = category || "general";
@@ -70,10 +74,24 @@ export async function fetchNews(
     return fallbackToStatic(sectionSlug);
   }
 
-  const url = new URL("https://newsapi.org/v2/top-headlines");
-  if (country) url.searchParams.append("country", country);
-  if (category) url.searchParams.append("category", category);
-  if (q) url.searchParams.append("q", q);
+  const isEverything = !!q;
+  const endpoint = isEverything ? "everything" : "top-headlines";
+  const url = new URL(`https://newsapi.org/v2/${endpoint}`);
+  
+  if (!isEverything && country) {
+    url.searchParams.append("country", country);
+  }
+  if (!isEverything && category) {
+    url.searchParams.append("category", category);
+  }
+  
+  if (q) {
+    url.searchParams.append("q", q);
+    if (isEverything) {
+      url.searchParams.append("sortBy", "publishedAt");
+    }
+  }
+  
   url.searchParams.append("pageSize", (options.pageSize || 20).toString());
   url.searchParams.append("apiKey", NEWS_API_KEY);
 
