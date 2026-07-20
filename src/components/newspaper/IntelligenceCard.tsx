@@ -22,11 +22,11 @@ export function IntelligenceCard({ article, size = "default" }: IntelligenceCard
   return (
     <Link
       href={`/article/${article.slug}`}
-      className="group block relative overflow-hidden rounded-sm bg-[#111] border border-white/10 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent no-underline"
+      className="group block relative overflow-hidden rounded-sm bg-paper border border-border cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent no-underline transition-colors duration-500"
     >
       {/* Image Area — fills top ~65% */}
       <div
-        className={`relative w-full overflow-hidden bg-[linear-gradient(135deg,#1a1410_0%,#0f0d0a_50%,#1a1207_100%)] ${isLarge ? "aspect-[16/8]" : "aspect-[16/10]"}`}
+        className={`relative w-full overflow-hidden bg-ink ${isLarge ? "aspect-[16/8]" : "aspect-[16/10]"}`}
       >
         <SafeImage
           src={article.heroImage || article.image || ""}
@@ -39,7 +39,7 @@ export function IntelligenceCard({ article, size = "default" }: IntelligenceCard
 
         {/* Bottom gradient overlay — bleeds into text area */}
         <div
-          className="absolute inset-0 pointer-events-none bg-[linear-gradient(to_bottom,transparent_30%,rgba(10,8,6,0.6)_70%,rgba(10,8,6,0.95)_100%)]"
+          className="absolute inset-0 pointer-events-none bg-gradient-to-t from-paper via-paper/60 to-transparent transition-colors duration-500"
         />
 
         {/* Breaking / Section tag badge — top left */}
@@ -52,7 +52,7 @@ export function IntelligenceCard({ article, size = "default" }: IntelligenceCard
             </span>
           )}
           <span
-            className="px-2 py-0.5 text-[0.55rem] font-bold uppercase tracking-widest rounded-sm bg-[rgba(200,169,110,0.15)] text-[#c8a96e] border border-[rgba(200,169,110,0.3)]"
+            className="px-2 py-0.5 text-[0.55rem] font-bold uppercase tracking-widest rounded-sm bg-accent/10 text-accent border border-accent/30"
           >
             {getSectionLabel(article.section)}
           </span>
@@ -60,10 +60,10 @@ export function IntelligenceCard({ article, size = "default" }: IntelligenceCard
       </div>
 
       <div
-        className="px-4 pt-3 pb-4 flex flex-col gap-2 bg-[#0f0d0a]"
+        className="px-4 pt-3 pb-4 flex flex-col gap-2 bg-paper transition-colors duration-500"
       >
         <h3
-          className={`font-[family-name:var(--font-playfair)] font-bold leading-snug group-hover:text-[#c8a96e] transition-colors duration-300 text-[#f0ead6] ${
+          className={`font-[family-name:var(--font-playfair)] font-bold leading-snug group-hover:text-accent transition-colors duration-300 text-ink ${
             isLarge ? "text-xl" : "text-base"
           }`}
         >
@@ -72,23 +72,23 @@ export function IntelligenceCard({ article, size = "default" }: IntelligenceCard
 
         {summary && (
           <p
-            className="text-xs leading-relaxed line-clamp-2 text-[#9a8e78]"
+            className="text-xs leading-relaxed line-clamp-2 text-ink-secondary"
           >
             {summary}
           </p>
         )}
 
         <div
-          className="flex items-center justify-between pt-2 border-t border-[rgba(255,255,255,0.08)]"
+          className="flex items-center justify-between pt-2 border-t border-border"
         >
           <span
-            className="flex items-center gap-1.5 text-[0.6rem] uppercase tracking-widest font-bold text-[#6b6152]"
+            className="flex items-center gap-1.5 text-[0.6rem] uppercase tracking-widest font-bold text-ink-secondary"
           >
             <Clock size={10} />
             {article.readingTime} min read
           </span>
           <span
-            className="flex items-center gap-1 text-[0.6rem] uppercase tracking-widest font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-[#c8a96e]"
+            className="flex items-center gap-1 text-[0.6rem] uppercase tracking-widest font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-accent"
           >
             Read Intel <ExternalLink size={10} />
           </span>

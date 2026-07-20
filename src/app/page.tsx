@@ -247,11 +247,11 @@ export default async function HomePage() {
 
                   <hr className="rule-thin my-6" />
 
-                  <div className="bg-ink text-paper p-6 mb-8 mt-6">
+                  <div className="bg-paper text-ink border border-border p-6 mb-8 mt-6 transition-colors duration-500">
                     <h2 className="font-[family-name:var(--font-inter)] text-accent font-bold tracking-widest uppercase mb-1">
                       Grid Intelligence
                     </h2>
-                    <p className="font-[family-name:var(--font-cormorant)] text-sm italic text-paper/80 mb-6 pb-4 border-b border-paper/20">
+                    <p className="font-[family-name:var(--font-cormorant)] text-sm italic text-ink-secondary mb-6 pb-4 border-b border-border">
                       Exclusive Analysis • Deep Reports • Strategic Briefings
                     </p>
                     <div className="flex flex-col gap-6">
@@ -261,7 +261,7 @@ export default async function HomePage() {
                             <h3 className="font-[family-name:var(--font-playfair)] text-xl font-bold leading-tight group-hover:text-accent transition-colors mb-2">
                               {article.headline}
                             </h3>
-                            <p className="font-[family-name:var(--font-inter)] text-xs text-paper/70 line-clamp-3">
+                            <p className="font-[family-name:var(--font-inter)] text-xs text-ink-secondary line-clamp-3">
                               {article.deck}
                             </p>
                           </Link>
