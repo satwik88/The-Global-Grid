@@ -71,21 +71,8 @@ export function WeatherWidget() {
     };
 
     const initWeather = () => {
-      if (typeof window !== "undefined" && "geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition(
-          (pos) => {
-            fetchWeather(pos.coords.latitude, pos.coords.longitude);
-          },
-          () => {
-            // Fallback to New Delhi if denied or error
-            console.warn("Geolocation denied/failed, falling back to New Delhi.");
-            fetchWeather(28.6139, 77.2090, "New Delhi");
-          },
-          { timeout: 5000 }
-        );
-      } else {
-        fetchWeather(28.6139, 77.2090, "New Delhi");
-      }
+      // Use the default location to prevent the browser location prompt
+      fetchWeather(28.6139, 77.2090, "New Delhi");
     };
 
     initWeather();
@@ -120,7 +107,7 @@ export function WeatherWidget() {
           </div>
         </div>
       ) : (
-        <p className="caption-text text-ink-secondary animate-pulse">Detecting location...</p>
+        <p className="caption-text text-ink-secondary animate-pulse">Loading weather...</p>
       )}
     </aside>
   );
