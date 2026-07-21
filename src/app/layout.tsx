@@ -10,6 +10,7 @@ import { NewspaperProvider } from "@/lib/context/newspaper-context";
 import { ThemeProvider } from "@/lib/context/ThemeContext";
 import { SearchShortcut } from "@/components/newspaper/SearchShortcut";
 import { PullToRefresh } from "@/components/ui/PullToRefresh";
+import { OfflineBanner } from "@/components/ui/OfflineBanner";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 
@@ -110,8 +111,11 @@ export default function RootLayout({
             `,
           }}
         />
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#7A1F1F" />
       </head>
       <body className="paper-texture min-h-screen antialiased">
+        <OfflineBanner />
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[200] focus:bg-ink focus:text-paper focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:uppercase focus:tracking-widest"
