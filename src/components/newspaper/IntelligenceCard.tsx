@@ -39,7 +39,7 @@ export function IntelligenceCard({ article, size = "default" }: IntelligenceCard
 
         {/* Bottom gradient overlay — bleeds into text area */}
         <div
-          className="absolute inset-0 pointer-events-none bg-gradient-to-t from-paper via-paper/60 to-transparent transition-colors duration-500"
+          className="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent from-30% via-paper/60 via-70% to-paper to-100% transition-colors duration-500"
         />
 
         {/* Breaking / Section tag badge — top left */}
