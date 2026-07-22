@@ -6,6 +6,7 @@ const withPWA = withPWAInit({
   register: false,
   skipWaiting: true,
   disable: process.env.NODE_ENV === "development",
+  buildExcludes: [/app-build-manifest\.json$/],
   runtimeCaching: [
     {
       urlPattern: /\/article\/.*/,
