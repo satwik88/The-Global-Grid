@@ -11,6 +11,7 @@ import { ThemeProvider } from "@/lib/context/ThemeContext";
 import { SearchShortcut } from "@/components/newspaper/SearchShortcut";
 import { PullToRefresh } from "@/components/ui/PullToRefresh";
 import { OfflineBanner } from "@/components/ui/OfflineBanner";
+import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 
@@ -115,6 +116,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#7A1F1F" />
       </head>
       <body className="paper-texture min-h-screen antialiased">
+        <ServiceWorkerRegister />
         <OfflineBanner />
         <a
           href="#main-content"
