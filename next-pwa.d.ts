@@ -6,8 +6,8 @@ declare module 'next-pwa' {
     disable?: boolean;
     register?: boolean;
     skipWaiting?: boolean;
-    runtimeCaching?: any[];
-    [key: string]: any;
+    runtimeCaching?: unknown[];
+    [key: string]: unknown;
   };
   
   function withPWA(config?: PWAConfig): (nextConfig: NextConfig) => NextConfig;

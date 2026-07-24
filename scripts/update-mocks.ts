@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
-import { fileURLToPath } from 'url';
+import type { Article } from '../src/lib/types';
 
 // Provide __dirname equivalent in ES modules if needed, but since we'll run this with tsx we can just use process.cwd()
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
@@ -38,7 +38,7 @@ function slugify(text: string) {
 async function fetchCategory(category: string, country?: string) {
   let url = `https://newsdata.io/api/1/news?apikey=${API_KEY}&category=${category}&language=en`;
   if (country) url += `&country=${country}`;
-  console.log(`Fetching: ${url.replace(API_KEY, 'API_KEY')}`);
+  console.log(`Fetching: ${url.replace(API_KEY as string, 'API_KEY')}`);
   
   const res = await fetch(url);
   if (!res.ok) {
@@ -53,15 +53,15 @@ async function main() {
   console.log("Starting mock data update...");
   
   // Dynamically import the current articles so we can merge them
-  let allArticles = [];
+  let allArticles: Article[] = [];
   try {
-    const oldArticlesModule = await import('../src/lib/content/articles.ts');
+    const oldArticlesModule = await import('../src/lib/content/articles');
     allArticles = oldArticlesModule.articles || [];
   } catch (err) {
-    console.log("Could not load old articles, starting fresh.", err.message);
+    console.log("Could not load old articles, starting fresh.", (err as Error).message);
   }
   
-  const newArticles: any[] = [];
+  const newArticles: Article[] = [];
   
   for (const sec of SECTIONS) {
     const results = await fetchCategory(sec.category, sec.country);
@@ -101,8 +101,8 @@ async function main() {
   
   // Combine new and old, removing duplicates by slug
   const combined = [...newArticles, ...allArticles];
-  const uniqueSlugs = new Set();
-  const deduped = [];
+  const uniqueSlugs = new Set<string>();
+  const deduped: Article[] = [];
   
   for (const art of combined) {
     if (!uniqueSlugs.has(art.slug)) {
@@ -112,13 +112,13 @@ async function main() {
   }
 
   // Group by section to enforce the sliding window (delete oldest)
-  const bySection: Record<string, any[]> = {};
+  const bySection: Record<string, Article[]> = {};
   for (const art of deduped) {
     if (!bySection[art.section]) bySection[art.section] = [];
     bySection[art.section].push(art);
   }
   
-  const finalArticles = [];
+  const finalArticles: Article[] = [];
   for (const section in bySection) {
     // Sort descending by date
     const sorted = bySection[section].sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
