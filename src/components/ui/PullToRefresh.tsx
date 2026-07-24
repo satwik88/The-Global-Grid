@@ -45,10 +45,12 @@ export function PullToRefresh({ children }: PullToRefreshProps) {
       const distance = Math.min(Math.pow(diff, 0.85), MAX_PULL);
       pullDistanceRef.current = distance;
       
-      if (indicatorRef.current) {
-        indicatorRef.current.style.transform = `translateY(${distance - 50}px)`;
-        indicatorRef.current.style.opacity = Math.min(distance / THRESHOLD, 1).toString();
-      }
+      requestAnimationFrame(() => {
+        if (indicatorRef.current) {
+          indicatorRef.current.style.transform = `translateY(${distance - 50}px)`;
+          indicatorRef.current.style.opacity = Math.min(distance / THRESHOLD, 1).toString();
+        }
+      });
 
       if (distance > THRESHOLD && !isPastThresholdRef.current) {
         isPastThresholdRef.current = true;
@@ -61,10 +63,12 @@ export function PullToRefresh({ children }: PullToRefreshProps) {
       isPulling.current = false;
       pullDistanceRef.current = 0;
       
-      if (indicatorRef.current) {
-        indicatorRef.current.style.transform = `translateY(-100px)`;
-        indicatorRef.current.style.opacity = '0';
-      }
+      requestAnimationFrame(() => {
+        if (indicatorRef.current) {
+          indicatorRef.current.style.transform = `translateY(-100px)`;
+          indicatorRef.current.style.opacity = '0';
+        }
+      });
       
       if (isPastThresholdRef.current) {
         isPastThresholdRef.current = false;
@@ -142,7 +146,7 @@ export function PullToRefresh({ children }: PullToRefreshProps) {
     <>
       <div 
         ref={indicatorRef}
-        className="fixed top-0 left-0 w-full flex justify-center z-[200] pointer-events-none"
+        className="fixed top-0 left-0 w-full flex justify-center z-[200] pointer-events-none will-change-transform"
         style={{ transform: 'translateY(-100px)', opacity: 0 }}
       >
         <div className="bg-paper border border-border shadow-[0_4px_12px_var(--paper-shadow)] rounded-full px-5 py-2.5 flex items-center gap-3">
