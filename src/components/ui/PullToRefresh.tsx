@@ -9,11 +9,15 @@ interface PullToRefreshProps {
 }
 
 export function PullToRefresh({ children }: PullToRefreshProps) {
-  const [pullDistance, setPullDistance] = useState(0);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [errorState, setErrorState] = useState(false);
+  const [isPastThreshold, setIsPastThreshold] = useState(false);
+  
+  const pullDistanceRef = useRef(0);
   const startY = useRef(0);
   const isPulling = useRef(false);
+  const isPastThresholdRef = useRef(false);
+  const indicatorRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
   const MAX_PULL = 120;
@@ -23,6 +27,11 @@ export function PullToRefresh({ children }: PullToRefreshProps) {
     if (window.scrollY === 0 && !isRefreshing) {
       startY.current = e.touches[0].clientY;
       isPulling.current = true;
+      pullDistanceRef.current = 0;
+      
+      if (indicatorRef.current) {
+        indicatorRef.current.style.transition = 'none';
+      }
     }
   }, [isRefreshing]);
 
@@ -34,10 +43,33 @@ export function PullToRefresh({ children }: PullToRefreshProps) {
 
     if (diff > 0) {
       const distance = Math.min(Math.pow(diff, 0.85), MAX_PULL);
-      setPullDistance(distance);
+      pullDistanceRef.current = distance;
+      
+      if (indicatorRef.current) {
+        indicatorRef.current.style.transform = `translateY(${distance - 50}px)`;
+        indicatorRef.current.style.opacity = Math.min(distance / THRESHOLD, 1).toString();
+      }
+
+      if (distance > THRESHOLD && !isPastThresholdRef.current) {
+        isPastThresholdRef.current = true;
+        setIsPastThreshold(true); // Triggers exactly one render to update text
+      } else if (distance <= THRESHOLD && isPastThresholdRef.current) {
+        isPastThresholdRef.current = false;
+        setIsPastThreshold(false); // Triggers exactly one render to update text
+      }
     } else {
       isPulling.current = false;
-      setPullDistance(0);
+      pullDistanceRef.current = 0;
+      
+      if (indicatorRef.current) {
+        indicatorRef.current.style.transform = `translateY(-100px)`;
+        indicatorRef.current.style.opacity = '0';
+      }
+      
+      if (isPastThresholdRef.current) {
+        isPastThresholdRef.current = false;
+        setIsPastThreshold(false);
+      }
     }
   }, []);
 
@@ -45,17 +77,22 @@ export function PullToRefresh({ children }: PullToRefreshProps) {
     if (!isPulling.current) return;
     isPulling.current = false;
 
-    if (pullDistance > THRESHOLD) {
+    const finalDistance = pullDistanceRef.current;
+    
+    if (finalDistance > THRESHOLD) {
       setIsRefreshing(true);
       setErrorState(false);
-      setPullDistance(60); 
+      pullDistanceRef.current = 60;
+      
+      if (indicatorRef.current) {
+        indicatorRef.current.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
+        indicatorRef.current.style.transform = `translateY(10px)`; // 60 - 50
+        indicatorRef.current.style.opacity = '1';
+      }
 
       try {
-
         window.dispatchEvent(new Event("global-grid-refresh"));
-
         await new Promise(resolve => setTimeout(resolve, 500)); 
-
         router.refresh();
       } catch (err) {
         console.error("Failed to refresh", err);
@@ -63,12 +100,27 @@ export function PullToRefresh({ children }: PullToRefreshProps) {
         await new Promise(resolve => setTimeout(resolve, 1500));
       } finally {
         setIsRefreshing(false);
-        setPullDistance(0);
+        setIsPastThreshold(false);
+        isPastThresholdRef.current = false;
+        pullDistanceRef.current = 0;
+        
+        if (indicatorRef.current) {
+          indicatorRef.current.style.transform = `translateY(-100px)`;
+          indicatorRef.current.style.opacity = '0';
+        }
       }
     } else {
-      setPullDistance(0);
+      pullDistanceRef.current = 0;
+      setIsPastThreshold(false);
+      isPastThresholdRef.current = false;
+      
+      if (indicatorRef.current) {
+        indicatorRef.current.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
+        indicatorRef.current.style.transform = `translateY(-100px)`;
+        indicatorRef.current.style.opacity = '0';
+      }
     }
-  }, [pullDistance, router]);
+  }, [router]);
 
   useEffect(() => {
     const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
@@ -86,23 +138,12 @@ export function PullToRefresh({ children }: PullToRefreshProps) {
     }
   }, [handleTouchStart, handleTouchMove, handleTouchEnd]);
 
-  const translateY = isRefreshing ? 60 : pullDistance;
-  const opacity = pullDistance > 0 || isRefreshing ? Math.min(translateY / THRESHOLD, 1) : 0;
-  const indicatorRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (indicatorRef.current) {
-      indicatorRef.current.style.transform = `translateY(${translateY > 0 ? translateY - 50 : -100}px)`;
-      indicatorRef.current.style.transition = isPulling.current ? 'none' : 'transform 0.3s ease-out, opacity 0.3s ease-out';
-      indicatorRef.current.style.opacity = opacity.toString();
-    }
-  }, [translateY, opacity]);
-
   return (
     <>
       <div 
         ref={indicatorRef}
         className="fixed top-0 left-0 w-full flex justify-center z-[200] pointer-events-none"
+        style={{ transform: 'translateY(-100px)', opacity: 0 }}
       >
         <div className="bg-paper border border-border shadow-[0_4px_12px_var(--paper-shadow)] rounded-full px-5 py-2.5 flex items-center gap-3">
           <GlobeSeal 
@@ -113,7 +154,7 @@ export function PullToRefresh({ children }: PullToRefreshProps) {
               ? "Couldn't refresh" 
               : isRefreshing 
                 ? "Refreshing..." 
-                : pullDistance > THRESHOLD 
+                : isPastThreshold 
                   ? "Release to refresh" 
                   : "Pull to refresh"}
           </span>
