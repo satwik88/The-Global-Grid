@@ -40,7 +40,7 @@ let cachedArticles: Article[] = [];
 function stripHtmlAndCss(text: string): string {
   if (!text) return "";
   return text
-    .replace(/<style[^>]*>.*?<\/style>/gs, '') // remove <style> blocks
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/g, '') // remove <style> blocks
     .replace(/<[^>]+>/g, '') // remove HTML tags
     .replace(/\.[a-zA-Z0-9_-]+\s*\{[^}]*\}/g, '') // remove inline CSS class blocks
     .replace(/\s+/g, ' ') // collapse whitespace
