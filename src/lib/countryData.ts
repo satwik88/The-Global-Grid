@@ -15,7 +15,7 @@ export interface CountryIntelligence {
   topStory: string;
 }
 
-export const COUNTRY_DATA: Record<string, CountryIntelligence> = {
+const COUNTRY_DATA: Record<string, CountryIntelligence> = {
   "India": {
     name: "India",
     slug: "india",
@@ -131,7 +131,7 @@ export const COUNTRY_DATA: Record<string, CountryIntelligence> = {
 };
 
 // Aliases for simple maps features.json name matching
-export const COUNTRY_NAME_MAPPINGS: Record<string, string> = {
+const COUNTRY_NAME_MAPPINGS: Record<string, string> = {
   "United States of America": "United States",
   "UK": "United Kingdom",
   "Great Britain": "United Kingdom",

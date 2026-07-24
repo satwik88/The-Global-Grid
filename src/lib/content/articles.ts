@@ -5400,21 +5400,9 @@ export const archiveEditions: ArchiveEdition[] = [
   },
 ];
 
-export const marketData = [
-  { name: "S&P 500", value: "5,842.31", change: "+1.82%", up: true },
-  { name: "FTSE 100", value: "8,291.45", change: "+0.94%", up: true },
-  { name: "Nikkei 225", value: "39,156.78", change: "-0.31%", up: false },
-  { name: "DAX", value: "19,847.22", change: "+1.12%", up: true },
-  { name: "Hang Seng", value: "23,891.56", change: "+0.67%", up: true },
-  { name: "Gold", value: "$2,847.30", change: "+0.45%", up: true },
-];
 
-export const indiaMarketData = [
-  { name: "NIFTY 50", value: "24,852.15", change: "+1.24%", up: true },
-  { name: "SENSEX", value: "81,332.72", change: "+1.31%", up: true },
-  { name: "INR/USD", value: "83.42", change: "-0.05%", up: false },
-  { name: "Gold (India)", value: "Γé╣72,450", change: "+0.80%", up: true },
-];
+
+
 
 export const worldClocks = [
   { city: "London", timezone: "Europe/London" },
@@ -5425,13 +5413,7 @@ export const worldClocks = [
   { city: "S├úo Paulo", timezone: "America/Sao_Paulo" },
 ];
 
-export const trendingSearches = [
-  "Climate Summit",
-  "Quantum Computing",
-  "AI Regulation",
-  "Venice Biennale",
-  "Central Banks",
-];
+
 
 export const dailyRiddles = [
   {

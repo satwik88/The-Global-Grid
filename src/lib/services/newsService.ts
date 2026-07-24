@@ -199,59 +199,7 @@ function mapRapidApiToArticle(data: RawRapidApiItem, sectionSlug: SectionSlug): 
   };
 }
 
-export async function fetchFromTheHinduRapidAPI(query?: string) {
-  if (!RAPIDAPI_KEY) {
-    return null;
-  }
 
-  const url = `https://the-hindu-national-news.p.rapidapi.com/`;
-
-  try {
-    const response = await fetch(url, { 
-      headers: {
-        "X-RapidAPI-Key": RAPIDAPI_KEY,
-        "X-RapidAPI-Host": "the-hindu-national-news.p.rapidapi.com"
-      },
-      next: { revalidate: 900 } 
-    });
-    if (!response.ok) {
-      console.error(`RapidAPI error: ${response.status} ${response.statusText}`);
-      return null;
-    }
-    const data = await response.json();
-
-    const articlesArray = Array.isArray(data) ? data : data.articles || data.data;
-
-    if (articlesArray && Array.isArray(articlesArray)) {
-      const mapped = articlesArray.map((raw: RawRapidApiItem) => mapRapidApiToArticle(raw, "india"));
-      let filtered = mapped;
-      if (query) {
-        const q = query.toLowerCase();
-        filtered = mapped.filter(a => a.headline.toLowerCase().includes(q) || a.deck.toLowerCase().includes(q));
-      }
-
-      const uniqueMapped: Article[] = [];
-      const seenHeadlines = new Set<string>();
-      for (const article of filtered) {
-        const norm = normalizeTitle(article.headline);
-        if (!seenHeadlines.has(norm)) {
-          seenHeadlines.add(norm);
-          uniqueMapped.push(article);
-        }
-      }
-
-      const newMap = new Map(cachedArticles.map(a => [a.id, a]));
-      uniqueMapped.forEach((a: Article) => newMap.set(a.id, a));
-      cachedArticles = Array.from(newMap.values());
-
-      return uniqueMapped;
-    }
-    return null;
-  } catch (error) {
-    console.error("Failed to fetch from RapidAPI:", error);
-    return null;
-  }
-}
 
 function shuffleArray<T>(array: T[]): T[] {
   const shuffled = [...array];
@@ -286,13 +234,7 @@ export async function getBestAvailableNews(sectionSlug: SectionSlug = "front-pag
 
   if (combined.length >= 3) return combined;
 
-  if (sectionSlug === "india") {
-    liveNews = await fetchFromTheHinduRapidAPI(query);
-    if (liveNews) {
-      console.log(`${sectionSlug} section: served from The Hindu RapidAPI fallback (supplemented)`);
-      addArticles(liveNews);
-    }
-  }
+
 
   if (combined.length >= 3) return combined;
 
@@ -323,22 +265,7 @@ export async function fetchLiveNewsFeed(section?: string): Promise<Article[]> {
   return getBestAvailableNews((section as SectionSlug) || "front-page");
 }
 
-export async function fetchCuratedLeadStory(): Promise<Article | null> {
-  const news = await getBestAvailableNews("front-page");
-  return news[0] || null;
-}
 
-export async function fetchEditorPicks(): Promise<Article[]> {
-  const news = await getBestAvailableNews("front-page");
-  if (news.length > 3) return news.slice(1, 4);
-  return news.slice(0, 3);
-}
-
-export async function fetchSecondaryFeatures(): Promise<Article[]> {
-  const news = await getBestAvailableNews("front-page");
-  if (news.length > 7) return news.slice(4, 8);
-  return news.slice(0, 4);
-}
 
 export async function fetchArticle(slug: string): Promise<Article | undefined> {
 
@@ -383,53 +310,4 @@ export async function fetchSearch(query: string): Promise<Article[]> {
   );
 }
 
-// Global Intelligence Center Additions
-export async function getGlobalArticleCounts(): Promise<Record<string, number>> {
-  // In a real implementation this would aggregate from the DB/API.
-  // We'll mock a realistic distribution for the interactive heatmap.
-  return {
-    "United States": 145,
-    "India": 112,
-    "China": 98,
-    "United Kingdom": 76,
-    "France": 54,
-    "Germany": 48,
-    "Japan": 67,
-    "Russia": 89,
-    "Ukraine": 65,
-    "Israel": 78,
-    "Palestine": 70,
-    "Brazil": 34,
-    "South Africa": 22,
-    "Australia": 41,
-    "Canada": 38,
-    "Mexico": 29,
-    "South Korea": 45,
-    "Taiwan": 33,
-    "Iran": 55,
-    "Saudi Arabia": 37,
-    "United Arab Emirates": 25,
-    "Indonesia": 31,
-    "Pakistan": 44,
-    "Egypt": 28,
-    "Nigeria": 19
-  };
-}
 
-export async function getGlobalBreakingCounts(): Promise<Record<string, number>> {
-  // In a real implementation this would count articles with isBreaking=true grouped by country.
-  // Mocking realistic current events hotspots.
-  return {
-    "United States": 3,
-    "India": 2,
-    "China": 1,
-    "Russia": 4,
-    "Ukraine": 3,
-    "Israel": 5,
-    "Palestine": 4,
-    "United Kingdom": 1,
-    "France": 1,
-    "Iran": 2,
-    "Taiwan": 1
-  };
-}

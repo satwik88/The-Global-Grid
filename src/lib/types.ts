@@ -19,7 +19,7 @@ export interface Section {
   href: string;
 }
 
-export interface Author {
+interface Author {
   name: string;
   slug: string;
   role: string;
@@ -58,14 +58,7 @@ export interface Article {
   };
 }
 
-export interface Edition {
-  id: string;
-  date: string;
-  editionNumber: string;
-  type: "daily" | "weekend";
-  headline: string;
-  articleSlugs: string[];
-}
+
 
 export interface ArchiveEdition {
   id: string;

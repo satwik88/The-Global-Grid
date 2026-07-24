@@ -61,8 +61,4 @@ export function NewspaperProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function useNewspaper() {
-  const ctx = useContext(NewspaperContext);
-  if (!ctx) throw new Error("useNewspaper must be used within NewspaperProvider");
-  return ctx;
-}
+
