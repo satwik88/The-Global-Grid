@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
-import type { Article } from '../src/lib/types';
+import type { Article, SectionSlug } from '../src/lib/types';
 
 // Provide __dirname equivalent in ES modules if needed, but since we'll run this with tsx we can just use process.cwd()
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
@@ -83,7 +83,7 @@ async function main() {
           role: "Correspondent",
           expertise: [sec.slug]
         },
-        section: sec.slug,
+        section: sec.slug as SectionSlug,
         publishedAt: item.pubDate || new Date().toISOString(),
         readingTime: Math.max(3, Math.floor((item.content || "").length / 1000)),
         image: item.image_url || "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=1200&q=80",
@@ -131,9 +131,19 @@ async function main() {
 
   console.log(`Final preserved article count: ${finalArticles.length} (Max ${MAX_ARTICLES_PER_SECTION} per section)`);
 
-  // Overwrite the TypeScript file
+  // Overwrite the TypeScript file while preserving other exports
   const outPath = path.resolve(process.cwd(), 'src/lib/content/articles.ts');
-  const fileContent = `import type { Article } from "@/lib/types";\n\nexport const articles: Article[] = ${JSON.stringify(finalArticles, null, 2)};\n`;
+  
+  let bottomHalf = "";
+  if (fs.existsSync(outPath)) {
+    const currentFile = fs.readFileSync(outPath, 'utf8');
+    const match = currentFile.match(/export const archiveEditions[\s\S]+/);
+    if (match) {
+      bottomHalf = '\n\n' + match[0];
+    }
+  }
+
+  const fileContent = `import type { Article, ArchiveEdition } from "@/lib/types";\n\nexport const articles: Article[] = ${JSON.stringify(finalArticles, null, 2)};\n${bottomHalf}`;
   
   fs.writeFileSync(outPath, fileContent, 'utf-8');
   console.log("Successfully updated src/lib/content/articles.ts! All placeholders and old articles have been purged.");

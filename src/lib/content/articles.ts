@@ -1,4 +1,4 @@
-import type { Article } from "@/lib/types";
+import type { Article, ArchiveEdition } from "@/lib/types";
 
 export const articles: Article[] = [
   {
@@ -5340,4 +5340,118 @@ export const articles: Article[] = [
     ],
     "relatedSlugs": []
   }
+];
+
+
+export const archiveEditions: ArchiveEdition[] = [
+  {
+    id: "ed-001",
+    date: "2026-06-16",
+    editionNumber: "001",
+    type: "daily",
+    coverHeadline: "Global Climate Summit Reaches Historic Accord",
+    coverImage: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80",
+    articleCount: 12,
+  },
+  {
+    id: "ed-002",
+    date: "2026-06-15",
+    editionNumber: "365",
+    type: "daily",
+    coverHeadline: "Webb Telescope Detects Water on Distant Exoplanet",
+    coverImage: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80",
+    articleCount: 11,
+  },
+  {
+    id: "ed-003",
+    date: "2026-06-14",
+    editionNumber: "364",
+    type: "weekend",
+    coverHeadline: "The Weekend Edition: Culture & Ideas",
+    coverImage: "https://images.unsplash.com/photo-1513364776144-6096300fbd71?w=800&q=80",
+    articleCount: 14,
+  },
+  {
+    id: "ed-004",
+    date: "2026-06-13",
+    editionNumber: "363",
+    type: "daily",
+    coverHeadline: "Central Banks Align on Monetary Strategy",
+    coverImage: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&q=80",
+    articleCount: 10,
+  },
+  {
+    id: "ed-005",
+    date: "2026-06-12",
+    editionNumber: "362",
+    type: "daily",
+    coverHeadline: "AI Governance Framework Takes Shape",
+    coverImage: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800&q=80",
+    articleCount: 12,
+  },
+  {
+    id: "ed-006",
+    date: "2026-06-11",
+    editionNumber: "361",
+    type: "daily",
+    coverHeadline: "Electric Vehicle Transition Hits Infrastructure Bottleneck",
+    coverImage: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=800&q=80",
+    articleCount: 11,
+  },
+];
+
+export const marketData = [
+  { name: "S&P 500", value: "5,842.31", change: "+1.82%", up: true },
+  { name: "FTSE 100", value: "8,291.45", change: "+0.94%", up: true },
+  { name: "Nikkei 225", value: "39,156.78", change: "-0.31%", up: false },
+  { name: "DAX", value: "19,847.22", change: "+1.12%", up: true },
+  { name: "Hang Seng", value: "23,891.56", change: "+0.67%", up: true },
+  { name: "Gold", value: "$2,847.30", change: "+0.45%", up: true },
+];
+
+export const indiaMarketData = [
+  { name: "NIFTY 50", value: "24,852.15", change: "+1.24%", up: true },
+  { name: "SENSEX", value: "81,332.72", change: "+1.31%", up: true },
+  { name: "INR/USD", value: "83.42", change: "-0.05%", up: false },
+  { name: "Gold (India)", value: "Γé╣72,450", change: "+0.80%", up: true },
+];
+
+export const worldClocks = [
+  { city: "London", timezone: "Europe/London" },
+  { city: "New York", timezone: "America/New_York" },
+  { city: "Tokyo", timezone: "Asia/Tokyo" },
+  { city: "Sydney", timezone: "Australia/Sydney" },
+  { city: "Dubai", timezone: "Asia/Dubai" },
+  { city: "S├úo Paulo", timezone: "America/Sao_Paulo" },
+];
+
+export const trendingSearches = [
+  "Climate Summit",
+  "Quantum Computing",
+  "AI Regulation",
+  "Venice Biennale",
+  "Central Banks",
+];
+
+export const dailyRiddles = [
+  {
+    question: "I speak without a mouth and hear without ears. I have no body, but I come alive with wind. What am I?",
+    answer: "An echo",
+  },
+  {
+    question: "The more you take, the more you leave behind. What am I?",
+    answer: "Footsteps",
+  },
+  {
+    question: "I have cities, but no houses. I have mountains, but no trees. I have water, but no fish. What am I?",
+    answer: "A map",
+  },
+];
+
+export const brainTeasers = [
+  {
+    title: "The Missing Dollar",
+    puzzle: "Three friends pay $30 for a hotel room. The clerk realizes the room is only $25 and gives $5 to the bellboy. The bellboy keeps $2 and returns $1 to each friend. Each paid $9 ($27 total) plus $2 the bellboy kept equals $29. Where is the missing dollar?",
+    answer: "There is no missing dollar. The $27 includes the $2 the bellboy kept. They paid $25 for the room plus $2 tip = $27. The initial $30 minus $3 returned = $27.",
+  },
 ];

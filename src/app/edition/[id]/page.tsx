@@ -33,7 +33,7 @@ export default async function EditionPage({ params }: Props) {
 
   if (!edition) notFound();
 
-  const seed = edition.id.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
+  const seed = edition.id.split("").reduce((acc: number, c: string) => acc + c.charCodeAt(0), 0);
   const editionArticles = [...articles].sort((a, b) =>
     (a.id.charCodeAt(0) + seed) % 13 - (b.id.charCodeAt(0) + seed) % 13
   ).slice(0, 10);
