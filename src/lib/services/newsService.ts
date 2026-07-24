@@ -19,21 +19,7 @@ interface RawNewsDataItem {
   country?: string[];
 }
 
-interface RawRapidApiItem {
-  title: string;
-  description?: string;
-  summary?: string;
-  source?: string;
-  link?: string;
-  url?: string;
-  image?: string;
-  imageUrl?: string;
-  pubDate?: string;
-  publishedAt?: string;
-}
-
 const API_KEY = process.env.NEWSDATA_API_KEY;
-const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY;
 
 let cachedArticles: Article[] = [];
 
@@ -171,43 +157,7 @@ export async function getNews(sectionSlug: SectionSlug = "front-page", tryDomain
   }
 }
 
-function mapRapidApiToArticle(data: RawRapidApiItem, sectionSlug: SectionSlug): Article {
-  const authorName = data.source || "The Hindu";
 
-  const textContent = data.description || data.summary || data.title || "";
-
-  const wordCount = textContent.split(" ").length;
-  const readingTime = Math.max(1, Math.ceil(wordCount / 200));
-
-  const bodyParas = textContent.split(/\n+/).filter((p: string) => p.trim().length > 0).map((p: string) => p.trim());
-  if (bodyParas.length === 0) bodyParas.push(data.title);
-
-  const cleanHeadline = formatEditorialHeadline(data.title);
-
-  const id = data.url ? Buffer.from(data.url).toString('base64').substring(0, 16) : Math.random().toString(36).substring(7);
-
-  return {
-    id: id,
-    slug: id,
-    headline: cleanHeadline,
-    deck: data.description || data.summary || data.title,
-    author: {
-      name: authorName,
-      slug: authorName.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-      role: "Correspondent",
-    },
-    section: sectionSlug,
-    publishedAt: data.publishedAt ? new Date(data.publishedAt).toISOString() : new Date().toISOString(),
-    updatedAt: data.publishedAt ? getRelativeTime(data.publishedAt) : undefined,
-    isBreaking: data.publishedAt ? isRecent(data.publishedAt, 4) : false,
-    readingTime: readingTime,
-    image: data.image || data.imageUrl || "", 
-    body: bodyParas,
-    tags: [sectionSlug],
-    relatedSlugs: [],
-    sourceUrl: data.url || data.link,
-  };
-}
 
 
 
@@ -236,7 +186,7 @@ export async function getBestAvailableNews(sectionSlug: SectionSlug = "front-pag
     }
   };
 
-  let liveNews = await getNews(sectionSlug, tryDomainPref, query);
+  const liveNews = await getNews(sectionSlug, tryDomainPref, query);
   if (liveNews) {
     console.log(`${sectionSlug} section: served from newsdata.io`);
     addArticles(liveNews);
