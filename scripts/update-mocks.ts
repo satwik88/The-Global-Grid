@@ -35,6 +35,16 @@ function slugify(text: string) {
   return (text || "").toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 }
 
+function stripHtmlAndCss(text: string): string {
+  if (!text) return "";
+  return text
+    .replace(/<style[^>]*>.*?<\/style>/gs, '')
+    .replace(/<[^>]+>/g, '')
+    .replace(/\.[a-zA-Z0-9_-]+\s*\{[^}]*\}/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 async function fetchCategory(category: string, country?: string) {
   let url = `https://newsdata.io/api/1/news?apikey=${API_KEY}&category=${category}&language=en`;
   if (country) url += `&country=${country}`;
@@ -76,7 +86,7 @@ async function main() {
         id: generateId(),
         slug,
         headline,
-        deck: item.description || item.content?.substring(0, 150) || "",
+        deck: stripHtmlAndCss(item.description || item.content?.substring(0, 150) || ""),
         author: {
           name: item.creator?.[0] || "Staff Writer",
           slug: slugify(item.creator?.[0] || "staff"),
@@ -87,7 +97,7 @@ async function main() {
         publishedAt: item.pubDate || new Date().toISOString(),
         readingTime: Math.max(3, Math.floor((item.content || "").length / 1000)),
         image: item.image_url || "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=1200&q=80",
-        body: item.content ? item.content.split('\n').filter((p: string) => p.trim().length > 0) : [(item.description || "No content available.")],
+        body: item.content ? stripHtmlAndCss(item.content).split('\n').filter((p: string) => p.trim().length > 0) : [stripHtmlAndCss(item.description || "No content available.")],
         tags: item.keywords || [sec.slug, "news"],
         relatedSlugs: [],
         sourceUrl: item.link
