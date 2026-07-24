@@ -42,6 +42,8 @@ export function PullToRefresh({ children }: PullToRefreshProps) {
     const diff = currentY - startY.current;
 
     if (diff > 0) {
+      if (e.cancelable) e.preventDefault();
+      
       const distance = Math.min(Math.pow(diff, 0.85), MAX_PULL);
       pullDistanceRef.current = distance;
       
@@ -131,7 +133,7 @@ export function PullToRefresh({ children }: PullToRefreshProps) {
 
     if (isTouch) {
       document.addEventListener("touchstart", handleTouchStart, { passive: true });
-      document.addEventListener("touchmove", handleTouchMove, { passive: true });
+      document.addEventListener("touchmove", handleTouchMove, { passive: false });
       document.addEventListener("touchend", handleTouchEnd);
 
       return () => {
