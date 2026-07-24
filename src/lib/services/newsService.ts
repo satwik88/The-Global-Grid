@@ -37,6 +37,16 @@ const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY;
 
 let cachedArticles: Article[] = [];
 
+function stripHtmlAndCss(text: string): string {
+  if (!text) return "";
+  return text
+    .replace(/<style[^>]*>.*?<\/style>/gs, '') // remove <style> blocks
+    .replace(/<[^>]+>/g, '') // remove HTML tags
+    .replace(/\.[a-zA-Z0-9_-]+\s*\{[^}]*\}/g, '') // remove inline CSS class blocks
+    .replace(/\s+/g, ' ') // collapse whitespace
+    .trim();
+}
+
 function mapSectionToCategory(section: string): { category: string, country?: string } {
   switch (section) {
     case "world": return { category: "world" };
@@ -59,9 +69,9 @@ function mapSectionToCategory(section: string): { category: string, country?: st
 function mapNewsDataToArticle(data: RawNewsDataItem, sectionSlug: SectionSlug): Article {
   const authorName = (data.creator && data.creator.length > 0) ? data.creator[0] : (data.source_id || "Staff Writer");
 
-  let textContent = data.description || data.title || "";
+  let textContent = stripHtmlAndCss(data.description || data.title || "");
   if (data.content && data.content !== "ONLY AVAILABLE IN PAID PLANS" && data.content.length > textContent.length) {
-    textContent = data.content;
+    textContent = stripHtmlAndCss(data.content);
   }
 
   const wordCount = textContent.split(" ").length;
@@ -76,7 +86,7 @@ function mapNewsDataToArticle(data: RawNewsDataItem, sectionSlug: SectionSlug): 
     id: data.article_id,
     slug: data.article_id,
     headline: cleanHeadline,
-    deck: data.description || data.title,
+    deck: stripHtmlAndCss(data.description || data.title || ""),
     author: {
       name: authorName,
       slug: authorName.toLowerCase().replace(/[^a-z0-9]+/g, '-'),

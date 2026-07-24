@@ -25,7 +25,7 @@ const SECTIONS = [
   { slug: 'india', category: 'top', country: 'in' },
 ];
 
-const MAX_ARTICLES_PER_SECTION = 15;
+const MAX_ARTICLES_PER_SECTION = 20;
 
 function generateId() {
   return Date.now().toString() + Math.floor(Math.random() * 1000).toString();
@@ -38,7 +38,7 @@ function slugify(text: string) {
 function stripHtmlAndCss(text: string): string {
   if (!text) return "";
   return text
-    .replace(/<style[^>]*>.*?<\/style>/gs, '')
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/g, '')
     .replace(/<[^>]+>/g, '')
     .replace(/\.[a-zA-Z0-9_-]+\s*\{[^}]*\}/g, '')
     .replace(/\s+/g, ' ')
@@ -49,7 +49,7 @@ async function fetchCategory(category: string, country?: string) {
   let url = `https://newsdata.io/api/1/news?apikey=${API_KEY}&category=${category}&language=en`;
   if (country) url += `&country=${country}`;
   console.log(`Fetching: ${url.replace(API_KEY as string, 'API_KEY')}`);
-  
+
   const res = await fetch(url);
   if (!res.ok) {
     console.error(`Error fetching ${category}: ${res.statusText}`);
@@ -61,7 +61,7 @@ async function fetchCategory(category: string, country?: string) {
 
 async function main() {
   console.log("Starting mock data update...");
-  
+
   // Dynamically import the current articles so we can merge them
   let allArticles: Article[] = [];
   try {
@@ -70,18 +70,18 @@ async function main() {
   } catch (err) {
     console.log("Could not load old articles, starting fresh.", (err as Error).message);
   }
-  
+
   const newArticles: Article[] = [];
-  
+
   for (const sec of SECTIONS) {
     const results = await fetchCategory(sec.category, sec.country);
     for (const item of results) {
       if (!item.title) continue;
       if (!item.content && !item.description) continue;
-      
+
       const headline = item.title;
       const slug = slugify(headline).slice(0, 60);
-      
+
       const article = {
         id: generateId(),
         slug,
@@ -102,18 +102,18 @@ async function main() {
         relatedSlugs: [],
         sourceUrl: item.link
       };
-      
+
       newArticles.push(article);
     }
   }
 
   console.log(`Fetched ${newArticles.length} new articles.`);
-  
+
   // Combine new and old, removing duplicates by slug
   const combined = [...newArticles, ...allArticles];
   const uniqueSlugs = new Set<string>();
   const deduped: Article[] = [];
-  
+
   for (const art of combined) {
     if (!uniqueSlugs.has(art.slug)) {
       uniqueSlugs.add(art.slug);
@@ -127,7 +127,7 @@ async function main() {
     if (!bySection[art.section]) bySection[art.section] = [];
     bySection[art.section].push(art);
   }
-  
+
   const finalArticles: Article[] = [];
   for (const section in bySection) {
     // Sort descending by date
@@ -143,7 +143,7 @@ async function main() {
 
   // Overwrite the TypeScript file while preserving other exports
   const outPath = path.resolve(process.cwd(), 'src/lib/content/articles.ts');
-  
+
   let bottomHalf = "";
   if (fs.existsSync(outPath)) {
     const currentFile = fs.readFileSync(outPath, 'utf8');
@@ -154,7 +154,7 @@ async function main() {
   }
 
   const fileContent = `import type { Article, ArchiveEdition } from "@/lib/types";\n\nexport const articles: Article[] = ${JSON.stringify(finalArticles, null, 2)};\n${bottomHalf}`;
-  
+
   fs.writeFileSync(outPath, fileContent, 'utf-8');
   console.log("Successfully updated src/lib/content/articles.ts! All placeholders and old articles have been purged.");
 }
