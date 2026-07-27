@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { fetchArticle } from "@/lib/news/fetchNews";
+import { extractArticle } from "@/lib/services/extractService";
 import type { Metadata } from "next";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { getSectionLabel } from "@/lib/sections";
@@ -47,6 +48,20 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
   if (!article) {
     notFound();
+  }
+
+  let extractedContent = null;
+  let isExtractionSuccessful = false;
+
+  if (article.sourceUrl) {
+    const result = await extractArticle(article.sourceUrl);
+    if (!result.error && result.data && result.data.content) {
+      // Check if text is long enough to likely not be a paywall stub
+      if (result.data.textContent && result.data.textContent.length > 400) {
+        extractedContent = result.data.content;
+        isExtractionSuccessful = true;
+      }
+    }
   }
 
   const sectionLabel = getSectionLabel(article.section);
@@ -113,9 +128,16 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
           {/* Body */}
           <div className="font-[family-name:var(--font-inter)] text-[1.1rem] leading-[1.8] text-justify-print flex flex-col gap-6">
-            {article.body.map((paragraph, idx) => (
-              <p key={idx}>{paragraph}</p>
-            ))}
+            {isExtractionSuccessful ? (
+              <div 
+                className="prose prose-lg dark:prose-invert max-w-none prose-p:mb-6 prose-headings:font-[family-name:var(--font-playfair)] prose-a:text-accent prose-img:rounded-md"
+                dangerouslySetInnerHTML={{ __html: extractedContent! }} 
+              />
+            ) : (
+              article.body.map((paragraph, idx) => (
+                <p key={idx}>{paragraph}</p>
+              ))
+            )}
           </div>
 
           {/* External Link */}
@@ -125,9 +147,13 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                 href={article.sourceUrl} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="ui-text bg-accent text-paper hover:bg-ink transition-colors duration-300 px-8 py-4 tracking-widest text-sm uppercase font-bold flex items-center gap-2"
+                className={`ui-text transition-colors duration-300 px-8 py-4 tracking-widest text-sm uppercase font-bold flex items-center gap-2 ${
+                  isExtractionSuccessful 
+                    ? "text-ink-secondary hover:text-accent border border-border rounded-full" 
+                    : "bg-accent text-paper hover:bg-ink"
+                }`}
               >
-                Read full article at {article.publication || article.author.name} &rarr;
+                Read original article at {article.publication || article.author.name} &rarr;
               </a>
             </div>
           )}
