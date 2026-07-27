@@ -30,12 +30,7 @@ export default async function HomePage() {
     });
   };
 
-  const generalNews = deduplicate(await fetchNews("front-page", { category: "general", country: "in", pageSize: 40 }));
-  const mainFeature = generalNews[0] || null;
-  const secondaryFeatures = generalNews.slice(1, 9);
-  const editorPicks = generalNews.slice(9, 13);
-  const latestNews = generalNews.slice(13, 23);
-
+  const generalNews = deduplicate(await fetchNews("front-page"));
   const worldNews = deduplicate(await fetchNews("world"));
   const indiaNews = deduplicate(await fetchNews("india"));
   const techNews = deduplicate(await fetchNews("technology"));
@@ -44,17 +39,31 @@ export default async function HomePage() {
   const aiNews = deduplicate(await fetchNews("ai"));
   const scienceNews = deduplicate(await fetchNews("science"));
 
+  const mainFeature = generalNews[0] || null;
+  const secondaryFeatures = [
+    ...generalNews.slice(1, 3),
+    ...worldNews.slice(0, 1),
+    ...businessNews.slice(0, 1)
+  ];
+  const editorPicks = [
+    ...generalNews.slice(3, 4),
+    ...techNews.slice(0, 1),
+    ...scienceNews.slice(0, 1),
+    ...aiNews.slice(0, 1)
+  ];
+  const latestNews = generalNews.slice(4);
+
   const breakingNewsItems = latestNews.filter(a => a.isBreaking);
   if (breakingNewsItems.length < 5) {
     const nonBreakingLatest = latestNews.filter(a => !a.isBreaking);
     breakingNewsItems.push(...nonBreakingLatest.slice(0, 5 - breakingNewsItems.length));
   }
   if (breakingNewsItems.length < 5) {
-    breakingNewsItems.push(...worldNews.slice(0, 5 - breakingNewsItems.length));
+    breakingNewsItems.push(...worldNews.slice(1, 6 - breakingNewsItems.length));
   }
   const breakingNews = breakingNewsItems[0] || null;
 
-  const topBriefs = [...latestNews, ...worldNews, ...techNews, ...indiaNews];
+  const topBriefs = [...latestNews, ...worldNews.slice(1), ...techNews.slice(1), ...indiaNews];
 
   const commonLocations = [
     "New Delhi", "London", "New York", "Tokyo", "Frankfurt", "Hong Kong",
@@ -255,7 +264,7 @@ export default async function HomePage() {
                       Exclusive Analysis • Deep Reports • Strategic Briefings
                     </p>
                     <div className="flex flex-col gap-6">
-                      {gridIntelligence.slice(0, 2).map((article) => (
+                      {gridIntelligence.slice(0, 4).map((article) => (
                         <div key={article.slug} className="group">
                           <Link href={`/article/${article.slug}`} className="block">
                             <h3 className="font-[family-name:var(--font-playfair)] text-xl font-bold leading-tight group-hover:text-accent transition-colors mb-2">
@@ -317,7 +326,7 @@ export default async function HomePage() {
               <h2 className="ui-text mb-4 pb-2 border-b border-border">
                 Editor&apos;s Picks
               </h2>
-              {editorPicks.slice(0, 3).map((article) => (
+              {editorPicks.slice(0, 4).map((article) => (
                 <div key={article.slug} className="mb-4">
                   <ArticleCard article={article} variant="compact" />
                 </div>
@@ -332,25 +341,32 @@ export default async function HomePage() {
           {/* Section Previews */}
           <div className="flex flex-col gap-16 mb-12">
             {[
-              { title: "World News", data: worldNews, link: "/section/world" },
-              { title: "India Edition", data: indiaNews, link: "/india" },
-              { title: "Business", data: businessNews, link: "/section/business" },
-              { title: "Technology", data: techNews, link: "/section/technology" },
-              { title: "Artificial Intelligence", data: aiNews, link: "/section/ai" },
-              { title: "Science", data: scienceNews, link: "/section/science" },
-            ].map(section => section.data.length > 0 && (
-              <section key={section.title}>
-                <div className="flex items-center justify-between mb-8 pb-2 border-b-2 border-ink">
-                  <h2 className="ui-text text-accent text-xl">{section.title}</h2>
-                  <Link href={section.link} className="ui-text hover:text-accent transition-colors uppercase tracking-widest text-sm font-bold">Full Coverage →</Link>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {section.data.slice(0, 3).map((article) => (
-                    <ArticleCard key={article.slug} article={article} variant="standard" />
-                  ))}
-                </div>
-              </section>
-            ))}
+              { title: "World News", data: worldNews.slice(1), link: "/section/world" },
+              { title: "India Edition", data: indiaNews.slice(2), link: "/india" },
+              { title: "Business", data: businessNews.slice(1), link: "/section/business" },
+              { title: "Technology", data: techNews.slice(1), link: "/section/technology" },
+              { title: "Artificial Intelligence", data: aiNews.slice(1), link: "/section/ai" },
+              { title: "Science", data: scienceNews.slice(1), link: "/section/science" },
+            ].map(section => {
+              const items = section.data.slice(0, 3);
+              if (items.length === 0) return null;
+              
+              const gridCols = items.length === 3 ? 'lg:grid-cols-3' : (items.length === 2 ? 'lg:grid-cols-2' : 'lg:grid-cols-1');
+              
+              return (
+                <section key={section.title}>
+                  <div className="flex items-center justify-between mb-8 pb-2 border-b-2 border-ink">
+                    <h2 className="ui-text text-accent text-xl">{section.title}</h2>
+                    <Link href={section.link} className="ui-text hover:text-accent transition-colors uppercase tracking-widest text-sm font-bold">Full Coverage →</Link>
+                  </div>
+                  <div className={`grid grid-cols-1 md:grid-cols-2 ${gridCols} gap-8`}>
+                    {items.map((article) => (
+                      <ArticleCard key={article.slug} article={article} variant="standard" />
+                    ))}
+                  </div>
+                </section>
+              );
+            })}
           </div>
         </main>
       </NewspaperOpening>
