@@ -243,7 +243,7 @@ export function IndiaMegaMenu() {
             </button>
           </div>
           
-          <div className="flex-1 overflow-y-auto p-4 bg-paper text-ink">
+          <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 bg-paper text-ink">
             <Link 
               href="/india" 
               onClick={closeMenu}
@@ -281,7 +281,7 @@ export function IndiaMegaMenu() {
                     key={story.slug}
                     href={`/article/${story.slug}`}
                     onClick={closeMenu}
-                    className="flex gap-4 p-2 border-b border-border last:border-0"
+                    className="flex min-w-0 gap-4 p-2 border-b border-border last:border-0"
                   >
                     <div className="relative w-24 h-20 shrink-0 overflow-hidden border border-border">
                       <SafeImage 
@@ -292,9 +292,9 @@ export function IndiaMegaMenu() {
                         sizes="96px"
                       />
                     </div>
-                    <div className="flex-1 flex flex-col justify-center">
+                    <div className="flex-1 flex flex-col justify-center min-w-0">
                       <div className="text-[10px] text-accent uppercase font-bold tracking-widest mb-1">{story.subcategory || story.section}</div>
-                      <div className="font-[family-name:var(--font-playfair)] text-sm font-bold leading-tight line-clamp-3 text-ink">
+                      <div className="font-[family-name:var(--font-playfair)] text-sm font-bold leading-tight line-clamp-3 text-ink break-words" style={{ wordBreak: 'break-word' }}>
                         {story.headline}
                       </div>
                     </div>
