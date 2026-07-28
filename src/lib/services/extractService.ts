@@ -2,6 +2,17 @@ import { Redis } from '@upstash/redis';
 import { Readability } from '@mozilla/readability';
 import { JSDOM } from 'jsdom';
 
+type ExtractedArticle = {
+  title: string | null;
+  byline: string | null;
+  dir: string | null;
+  content: string | null;
+  textContent: string | null;
+  length: number;
+  excerpt: string | null;
+  siteName: string | null;
+};
+
 // Create a redis client if environment variables are set
 const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
 const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
@@ -16,7 +27,7 @@ export async function extractArticle(url: string) {
   try {
     // 1. Check Redis cache
     if (redis) {
-      const cached = await redis.get(url);
+      const cached = await redis.get<ExtractedArticle>(url);
       if (cached) {
         return { data: cached, source: 'cache' };
       }
@@ -71,8 +82,8 @@ export async function extractArticle(url: string) {
     }
 
     return { data: result, source: 'fetch' };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Extraction error:", error);
-    return { error: error.message };
+    return { error: error instanceof Error ? error.message : String(error) };
   }
 }
