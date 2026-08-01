@@ -130,7 +130,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <div className="font-[family-name:var(--font-inter)] text-[1.1rem] leading-[1.8] text-justify-print flex flex-col gap-6">
             {isExtractionSuccessful ? (
               <div 
-                className="prose prose-lg dark:prose-invert max-w-none prose-p:mb-6 prose-headings:font-[family-name:var(--font-playfair)] prose-a:text-accent prose-img:rounded-md"
+                className={`prose prose-lg max-w-none prose-p:mb-6 prose-headings:font-[family-name:var(--font-playfair)] prose-a:text-accent prose-img:rounded-md ${(article.heroImage || article.image || article.thumbnailImage) ? 'hide-first-image' : ''}`}
                 dangerouslySetInnerHTML={{ __html: extractedContent! }} 
               />
             ) : (

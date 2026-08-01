@@ -32,6 +32,23 @@
 
   --animate-marquee: marquee 50s linear infinite;
   --animate-marquee-slow: marquee 60s linear infinite;
+
+  --tw-prose-body: var(--ink);
+  --tw-prose-headings: var(--ink);
+  --tw-prose-lead: var(--ink-secondary);
+  --tw-prose-links: var(--accent);
+  --tw-prose-bold: var(--ink);
+  --tw-prose-counters: var(--ink-secondary);
+  --tw-prose-bullets: var(--ink-secondary);
+  --tw-prose-hr: var(--border);
+  --tw-prose-quotes: var(--accent);
+  --tw-prose-quote-borders: var(--accent);
+  --tw-prose-captions: var(--ink-secondary);
+  --tw-prose-code: var(--ink);
+  --tw-prose-pre-code: var(--paper);
+  --tw-prose-pre-bg: var(--ink);
+  --tw-prose-th-borders: var(--border);
+  --tw-prose-td-borders: var(--border);
 }
 
 @keyframes marquee {
@@ -403,4 +420,14 @@ html[data-magicui-theme-vt="active"] ::after {
 /* GPU Acceleration */
 .will-change-transform {
   will-change: transform;
+}
+
+/* Hide duplicated hero images in extracted content */
+.hide-first-image > figure:first-child,
+.hide-first-image > p:first-child > img:first-child,
+.hide-first-image > p:first-child > figure:first-child,
+.hide-first-image > img:first-child,
+.hide-first-image > div:first-child > img:first-child,
+.hide-first-image > div:first-child > figure:first-child {
+  display: none !important;
 }
