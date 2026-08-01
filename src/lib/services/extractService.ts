@@ -1,6 +1,7 @@
 import { Redis } from '@upstash/redis';
 import { Readability } from '@mozilla/readability';
 import { parseHTML } from 'linkedom';
+import sanitizeHtml from 'sanitize-html';
 
 type ExtractedArticle = {
   title: string | null;
@@ -66,11 +67,20 @@ export async function extractArticle(url: string) {
       throw new Error('Failed to extract article content');
     }
 
+    const cleanContent = sanitizeHtml(article.content || '', {
+      allowedTags: sanitizeHtml.defaults.allowedTags.concat([ 'img', 'figure', 'figcaption' ]),
+      allowedAttributes: {
+        a: [ 'href', 'name', 'target' ],
+        img: [ 'src', 'alt', 'title' ]
+      },
+      nonTextTags: [ 'style', 'script', 'textarea', 'noscript', 'nav', 'header', 'footer', 'aside' ]
+    });
+
     const result = {
       title: article.title,
       byline: article.byline,
       dir: article.dir,
-      content: article.content, // HTML string
+      content: cleanContent, // Sanitized HTML string
       textContent: article.textContent,
       length: article.length,
       excerpt: article.excerpt,
