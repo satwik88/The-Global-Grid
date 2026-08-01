@@ -15,7 +15,9 @@
 
 <br/>
 
-> A premium international digital newspaper that marries the elegance of traditional print journalism with cutting-edge modern web technology — serving world-class editorial design in your browser.
+>**The Global Grid — The Daily Paper for the Modern World**
+
+A premium digital newspaper that blends the elegance of traditional print journalism with modern web interactivity. Features a multi-section newsroom (World, Business, Tech, AI, Science, Culture, Travel, Opinion), newspaper-style article spreads, mobile page-turn animations, and an AI news summary.
 
 <br/>
 
