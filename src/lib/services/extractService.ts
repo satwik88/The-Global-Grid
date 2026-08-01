@@ -1,6 +1,6 @@
 import { Redis } from '@upstash/redis';
 import { Readability } from '@mozilla/readability';
-import { JSDOM } from 'jsdom';
+import { parseHTML } from 'linkedom';
 
 type ExtractedArticle = {
   title: string | null;
@@ -54,11 +54,12 @@ export async function extractArticle(url: string) {
 
     const html = await response.text();
 
-    // 3. Parse with JSDOM
-    const dom = new JSDOM(html, { url });
+    // 3. Parse with linkedom
+    const { document } = parseHTML(html);
 
     // 4. Extract with Readability
-    const reader = new Readability(dom.window.document);
+    // @ts-ignore - Readability expects a true DOM Document but linkedom is close enough
+    const reader = new Readability(document);
     const article = reader.parse();
 
     if (!article) {
