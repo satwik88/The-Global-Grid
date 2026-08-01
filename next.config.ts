@@ -72,7 +72,7 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  serverExternalPackages: ["jsdom", "@mozilla/readability"],
+  serverExternalPackages: ["@mozilla/readability"],
 };
 
 export default withPWA(nextConfig);
