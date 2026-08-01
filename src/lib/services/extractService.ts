@@ -27,8 +27,9 @@ const redis = redisUrl && redisToken
 export async function extractArticle(url: string) {
   try {
     // 1. Check Redis cache
+    const cacheKey = `extract:v2:${url}`;
     if (redis) {
-      const cached = await redis.get<ExtractedArticle>(url);
+      const cached = await redis.get<ExtractedArticle>(cacheKey);
       if (cached) {
         return { data: cached, source: 'cache' };
       }
@@ -57,6 +58,10 @@ export async function extractArticle(url: string) {
 
     // 3. Parse with linkedom
     const { document } = parseHTML(html);
+
+    // Pre-clean the DOM to remove obvious navigation and boilerplate BEFORE Readability runs
+    const elementsToRemove = document.querySelectorAll('nav, header, footer, aside, .menu, #menu, .sidebar, #sidebar');
+    elementsToRemove.forEach(el => el.remove());
 
     // 4. Extract with Readability
     // @ts-ignore - Readability expects a true DOM Document but linkedom is close enough
@@ -89,7 +94,7 @@ export async function extractArticle(url: string) {
 
     // Cache the result for 6 hours (21600 seconds)
     if (redis) {
-      await redis.set(url, result, { ex: 21600 });
+      await redis.set(cacheKey, result, { ex: 21600 });
     }
 
     return { data: result, source: 'fetch' };
