@@ -19,7 +19,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
 
-    // Verify password
+    // Verify password (hashed_password is null for OAuth-only accounts)
+    if (!user.hashed_password) {
+      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+    }
     const isValid = await verifyPassword(password, user.hashed_password);
 
     if (!isValid) {
