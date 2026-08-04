@@ -43,7 +43,7 @@ function ThemeToggle() {
       aria-label={theme === "light" ? "Switch to Night Edition (dark mode)" : "Switch to Day Edition (light mode)"}
       title={theme === "light" ? "Switch to Night Edition" : "Switch to Day Edition"}
     >
-      {theme === "dark" ? <Sun size={14} className="pointer-events-none" /> : <Moon size={14} className="pointer-events-none" />}
+      {theme === "dark" ? <Sun size={24} className="pointer-events-none" /> : <Moon size={24} className="pointer-events-none" />}
       <span className="hidden sm:inline select-none pointer-events-none">
         {theme === "light" ? "Day Edition" : "Night Edition"}
       </span>
