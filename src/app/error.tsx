@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { useEffect } from "react";
 
 export default function Error({
   error,
@@ -9,45 +9,24 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  useEffect(() => {
+    console.error("Next.js Error Boundary Caught:", error);
+  }, [error]);
+
   return (
-    <div className="paper-texture min-h-screen flex flex-col items-center justify-center px-4">
-      <div className="border-4 border-double border-ink p-12 bg-paper max-w-2xl mx-auto text-center rotate-[0.5deg]">
-        <div className="uppercase tracking-[0.3em] font-[family-name:var(--font-inter)] text-sm font-bold text-ink-secondary mb-6 pb-4 border-b border-border">
-          Editorial Retraction Notice
-        </div>
-
-        <h1 className="font-[family-name:var(--font-playfair)] text-6xl font-bold tracking-tight text-ink mb-4">
-          A Technical Issue
-        </h1>
-
-        <p className="font-[family-name:var(--font-cormorant)] text-xl italic text-ink-secondary mb-6 leading-relaxed">
-          Our editors encountered an unexpected difficulty retrieving this story. Our technical
-          team has been notified.
-        </p>
-
-        {error.digest && (
-          <p className="font-[family-name:var(--font-inter)] text-xs text-ink-secondary/60 mb-8 font-mono">
-            Reference: {error.digest}
-          </p>
-        )}
-
-        <div className="flex items-center justify-center gap-4 flex-wrap">
-          <button
-            onClick={reset}
-            className="bg-ink text-paper px-8 py-3 font-[family-name:var(--font-inter)] text-sm uppercase tracking-widest hover:bg-accent transition-colors font-bold"
-          >
-            Try Again
-          </button>
-          <Link
-            href="/"
-            className="border border-ink text-ink px-8 py-3 font-[family-name:var(--font-inter)] text-sm uppercase tracking-widest hover:border-accent hover:text-accent transition-colors font-bold"
-          >
-            Return to Front Page
-          </Link>
-        </div>
-
-        <hr className="rule-thick mt-10" />
-      </div>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-paper text-ink p-4 text-center">
+      <h2 className="text-2xl font-[family-name:var(--font-playfair)] font-bold mb-4">
+        Something went wrong!
+      </h2>
+      <p className="ui-text text-sm text-ink-secondary mb-6 max-w-md">
+        {error.message || "An unexpected error occurred."}
+      </p>
+      <button
+        onClick={() => reset()}
+        className="px-6 py-2 bg-ink text-paper font-bold uppercase tracking-widest text-sm hover:bg-accent transition-colors"
+      >
+        Try again
+      </button>
     </div>
   );
 }

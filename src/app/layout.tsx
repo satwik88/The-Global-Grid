@@ -9,7 +9,6 @@ import Script from "next/script";
 import { NewspaperProvider } from "@/lib/context/newspaper-context";
 import { ThemeProvider } from "@/lib/context/ThemeContext";
 import { SearchShortcut } from "@/components/newspaper/SearchShortcut";
-import { PullToRefresh } from "@/components/ui/PullToRefresh";
 import { OfflineBanner } from "@/components/ui/OfflineBanner";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import "./globals.css";
@@ -78,6 +77,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { AuthProvider } from "@/lib/context/AuthContext";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -124,14 +125,14 @@ export default function RootLayout({
         >
           Skip to main content
         </a>
-        <ThemeProvider>
-          <SearchShortcut />
-          <NewspaperProvider>
-            <PullToRefresh>
+        <AuthProvider>
+          <ThemeProvider>
+            <SearchShortcut />
+            <NewspaperProvider>
               <div id="main-content">{children}</div>
-            </PullToRefresh>
-          </NewspaperProvider>
-        </ThemeProvider>
+            </NewspaperProvider>
+          </ThemeProvider>
+        </AuthProvider>
         <Analytics />
       </body>
     </html>
