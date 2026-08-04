@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String           @id @default(uuid())
+  email           String           @unique
+  hashed_password String?
+  nickname        String
+  avatar_url      String?
+  provider        String           @default("credentials")
+  created_at      DateTime         @default(now())
+  preferences     UserPreference?
+  saved_articles  SavedArticle[]
+
+  @@map("users")
+}
+
+model UserPreference {
+  id         String   @id @default(uuid())
+  user_id    String   @unique
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  interests  String[] // Array of news categories/topics
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("user_preferences")
+}
+
+model SavedArticle {
+  id                 String   @id @default(uuid())
+  user_id            String
+  user               User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  article_url        String
+  article_title      String
+  article_image_url  String?
+  article_source     String?
+  saved_at           DateTime @default(now())
+
+  @@unique([user_id, article_url])
+  @@map("saved_articles")
+}

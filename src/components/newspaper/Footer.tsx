@@ -47,6 +47,13 @@ export function Footer({ showTools = true }: FooterProps) {
           <p className="caption-text mt-4">
             © {new Date().getFullYear()} The Global Grid. All rights reserved.
           </p>
+          <div className="flex flex-wrap items-center justify-center gap-4 mt-4 caption-text tracking-wider text-ink-secondary">
+            <Link href="/legal/privacy" className="hover:text-accent transition-colors">Privacy Policy</Link>
+            <span>&middot;</span>
+            <Link href="/legal/terms" className="hover:text-accent transition-colors">Terms of Service</Link>
+            <span>&middot;</span>
+            <Link href="/legal/cookies" className="hover:text-accent transition-colors">Cookie Policy</Link>
+          </div>
         </div>
 
         <hr className="rule-thin mt-6" />

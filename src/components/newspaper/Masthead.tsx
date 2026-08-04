@@ -1,15 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { formatEditionDate, getEditionNumber, isWeekendEdition } from "@/lib/utils";
 import { NAV_SECTIONS } from "@/lib/sections";
 import { GlobalPulse } from "./GlobalPulse";
-import { GlobeSeal } from "./GlobeSeal";
 import { IndiaMegaMenu } from "./IndiaMegaMenu";
 import { SearchWidget } from "./SearchWidget";
+import { UserProfileDropdown } from "@/components/auth/UserProfileDropdown";
 
 import { useTheme } from "@/lib/context/ThemeContext";
-import { RefreshCcw, Sun, Moon } from "lucide-react";
+import { Sun, Moon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
@@ -50,47 +51,6 @@ function ThemeToggle() {
   );
 }
 
-function RefreshButton() {
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [errorState, setErrorState] = useState(false);
-  const router = useRouter();
-
-  const handleRefresh = async () => {
-    if (isRefreshing) return;
-    setIsRefreshing(true);
-    setErrorState(false);
-
-    try {
-      window.dispatchEvent(new Event("global-grid-refresh"));
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      router.refresh();
-    } catch (err) {
-      console.error("Failed to refresh", err);
-      setErrorState(true);
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-    } finally {
-      setIsRefreshing(false);
-    }
-  };
-
-  return (
-    <button
-      onClick={handleRefresh}
-      className={`p-1 transition-colors duration-300 flex items-center gap-2 ui-text ${
-        errorState ? "text-accent" : "text-ink-secondary hover:text-accent"
-      }`}
-      aria-label="Refresh content"
-      title={errorState ? "Couldn't refresh, try again" : "Refresh content"}
-    >
-      <RefreshCcw
-        size={14}
-        aria-hidden="true"
-        className={isRefreshing && !errorState ? "animate-spin" : ""}
-      />
-      <span className="hidden sm:inline">{errorState ? "Error" : "Refresh"}</span>
-    </button>
-  );
-}
 
 export function Masthead({ showNav = true, locations }: MastheadProps) {
   const date = new Date();
@@ -102,16 +62,23 @@ export function Masthead({ showNav = true, locations }: MastheadProps) {
     <header className="border-b border-border">
       <div className="mx-auto max-w-screen-xl px-4 py-6 md:px-8 relative">
 
-        <div className="absolute top-6 right-4 md:right-8 no-print flex items-center gap-4 md:gap-6">
-          <RefreshButton />
+        <div className="absolute top-10 right-4 md:right-8 no-print flex items-center gap-4 md:gap-6 z-10">
           <ThemeToggle />
+          <UserProfileDropdown />
         </div>
 
         <hr className="rule-thin mb-4 mt-6 sm:mt-0" />
 
         <div className="text-center">
           <Link href="/" className="group inline-flex items-center justify-center gap-2 sm:gap-3 md:gap-5 text-left">
-            <GlobeSeal className="w-8 h-8 sm:w-10 sm:h-10 md:w-14 md:h-14 text-ink group-hover:text-accent transition-colors duration-300 shrink-0" />
+            <Image
+              src="/logo.png"
+              alt="The Global Grid logo"
+              width={56}
+              height={56}
+              className="w-8 h-8 sm:w-10 sm:h-10 md:w-14 md:h-14 shrink-0 dark:invert transition-[filter] duration-300"
+              priority
+            />
             <div className="font-[family-name:var(--font-playfair)] text-2xl sm:text-4xl md:text-6xl whitespace-nowrap font-bold tracking-tight text-ink group-hover:text-accent transition-colors duration-300">
               THE GLOBAL GRID
             </div>
