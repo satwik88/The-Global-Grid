@@ -1,20 +1,13 @@
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
 import prisma from '@/lib/prisma';
-import { verifyToken } from '@/lib/auth';
+import { getAuthUserId } from '@/lib/auth';
 
 export async function POST(req: Request) {
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get('auth_token')?.value;
+    const userId = await getAuthUserId();
 
-    if (!token) {
+    if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const decoded = verifyToken(token);
-    if (!decoded) {
-      return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
 
     const body = await req.json();
@@ -34,7 +27,7 @@ export async function POST(req: Request) {
       const saved = await prisma.savedArticle.upsert({
         where: {
           user_id_article_url: {
-            user_id: decoded.userId,
+            user_id: userId,
             article_url
           }
         },
@@ -44,7 +37,7 @@ export async function POST(req: Request) {
           article_source,
         },
         create: {
-          user_id: decoded.userId,
+          user_id: userId,
           article_url,
           article_title,
           article_image_url,
@@ -66,16 +59,10 @@ export async function POST(req: Request) {
 
 export async function DELETE(req: Request) {
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get('auth_token')?.value;
+    const userId = await getAuthUserId();
 
-    if (!token) {
+    if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const decoded = verifyToken(token);
-    if (!decoded) {
-      return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
 
     const body = await req.json();
@@ -88,7 +75,7 @@ export async function DELETE(req: Request) {
     await prisma.savedArticle.delete({
       where: {
         user_id_article_url: {
-          user_id: decoded.userId,
+          user_id: userId,
           article_url
         }
       }
