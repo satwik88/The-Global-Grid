@@ -26,6 +26,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.5,
     },
+    {
+      url: `${BASE_URL}/games`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.5,
+    },
+    {
+      url: `${BASE_URL}/reading-list`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.5,
+    },
   ];
 
   const sectionPages: MetadataRoute.Sitemap = NAV_SECTIONS.map((section) => ({

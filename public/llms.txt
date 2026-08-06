@@ -1,0 +1,28 @@
+# The Global Grid
+
+The Global Grid is a digital newspaper aggregating world, business, technology, science, and cultural news. It provides a premium, responsive reading experience modeled after classic broadsheet newspapers.
+
+## Tech Stack
+- Framework: Next.js 16 (App Router), React 19
+- Language: TypeScript
+- Styling: Tailwind CSS 4, Framer Motion
+- Database/ORM: Designed to support a PostgreSQL/CMS layer
+- Auth: NextAuth.js (Google OAuth & Custom JWT)
+- Deployment: Vercel
+
+## Main Sections & Routes
+- `/`: Front page aggregating top stories across all categories
+- `/section/world`: World news and international affairs
+- `/section/business`: Markets, economy, and corporate news
+- `/section/technology`: Tech industry, startups, and AI developments
+- `/section/science`: Scientific discoveries and research
+- `/section/culture`: Arts, entertainment, and lifestyle
+- `/article/[slug]`: Individual article pages
+- `/search`: Search interface for finding articles
+- `/archive`: Historical editions and past coverage
+- `/reading-list`: User's saved articles for later reading
+- `/games`: Interactive puzzles and games (e.g., crosswords, sudoku)
+
+## Links
+- Homepage: https://the-global-grid.vercel.app
+- Sitemap: https://the-global-grid.vercel.app/sitemap.xml

@@ -46,6 +46,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: `The latest news and analysis from our ${label} section.`,
       images: [`/og-image.png`],
     },
+    alternates: {
+      canonical: `/section/${slug}`,
+    },
   };
 }
 

@@ -39,6 +39,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       description: article.deck,
       images: article.image ? [article.image] : ["/og-image.png"],
     },
+    alternates: {
+      canonical: `/article/${slug}`,
+    },
   };
 }
 
