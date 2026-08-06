@@ -19,7 +19,7 @@ export function Footer({ showTools = true }: FooterProps) {
               <Search size={14} />
               Search
             </Link>
-            <Link href="/bookmarks" className="flex items-center gap-2 hover:text-accent transition-colors">
+            <Link href="/reading-list" className="flex items-center gap-2 hover:text-accent transition-colors">
               <Bookmark size={14} />
               Bookmarks
             </Link>
