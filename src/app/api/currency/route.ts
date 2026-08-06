@@ -19,7 +19,9 @@ export async function GET(request: Request) {
     });
 
     if (!res.ok) {
-      return NextResponse.json({ error: 'Failed to fetch data from Yahoo Finance' }, { status: 500 });
+      const errorText = await res.text();
+      console.error(`Yahoo Finance API error: ${res.status} ${res.statusText} - ${errorText}`);
+      return NextResponse.json({ error: `Failed to fetch data from Yahoo Finance: ${res.status}` }, { status: 502 });
     }
 
     const data = await res.json();

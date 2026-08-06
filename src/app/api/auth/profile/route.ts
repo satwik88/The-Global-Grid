@@ -1,27 +1,21 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import prisma from '@/lib/prisma';
-import { verifyToken } from '@/lib/auth';
+import { getAuthUserId } from '@/lib/auth';
 
 export async function PUT(req: Request) {
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get('auth_token')?.value;
+    const userId = await getAuthUserId();
 
-    if (!token) {
+    if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const decoded = verifyToken(token);
-    if (!decoded) {
-      return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
 
     const body = await req.json();
     const { nickname, avatar_url, interests } = body;
 
     const user = await prisma.user.update({
-      where: { id: decoded.userId },
+      where: { id: userId },
       data: {
         ...(nickname !== undefined && { nickname }),
         ...(avatar_url !== undefined && { avatar_url }),
