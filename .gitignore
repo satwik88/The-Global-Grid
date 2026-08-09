@@ -42,3 +42,7 @@ next-env.d.ts
 
 # local debug/test scripts (may contain test credentials)
 /scratch/
+
+# PWA service workers
+/public/sw.js
+/public/workbox-*.js
