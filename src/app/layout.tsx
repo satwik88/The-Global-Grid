@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     siteName: 'The Global Grid',
     images: [
       {
-        url: 'https://the-global-grid.vercel.app/og',
+        url: 'https://the-global-grid.vercel.app/og.png',
         width: 1200,
         height: 630,
         alt: 'The Global Grid — The daily paper for the modern world',
@@ -66,7 +66,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'The Global Grid',
     description: 'Premium international news across World, Business, Technology, AI, Science and Culture — updated every hour.',
-    images: ['https://the-global-grid.vercel.app/og'],
+    images: ['https://the-global-grid.vercel.app/og.png'],
   },
   robots: {
     index: true,
