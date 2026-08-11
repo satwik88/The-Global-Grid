@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node scripts/generate-og.js",
+    "prebuild": "tsx scripts/generate-og.ts",
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
