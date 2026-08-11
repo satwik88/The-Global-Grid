@@ -33,8 +33,8 @@ async function generateOGImage() {
       fs.renameSync(tempPath, outputPath);
       console.log(`✅ Successfully generated OG image at ${outputPath}`);
     }
-  } catch (error: any) {
-    console.warn(`⚠️ Failed to generate static OG image: ${error.message}`);
+  } catch (error) {
+    console.warn(`⚠️ Failed to generate static OG image: ${(error as Error).message}`);
     console.warn('⚠️ Keeping the last-known og.png so build does not fail.');
     if (fs.existsSync(tempPath)) {
       try {
