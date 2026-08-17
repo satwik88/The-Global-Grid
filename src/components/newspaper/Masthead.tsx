@@ -8,7 +8,6 @@ import { GlobalPulse } from "./GlobalPulse";
 import { IndiaMegaMenu } from "./IndiaMegaMenu";
 import { SearchWidget } from "./SearchWidget";
 import { UserProfileDropdown } from "@/components/auth/UserProfileDropdown";
-import { WeatherWidget } from "./WeatherWidget";
 
 import { useTheme } from "@/lib/context/ThemeContext";
 import { Sun, Moon } from "lucide-react";
@@ -64,7 +63,6 @@ export function Masthead({ showNav = true, locations }: MastheadProps) {
       <div className="mx-auto max-w-screen-xl px-4 py-6 md:px-8 relative">
 
         <div className="absolute top-2 right-2 sm:top-4 sm:right-4 md:top-10 md:right-8 no-print flex items-center gap-2 md:gap-6 z-10">
-          <WeatherWidget />
           <ThemeToggle />
           <UserProfileDropdown />
         </div>

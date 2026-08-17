@@ -30,7 +30,8 @@ export async function fetchWeather(city: string = 'Katihar', lat?: number, lon?:
   }
 
   const res = await fetch(
-    `https://api.openweathermap.org/data/2.5/weather?${queryParam}&units=metric&appid=${process.env.OPENWEATHER_API_KEY}`
+    `https://api.openweathermap.org/data/2.5/weather?${queryParam}&units=metric&appid=${process.env.OPENWEATHER_API_KEY}`,
+    { cache: 'no-store' }
   );
   
   if (!res.ok) throw new Error(`OpenWeather failed: ${res.status}`);
