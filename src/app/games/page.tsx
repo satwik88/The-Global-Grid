@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Masthead } from "@/components/newspaper/Masthead";
 import { Footer } from "@/components/newspaper/Footer";
 import { SudokuGame } from "@/components/games/SudokuGame";
+import { TriviaGame } from "@/components/games/TriviaGame";
 import {
   RiddlesSection,
   BrainTeasersSection,
@@ -28,7 +29,10 @@ export default function GamesPage() {
         </header>
 
         <div className="grid lg:grid-cols-2 gap-8">
-          <SudokuGame />
+          <div className="space-y-8">
+            <SudokuGame />
+            <TriviaGame />
+          </div>
           <div className="space-y-8">
             <RiddlesSection />
             <BrainTeasersSection />

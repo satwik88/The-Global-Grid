@@ -1,7 +1,7 @@
 import { Masthead } from "@/components/newspaper/Masthead";
 import { Footer } from "@/components/newspaper/Footer";
 import { ArticleCard } from "@/components/newspaper/ArticleCard";
-import { MarketTracker, WorldClockPanel, IndiaMarketTracker } from "@/components/newspaper/SidebarPanels";
+import { MarketTracker, WorldClockPanel, IndiaMarketTracker, CryptoTracker } from "@/components/newspaper/SidebarPanels";
 import { WeatherWidget } from "@/components/newspaper/WeatherWidget";
 import { NewspaperOpening } from "@/components/newspaper/Animations";
 import { PageTurnReader } from "@/components/newspaper/PageTurnReader";
@@ -317,6 +317,7 @@ export default async function HomePage() {
               </div>
               <MarketTracker />
               <IndiaMarketTracker />
+              <CryptoTracker />
               <div className="mt-8">
                 <WorldClockPanel />
               </div>

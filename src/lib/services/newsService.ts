@@ -4,32 +4,15 @@ import { isRecent, getRelativeTime } from "@/lib/utils/time";
 import { normalizeTitle } from "@/lib/utils/dedup";
 import type { Article, SectionSlug } from "@/lib/types";
 
-// Raw API response shapes — typed so we never use `any`
-interface RawNewsDataItem {
-  article_id: string;
-  title: string;
-  description?: string;
-  content?: string;
-  creator?: string[];
-  source_id?: string;
-  link?: string;
-  image_url?: string;
-  pubDate?: string;
-  keywords?: string[];
-  country?: string[];
-}
-
-const API_KEY = process.env.NEWSDATA_API_KEY;
-
 let cachedArticles: Article[] = [];
 
 function stripHtmlAndCss(text: string): string {
   if (!text) return "";
   return text
-    .replace(/<style[^>]*>[\s\S]*?<\/style>/g, '') // remove <style> blocks
-    .replace(/<[^>]+>/g, '') // remove HTML tags
-    .replace(/\.[a-zA-Z0-9_-]+\s*\{[^}]*\}/g, '') // remove inline CSS class blocks
-    .replace(/\s+/g, ' ') // collapse whitespace
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/g, '')
+    .replace(/<[^>]+>/g, '')
+    .replace(/\.[a-zA-Z0-9_-]+\s*\{[^}]*\}/g, '')
+    .replace(/\s+/g, ' ')
     .trim();
 }
 
@@ -52,14 +35,12 @@ function mapSectionToCategory(section: string): { category: string, country?: st
   }
 }
 
-function mapNewsDataToArticle(data: RawNewsDataItem, sectionSlug: SectionSlug): Article {
-  const authorName = (data.creator && data.creator.length > 0) ? data.creator[0] : (data.source_id || "Staff Writer");
+import { getNewsTiered } from '../news';
+import type { NormalizedArticle } from '../news/types';
 
+function mapNormalizedArticleToArticle(data: NormalizedArticle, sectionSlug: SectionSlug): Article {
+  const authorName = data.source || "Staff Writer";
   let textContent = stripHtmlAndCss(data.description || data.title || "");
-  if (data.content && data.content !== "ONLY AVAILABLE IN PAID PLANS" && data.content.length > textContent.length) {
-    textContent = stripHtmlAndCss(data.content);
-  }
-
   const wordCount = textContent.split(" ").length;
   const readingTime = Math.max(1, Math.ceil(wordCount / 200));
 
@@ -67,10 +48,11 @@ function mapNewsDataToArticle(data: RawNewsDataItem, sectionSlug: SectionSlug): 
   if (bodyParas.length === 0) bodyParas.push(data.title);
 
   const cleanHeadline = formatEditorialHeadline(data.title);
+  const articleId = data.url ? encodeURIComponent(data.url) : cleanHeadline.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
   return {
-    id: data.article_id,
-    slug: data.article_id,
+    id: articleId,
+    slug: articleId,
     headline: cleanHeadline,
     deck: stripHtmlAndCss(data.description || data.title || ""),
     author: {
@@ -79,80 +61,46 @@ function mapNewsDataToArticle(data: RawNewsDataItem, sectionSlug: SectionSlug): 
       role: "Correspondent",
     },
     section: sectionSlug,
-    publishedAt: data.pubDate ? new Date(data.pubDate).toISOString() : new Date().toISOString(),
-    updatedAt: data.pubDate ? getRelativeTime(data.pubDate) : undefined,
-    isBreaking: data.pubDate ? isRecent(data.pubDate, 4) : false, 
+    publishedAt: data.publishedAt ? new Date(data.publishedAt).toISOString() : new Date().toISOString(),
+    updatedAt: data.publishedAt ? getRelativeTime(data.publishedAt) : undefined,
+    isBreaking: data.publishedAt ? isRecent(data.publishedAt, 4) : false, 
     readingTime: readingTime,
-    image: data.image_url || "", 
+    image: data.image || "", 
     body: bodyParas,
-    tags: data.keywords || [sectionSlug],
+    tags: [sectionSlug],
     relatedSlugs: [],
-    sourceUrl: data.link,
+    sourceUrl: data.url,
   };
 }
 
 export async function getNews(sectionSlug: SectionSlug = "front-page", tryDomainPref: boolean = true, query?: string): Promise<Article[] | null> {
-  if (!API_KEY) {
-    console.warn("NEWSDATA_API_KEY is not defined. Falling back to mocks.");
-    return null;
-  }
-
   const { category, country } = mapSectionToCategory(sectionSlug);
-
-  let url = `https://newsdata.io/api/1/news?apikey=${API_KEY}&category=${category}&language=en`;
-  if (country) {
-    url += `&country=${country}`;
-  }
-  if (query) {
-    url += `&q=${encodeURIComponent(query)}`;
-  }
-
-  if (sectionSlug === "india" && tryDomainPref && !query) {
-    url += `&domainurl=thehindu.com`;
-  }
-
+  
   try {
-
-    const response = await fetch(url, { next: { revalidate: 900 } });
-    if (!response.ok) {
-      console.error(`NewsData API error: ${response.status} ${response.statusText}`);
-      if (sectionSlug === "india" && tryDomainPref && !query) {
-        return getNews(sectionSlug, false, query);
-      }
+    const articles = await getNewsTiered(category);
+    if (!articles || articles.length === 0) {
       return null;
     }
 
-    const data = await response.json();
-    if (data.status === "success" && data.results) {
-      if (sectionSlug === "india" && tryDomainPref && !query && data.results.length < 5) {
-        console.log(`India section: The Hindu returned ${data.results.length} articles, falling back to general India fetch.`);
-        return getNews(sectionSlug, false, query);
+    const mapped = articles.map(raw => mapNormalizedArticleToArticle(raw, sectionSlug));
+
+    const uniqueMapped: Article[] = [];
+    const seenHeadlines = new Set<string>();
+    for (const article of mapped) {
+      const norm = normalizeTitle(article.headline);
+      if (!seenHeadlines.has(norm)) {
+        seenHeadlines.add(norm);
+        uniqueMapped.push(article);
       }
-
-      const mapped = data.results.map((raw: RawNewsDataItem) => mapNewsDataToArticle(raw, sectionSlug));
-
-      const uniqueMapped: Article[] = [];
-      const seenHeadlines = new Set<string>();
-      for (const article of mapped) {
-        const norm = normalizeTitle(article.headline);
-        if (!seenHeadlines.has(norm)) {
-          seenHeadlines.add(norm);
-          uniqueMapped.push(article);
-        }
-      }
-
-      const newMap = new Map(cachedArticles.map(a => [a.id, a]));
-      uniqueMapped.forEach((a: Article) => newMap.set(a.id, a));
-      cachedArticles = Array.from(newMap.values());
-
-      return uniqueMapped;
     }
-    return null;
+
+    const newMap = new Map(cachedArticles.map(a => [a.id, a]));
+    uniqueMapped.forEach((a: Article) => newMap.set(a.id, a));
+    cachedArticles = Array.from(newMap.values());
+
+    return uniqueMapped;
   } catch (error) {
-    console.error("Failed to fetch from NewsData:", error);
-    if (sectionSlug === "india" && tryDomainPref && !query) {
-      return getNews(sectionSlug, false, query);
-    }
+    console.error("Failed to fetch from tiered news API:", error);
     return null;
   }
 }

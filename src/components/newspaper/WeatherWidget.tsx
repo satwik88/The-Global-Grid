@@ -1,114 +1,103 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Sun, Cloud, CloudRain, CloudSnow, CloudLightning, CloudDrizzle, CloudFog } from "lucide-react";
-
-interface WeatherData {
-  temp: number;
-  condition: string;
-  city: string;
-  code: number;
-}
-
-const WMO_CODES: Record<number, { label: string; icon: React.ElementType }> = {
-  0: { label: "Clear sky", icon: Sun },
-  1: { label: "Mainly clear", icon: Sun },
-  2: { label: "Partly cloudy", icon: Cloud },
-  3: { label: "Overcast", icon: Cloud },
-  45: { label: "Fog", icon: CloudFog },
-  48: { label: "Depositing rime fog", icon: CloudFog },
-  51: { label: "Light drizzle", icon: CloudDrizzle },
-  53: { label: "Moderate drizzle", icon: CloudDrizzle },
-  55: { label: "Dense drizzle", icon: CloudDrizzle },
-  61: { label: "Slight rain", icon: CloudRain },
-  63: { label: "Moderate rain", icon: CloudRain },
-  65: { label: "Heavy rain", icon: CloudRain },
-  71: { label: "Slight snow", icon: CloudSnow },
-  73: { label: "Moderate snow", icon: CloudSnow },
-  75: { label: "Heavy snow", icon: CloudSnow },
-  95: { label: "Thunderstorm", icon: CloudLightning },
-  96: { label: "Thunderstorm with slight hail", icon: CloudLightning },
-  99: { label: "Thunderstorm with heavy hail", icon: CloudLightning },
-};
+import Image from "next/image";
+import { MapPin } from "lucide-react";
+import type { NormalizedWeather } from "@/lib/weather/types";
 
 export function WeatherWidget() {
-  const [data, setData] = useState<WeatherData | null>(null);
+  const [data, setData] = useState<NormalizedWeather | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    fetchWeather(); // Default fetch on mount
     
-    const fetchWeather = async (lat: number, lon: number, cityName?: string) => {
-      try {
-        const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
-        if (!res.ok) throw new Error("Weather fetch failed");
-        const json = await res.json();
-        const current = json.current_weather;
-        
-        let finalCity = cityName;
-        if (!finalCity) {
-          try {
-            const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
-            if (geoRes.ok) {
-              const geoJson = await geoRes.json();
-              finalCity = geoJson.address?.city || geoJson.address?.town || geoJson.address?.village || geoJson.address?.state || "Unknown Location";
-            }
-          } catch {
-            finalCity = "Unknown Location";
-          }
-        }
-
-        setData({
-          temp: current.temperature,
-          condition: WMO_CODES[current.weathercode]?.label || "Unknown",
-          code: current.weathercode,
-          city: finalCity || "Unknown Location",
-        });
-      } catch {
-        setError("Unable to load weather.");
-      }
-    };
-
-    const initWeather = () => {
-      // Use the default location to prevent the browser location prompt
-      fetchWeather(28.6139, 77.2090, "New Delhi");
-    };
-
-    initWeather();
-
+    // Auto-refresh every 30 minutes
     const interval = setInterval(() => {
-      initWeather();
-    }, 30 * 60 * 1000); // 30 minutes
+      fetchWeather();
+    }, 30 * 60 * 1000);
 
     return () => clearInterval(interval);
   }, []);
 
-  if (!mounted) return null;
+  const fetchWeather = async (lat?: number, lon?: number) => {
+    setLoading(true);
+    try {
+      const query = lat !== undefined && lon !== undefined ? `?lat=${lat}&lon=${lon}` : ``;
+      const res = await fetch(`/api/weather${query}`);
+      if (!res.ok) throw new Error("Fetch failed");
+      const json = await res.json();
+      setData(json);
+      setError(null);
+    } catch (err) {
+      setError("Unable to load weather");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const Icon = data ? (WMO_CODES[data.code]?.icon || Cloud) : Cloud;
+  const handleGeoLocationClick = () => {
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by your browser");
+      return;
+    }
+    setLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        fetchWeather(position.coords.latitude, position.coords.longitude);
+      },
+      (geoError) => {
+        console.warn("Geolocation denied or failed", geoError);
+        alert("Could not get your location.");
+        setLoading(false);
+      }
+    );
+  };
+
+  if (!mounted) return <div className="w-[120px] h-6" />; // Placeholder
 
   return (
-    <aside className="border border-border p-4 bg-paper transition-colors duration-300">
-      <h3 className="ui-text mb-3 pb-2 border-b border-border">Local Weather</h3>
+    <div className="flex items-center gap-2 ui-text text-ink-secondary text-xs sm:text-sm h-6">
       {error ? (
-        <p className="caption-text text-accent">{error}</p>
+        <span className="text-accent">{error}</span>
       ) : data ? (
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="font-[family-name:var(--font-inter)] text-sm font-bold uppercase tracking-widest text-ink">{data.city}</p>
-            <p className="caption-text text-ink-secondary mt-1">{data.condition}</p>
+        <>
+          <div className="flex items-center gap-1.5 hover:text-accent transition-colors duration-300">
+            <span className="font-bold tracking-widest uppercase truncate max-w-[100px] sm:max-w-max">
+              {data.location}
+            </span>
+            <button 
+              onClick={handleGeoLocationClick} 
+              disabled={loading}
+              title="Update to my location"
+              aria-label="Get weather for my location"
+              className="opacity-70 hover:opacity-100 disabled:opacity-30"
+            >
+              <MapPin size={12} className={loading ? "animate-pulse" : ""} />
+            </button>
           </div>
-          <div className="flex items-center gap-3">
-            <Icon size={28} className="text-accent" />
-            <span className="font-[family-name:var(--font-playfair)] text-3xl font-bold text-ink">
-              {Math.round(data.temp)}&deg;C
+          
+          <span className="text-ink-secondary/50">|</span>
+          
+          <div className="flex items-center gap-1">
+            <Image 
+              src={`https://openweathermap.org/img/wn/${data.icon}@2x.png`} 
+              alt={data.condition}
+              width={24}
+              height={24}
+              className="w-5 h-5 sm:w-6 sm:h-6 object-contain -my-1"
+            />
+            <span className="font-[family-name:var(--font-inter)] font-semibold text-ink">
+              {data.tempC}&deg;C
             </span>
           </div>
-        </div>
+        </>
       ) : (
-        <p className="caption-text text-ink-secondary animate-pulse">Loading weather...</p>
+        <span className="animate-pulse">Loading weather...</span>
       )}
-    </aside>
+    </div>
   );
 }

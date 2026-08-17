@@ -219,3 +219,78 @@ export function IndiaMarketTracker() {
     </aside>
   );
 }
+
+const fallbackCrypto = [
+  { id: "bitcoin", symbol: "BTC", name: "Bitcoin", priceUsd: 65432.10, change24h: 2.34, marketCap: 0, image: "" },
+  { id: "ethereum", symbol: "ETH", name: "Ethereum", priceUsd: 3456.78, change24h: 1.23, marketCap: 0, image: "" },
+  { id: "tether", symbol: "USDT", name: "Tether", priceUsd: 1.00, change24h: 0.01, marketCap: 0, image: "" },
+  { id: "solana", symbol: "SOL", name: "Solana", priceUsd: 145.67, change24h: 5.67, marketCap: 0, image: "" },
+  { id: "binancecoin", symbol: "BNB", name: "BNB", priceUsd: 567.89, change24h: -1.45, marketCap: 0, image: "" },
+];
+
+export function CryptoTracker() {
+  const [data, setData] = useState<any[]>(fallbackCrypto);
+  const [stale, setStale] = useState(false);
+
+  const fetchCrypto = useCallback(async () => {
+    try {
+      const res = await fetch('/api/crypto');
+      if (!res.ok) return;
+      const json = await res.json();
+      if (json.data && Array.isArray(json.data)) {
+        setData(json.data);
+        setStale(false);
+      }
+    } catch (e) {
+      console.error("Failed to fetch crypto markets", e);
+      setStale(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchCrypto();
+    const interval = setInterval(fetchCrypto, 10 * 60 * 1000);
+
+    const handleRefresh = () => fetchCrypto();
+    window.addEventListener("global-grid-refresh", handleRefresh);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("global-grid-refresh", handleRefresh);
+    };
+  }, [fetchCrypto]);
+
+  return (
+    <aside className="border border-border p-4 mt-6">
+      <div className="flex items-center justify-between mb-3 pb-2 border-b border-border">
+        <h3 className="ui-text">Cryptocurrencies</h3>
+        <span className="caption-text text-[10px] text-ink-secondary">Live data</span>
+      </div>
+      <ul className="space-y-2">
+        {data.map((item) => {
+          const isUp = item.change24h >= 0;
+          return (
+            <li key={item.symbol} className="flex items-center justify-between caption-text">
+              <span className="font-[family-name:var(--font-inter)] text-xs uppercase tracking-wider flex items-center gap-1">
+                {item.symbol}
+                {stale && <span className="w-1.5 h-1.5 rounded-full bg-accent/50" title="Stale data" />}
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="body-text text-sm">
+                  ${item.priceUsd.toLocaleString(undefined, { minimumFractionDigits: item.priceUsd < 2 ? 4 : 2, maximumFractionDigits: item.priceUsd < 2 ? 4 : 2 })}
+                </span>
+                <span
+                  className={`font-[family-name:var(--font-inter)] text-xs w-12 text-right ${
+                    isUp ? "text-green-600" : "text-red-600"
+                  }`}
+                >
+                  {isUp ? '+' : ''}{item.change24h.toFixed(2)}%
+                </span>
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+    </aside>
+  );
+}
