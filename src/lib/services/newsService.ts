@@ -40,7 +40,7 @@ import type { NormalizedArticle } from '../news/types';
 
 function mapNormalizedArticleToArticle(data: NormalizedArticle, sectionSlug: SectionSlug): Article {
   const authorName = data.source || "Staff Writer";
-  let textContent = stripHtmlAndCss(data.description || data.title || "");
+  const textContent = stripHtmlAndCss(data.description || data.title || "");
   const wordCount = textContent.split(" ").length;
   const readingTime = Math.max(1, Math.ceil(wordCount / 200));
 
@@ -73,8 +73,8 @@ function mapNormalizedArticleToArticle(data: NormalizedArticle, sectionSlug: Sec
   };
 }
 
-export async function getNews(sectionSlug: SectionSlug = "front-page", tryDomainPref: boolean = true, query?: string): Promise<Article[] | null> {
-  const { category, country } = mapSectionToCategory(sectionSlug);
+export async function getNews(sectionSlug: SectionSlug = "front-page", _tryDomainPref: boolean = true, _query?: string): Promise<Article[] | null> {
+  const { category, country: _country } = mapSectionToCategory(sectionSlug);
   
   try {
     const articles = await getNewsTiered(category);
