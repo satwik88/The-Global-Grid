@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
+import getPrisma from '@/lib/prisma';
 import { getAuthUserId } from '@/lib/auth';
 
 export async function GET(req: Request) {
@@ -10,6 +10,7 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const prisma = getPrisma();
     const savedArticles = await prisma.savedArticle.findMany({
       where: { user_id: userId },
       orderBy: { saved_at: 'desc' }

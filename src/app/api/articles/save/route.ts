@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
+import getPrisma from '@/lib/prisma';
 import { getAuthUserId } from '@/lib/auth';
 
 export async function POST(req: Request) {
@@ -24,6 +24,7 @@ export async function POST(req: Request) {
       }
 
       // Upsert to avoid duplicates
+      const prisma = getPrisma();
       const saved = await prisma.savedArticle.upsert({
         where: {
           user_id_article_url: {
@@ -72,6 +73,7 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ error: 'Missing article_url' }, { status: 400 });
     }
 
+    const prisma = getPrisma();
     await prisma.savedArticle.delete({
       where: {
         user_id_article_url: {

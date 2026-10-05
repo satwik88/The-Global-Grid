@@ -1,6 +1,6 @@
 import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import prisma from "@/lib/prisma";
+import getPrisma from "@/lib/prisma";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -16,6 +16,7 @@ export const authOptions: NextAuthOptions = {
         if (!user.email) return false;
         
         try {
+          const prisma = getPrisma();
           const existingUser = await prisma.user.findUnique({
             where: { email: user.email },
           });
@@ -48,6 +49,7 @@ export const authOptions: NextAuthOptions = {
       }
       // If we need the real DB ID, fetch it
       if (token.email && !token.dbId) {
+        const prisma = getPrisma();
         const dbUser = await prisma.user.findUnique({ where: { email: token.email }});
         if (dbUser) {
           token.dbId = dbUser.id;

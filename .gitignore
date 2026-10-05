@@ -46,3 +46,8 @@ next-env.d.ts
 # PWA service workers
 /public/sw.js
 /public/workbox-*.js
+
+# Cloudflare / OpenNext
+.open-next
+.dev.vars
+.wrangler

@@ -72,7 +72,7 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  serverExternalPackages: ["@mozilla/readability"],
+  serverExternalPackages: ["@mozilla/readability", "@prisma/client", ".prisma/client"],
 };
 
 export default withPWA(nextConfig);

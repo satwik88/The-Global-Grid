@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import prisma from '@/lib/prisma';
+import getPrisma from '@/lib/prisma';
 import { getAuthUserId } from '@/lib/auth';
 
 export async function PUT(req: Request) {
@@ -14,6 +14,7 @@ export async function PUT(req: Request) {
     const body = await req.json();
     const { nickname, avatar_url, interests } = body;
 
+    const prisma = getPrisma();
     const user = await prisma.user.update({
       where: { id: userId },
       data: {
