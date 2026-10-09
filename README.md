@@ -6,12 +6,12 @@
 
 ### *The Daily Paper for the Modern World*
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-the--global--grid.vercel.app-1B1B1B?style=for-the-badge&logo=vercel&logoColor=white)](https://the-global-grid.vercel.app)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-global--grid.satwikraj707.workers.dev-1B1B1B?style=for-the-badge&logo=cloudflare&logoColor=white)](https://global-grid.satwikraj707.workers.dev/)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js)](https://nextjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38BDF8?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 [![Framer Motion](https://img.shields.io/badge/Framer_Motion-12-EF0097?style=for-the-badge&logo=framer&logoColor=white)](https://www.framer.com/motion)
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed-Vercel-000?style=for-the-badge&logo=vercel)](https://vercel.com)
+
 
 <br/>
 
@@ -35,7 +35,7 @@ Whether you're a reader looking for a refined news experience or a developer stu
 
 ## 🖥️ Live Preview
 
-**→ [the-global-grid.vercel.app](https://the-global-grid.vercel.app)**
+**→ [global-grid.satwikraj707.workers.dev](https://global-grid.satwikraj707.workers.dev/)**
 
 ---
 
@@ -81,7 +81,7 @@ Whether you're a reader looking for a refined news experience or a developer stu
 | Animation | Framer Motion 12 |
 | Icons | Lucide React |
 | Utilities | clsx, tailwind-merge |
-| Deployment | Vercel |
+| Deployment | Cloudflare Workers |
 
 ### Typography
 | Font | Role |
@@ -178,14 +178,10 @@ npm run build
 npm run start
 ```
 
-### Deploy to Vercel
+### Deploy to Cloudflare
 
 ```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Deploy
-vercel
+npm run deploy
 ```
 
 No environment variables are required for the base experience. When you're ready to go live with dynamic content, connect a PostgreSQL database and headless CMS by replacing the static data layer in `src/lib/content/articles.ts`.
@@ -223,7 +219,7 @@ All rights reserved © 2026 Satwik. This project is not open for redistribution 
 
 *Built with craft. Deployed with purpose.*
 
-**[→ Read Today's Edition](https://the-global-grid.vercel.app)**
+**[→ Read Today's Edition](https://global-grid.satwikraj707.workers.dev/)**
 
 </div>
 

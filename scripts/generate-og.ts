@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 
 async function generateOGImage() {
-  const url = 'https://the-global-grid.vercel.app';
+  const url = 'https://global-grid.satwikraj707.workers.dev';
   const outputPath = path.join(__dirname, '..', 'public', 'og.png');
   const tempPath = path.join(__dirname, '..', 'public', 'og-temp.png');
 

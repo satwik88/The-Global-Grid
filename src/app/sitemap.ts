@@ -3,7 +3,7 @@ import { articles } from "@/lib/content/articles";
 import { archiveEditions } from "@/lib/content/articles";
 import { NAV_SECTIONS } from "@/lib/sections";
 
-const BASE_URL = "https://the-global-grid.vercel.app";
+const BASE_URL = "https://global-grid.satwikraj707.workers.dev";
 
 export default function sitemap(): MetadataRoute.Sitemap {
 

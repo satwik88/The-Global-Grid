@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/api/", "/_next/"],
     },
-    sitemap: "https://the-global-grid.vercel.app/sitemap.xml",
+    sitemap: "https://global-grid.satwikraj707.workers.dev/sitemap.xml",
   };
 }

@@ -12,7 +12,7 @@ import { SearchShortcut } from "@/components/newspaper/SearchShortcut";
 import { OfflineBanner } from "@/components/ui/OfflineBanner";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import "./globals.css";
-import { Analytics } from "@vercel/analytics/next";
+
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -45,15 +45,15 @@ export const metadata: Metadata = {
     template: '%s | The Global Grid',
   },
   description: 'The daily paper for the modern world. Premium international news across World, Business, Technology, Science, Culture and more.',
-  metadataBase: new URL('https://the-global-grid.vercel.app'),
+  metadataBase: new URL('https://global-grid.satwikraj707.workers.dev/'),
   openGraph: {
     title: 'The Global Grid',
     description: 'Premium international news across World, Business, Technology, AI, Science and Culture — updated every hour.',
-    url: 'https://the-global-grid.vercel.app',
+    url: 'https://global-grid.satwikraj707.workers.dev/',
     siteName: 'The Global Grid',
     images: [
       {
-        url: 'https://the-global-grid.vercel.app/og.png',
+        url: 'https://global-grid.satwikraj707.workers.dev/og.png',
         width: 1200,
         height: 630,
         alt: 'The Global Grid — The daily paper for the modern world',
@@ -66,7 +66,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'The Global Grid',
     description: 'Premium international news across World, Business, Technology, AI, Science and Culture — updated every hour.',
-    images: ['https://the-global-grid.vercel.app/og.png'],
+    images: ['https://global-grid.satwikraj707.workers.dev/og.png'],
   },
   robots: {
     index: true,
@@ -91,7 +91,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <link rel="canonical" href="https://the-global-grid.vercel.app" />
+        <link rel="canonical" href="https://global-grid.satwikraj707.workers.dev/" />
         <Script
           id="theme-script"
           strategy="beforeInteractive"
@@ -133,7 +133,6 @@ export default function RootLayout({
             </NewspaperProvider>
           </ThemeProvider>
         </AuthProvider>
-        <Analytics />
       </body>
     </html>
   );

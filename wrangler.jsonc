@@ -9,5 +9,8 @@
   },
   "observability": {
     "enabled": true
+  },
+  "vars": {
+    "NEXTAUTH_URL": "https://global-grid.satwikraj707.workers.dev/"
   }
 }
