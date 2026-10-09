@@ -74,14 +74,14 @@ Whether you're a reader looking for a refined news experience or a developer stu
 
 | Layer | Technology |
 |---|---|
-| Framework | Next.js 16 (App Router) |
+| Framework | Next.js 15 (App Router) |
 | UI Library | React 19 |
 | Language | TypeScript 5 |
 | Styling | Tailwind CSS 4 |
 | Animation | Framer Motion 12 |
 | Icons | Lucide React |
 | Utilities | clsx, tailwind-merge |
-| Deployment | Cloudflare Workers |
+| Deployment | Cloudflare Workers (via OpenNext) |
 
 ### Typography
 | Font | Role |
@@ -180,9 +180,20 @@ npm run start
 
 ### Deploy to Cloudflare
 
+This project uses **OpenNext** to deploy the Next.js App Router seamlessly to Cloudflare Workers.
+
+**Manual Deployment (CLI):**
 ```bash
+# Deploys using your local Wrangler authentication
 npm run deploy
 ```
+
+**Automated Deployment (Cloudflare CI/CD):**
+If you connect this repository to Cloudflare Pages/Workers for automatic deployments on push, ensure you update your Cloudflare **Build command** to:
+```bash
+npm run build && npx @opennextjs/cloudflare build
+```
+*(Ensure all `.env.local` secrets are added to the Cloudflare dashboard as well).*
 
 No environment variables are required for the base experience. When you're ready to go live with dynamic content, connect a PostgreSQL database and headless CMS by replacing the static data layer in `src/lib/content/articles.ts`.
 
