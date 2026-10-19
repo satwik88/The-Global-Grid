@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getCryptoPrices } from '@/lib/crypto';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const idsStr = searchParams.get('ids');

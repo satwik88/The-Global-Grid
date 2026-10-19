@@ -24,5 +24,5 @@ The Global Grid is a digital newspaper aggregating world, business, technology, 
 - `/games`: Interactive puzzles and games (e.g., crosswords, sudoku)
 
 ## Links
-- Homepage: https://global-grid.satwikraj707.workers.dev/
-- Sitemap: https://global-grid.satwikraj707.workers.dev/sitemap.xml
+- Homepage: https://globalgrid.qd.je/
+- Sitemap: https://globalgrid.qd.je/sitemap.xml

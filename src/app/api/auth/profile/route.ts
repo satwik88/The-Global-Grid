@@ -3,6 +3,8 @@ import { cookies } from 'next/headers';
 import getPrisma from '@/lib/prisma';
 import { getAuthUserId } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+
 export async function PUT(req: Request) {
   try {
     const userId = await getAuthUserId();

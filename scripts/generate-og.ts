@@ -1,9 +1,10 @@
 import puppeteer from 'puppeteer';
 import fs from 'fs';
 import path from 'path';
+import { SITE_URL } from '../src/lib/site';
 
 async function generateOGImage() {
-  const url = 'https://global-grid.satwikraj707.workers.dev';
+  const url = process.env.LOCAL_DEV ? 'http://localhost:3000' : SITE_URL;
   const outputPath = path.join(__dirname, '..', 'public', 'og.png');
   const tempPath = path.join(__dirname, '..', 'public', 'og-temp.png');
 

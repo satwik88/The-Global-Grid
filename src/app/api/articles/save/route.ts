@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import getPrisma from '@/lib/prisma';
 import { getAuthUserId } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: Request) {
   try {
     const userId = await getAuthUserId();

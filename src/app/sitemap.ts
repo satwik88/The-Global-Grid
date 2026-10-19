@@ -2,8 +2,9 @@ import { MetadataRoute } from "next";
 import { articles } from "@/lib/content/articles";
 import { archiveEditions } from "@/lib/content/articles";
 import { NAV_SECTIONS } from "@/lib/sections";
+import { SITE_URL } from "@/lib/site";
 
-const BASE_URL = "https://global-grid.satwikraj707.workers.dev";
+const BASE_URL = SITE_URL;
 
 export default function sitemap(): MetadataRoute.Sitemap {
 

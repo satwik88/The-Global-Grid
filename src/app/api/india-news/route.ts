@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { fetchLiveNewsFeed } from "@/lib/services/newsService";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const articles = await fetchLiveNewsFeed("india");

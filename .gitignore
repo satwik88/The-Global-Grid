@@ -47,8 +47,3 @@ next-env.d.ts
 /public/sw.js
 /public/workbox-*.js
 
-# Cloudflare / OpenNext
-.open-next
-.dev.vars
-.prod.vars
-.wrangler

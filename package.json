@@ -5,18 +5,14 @@
   "scripts": {
     "dev": "next dev",
     "generate-og": "tsx scripts/generate-og.ts",
-    "build": "prisma generate && next build",
+    "build": "next build",
+    "postinstall": "prisma generate",
     "start": "next start",
     "lint": "eslint",
-    "update-mocks": "tsx scripts/update-mocks.ts",
-    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
-    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
+    "update-mocks": "tsx scripts/update-mocks.ts"
   },
   "dependencies": {
     "@mozilla/readability": "^0.6.0",
-    "@opennextjs/cloudflare": "^1.20.7",
-    "@prisma/adapter-neon": "6.19.3",
     "@prisma/client": "6.19.3",
     "@types/react-simple-maps": "^3.0.6",
     "@upstash/redis": "^1.38.0",
@@ -54,7 +50,6 @@
     "puppeteer": "^25.5.0",
     "tailwindcss": "^4",
     "tsx": "^4.23.1",
-    "typescript": "^5",
-    "wrangler": "^4.145.0"
+    "typescript": "^5"
   }
 }

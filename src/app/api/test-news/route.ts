@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { fetchLiveNewsFeed } from "@/lib/services/newsService";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   const sections = ["front-page", "world", "india", "business", "technology", "science", "games"];
   const report: Record<string, unknown> = {};

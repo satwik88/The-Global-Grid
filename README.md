@@ -6,7 +6,7 @@
 
 ### *The Daily Paper for the Modern World*
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-global--grid.satwikraj707.workers.dev-1B1B1B?style=for-the-badge&logo=cloudflare&logoColor=white)](https://global-grid.satwikraj707.workers.dev/)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-globalgrid.qd.je-1B1B1B?style=for-the-badge)](https://globalgrid.qd.je)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js)](https://nextjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38BDF8?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
@@ -35,7 +35,7 @@ Whether you're a reader looking for a refined news experience or a developer stu
 
 ## 🖥️ Live Preview
 
-**→ [global-grid.satwikraj707.workers.dev](https://global-grid.satwikraj707.workers.dev/)**
+**→ [globalgrid.qd.je](https://globalgrid.qd.je)**
 
 ---
 
@@ -81,7 +81,7 @@ Whether you're a reader looking for a refined news experience or a developer stu
 | Animation | Framer Motion 12 |
 | Icons | Lucide React |
 | Utilities | clsx, tailwind-merge |
-| Deployment | Cloudflare Workers (via OpenNext) |
+| Deployment | Vercel |
 
 ### Typography
 | Font | Role |
@@ -178,22 +178,13 @@ npm run build
 npm run start
 ```
 
-### Deploy to Cloudflare
+### Deploy to Vercel
 
-This project uses **OpenNext** to deploy the Next.js App Router seamlessly to Cloudflare Workers.
+The easiest way to deploy this Next.js application is via [Vercel](https://vercel.com):
 
-**Manual Deployment (CLI):**
-```bash
-# Deploys using your local Wrangler authentication
-npm run deploy
-```
-
-**Automated Deployment (Cloudflare CI/CD):**
-If you connect this repository to Cloudflare Pages/Workers for automatic deployments on push, ensure you update your Cloudflare **Build command** to:
-```bash
-npm run build && npx @opennextjs/cloudflare build
-```
-*(Ensure all `.env.local` secrets are added to the Cloudflare dashboard as well).*
+1. **Import Repository**: Connect your GitHub repository to Vercel.
+2. **Environment Variables**: Add your production environment variables (e.g. `DATABASE_URL`, `NEXTAUTH_SECRET`, news API keys) in **Project Settings → Environment Variables**.
+3. **Add Domain**: Assign your custom domain `globalgrid.qd.je` under **Project Settings → Domains**.
 
 No environment variables are required for the base experience. When you're ready to go live with dynamic content, connect a PostgreSQL database and headless CMS by replacing the static data layer in `src/lib/content/articles.ts`.
 
@@ -230,7 +221,7 @@ All rights reserved © 2026 Satwik. This project is not open for redistribution 
 
 *Built with craft. Deployed with purpose.*
 
-**[→ Read Today's Edition](https://global-grid.satwikraj707.workers.dev/)**
+**[→ Read Today's Edition](https://globalgrid.qd.je)**
 
 </div>
 

@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 
 const tickers = ['^GSPC', '^FTSE', '^N225', '^GDAXI', '^HSI', 'GC=F', '^NSEI', '^BSESN', 'USDINR=X'];
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const results = await Promise.all(tickers.map(async (ticker) => {

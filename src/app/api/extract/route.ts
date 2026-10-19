@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { extractArticle } from '@/lib/services/extractService';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const url = searchParams.get('url');
