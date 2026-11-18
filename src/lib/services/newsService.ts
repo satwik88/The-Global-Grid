@@ -74,10 +74,10 @@ function mapNormalizedArticleToArticle(data: NormalizedArticle, sectionSlug: Sec
 }
 
 export async function getNews(sectionSlug: SectionSlug = "front-page", _tryDomainPref: boolean = true, _query?: string): Promise<Article[] | null> {
-  const { category, country: _country } = mapSectionToCategory(sectionSlug);
-  
+  const { category, country } = mapSectionToCategory(sectionSlug);
+
   try {
-    const articles = await getNewsTiered(category);
+    const articles = await getNewsTiered(category, country);
     if (!articles || articles.length === 0) {
       return null;
     }

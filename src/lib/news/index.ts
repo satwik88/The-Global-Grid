@@ -3,16 +3,16 @@ import { fetchFromGNews } from './gnews';
 import { fetchFromCurrents } from './currents';
 import { NormalizedArticle } from './types';
 
-const tiers: Array<(topic: string) => Promise<NormalizedArticle[]>> = [
+const tiers: Array<(topic: string, country?: string) => Promise<NormalizedArticle[]>> = [
   fetchFromNewsData,
   fetchFromGNews,
   fetchFromCurrents,
 ];
 
-export async function getNewsTiered(topic: string = 'general'): Promise<NormalizedArticle[]> {
+export async function getNewsTiered(topic: string = 'general', country?: string): Promise<NormalizedArticle[]> {
   for (const tier of tiers) {
     try {
-      const articles = await tier(topic);
+      const articles = await tier(topic, country);
       if (articles.length > 0) return articles;
     } catch (err) {
       console.warn('News tier failed, trying next:', err);
