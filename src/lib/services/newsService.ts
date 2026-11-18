@@ -28,7 +28,7 @@ function mapSectionToCategory(section: string): { category: string, country?: st
     case "opinion": return { category: "politics" };
     case "india": return { category: "top", country: "in" };
     case "games": return { category: "entertainment" };
-    case "grid-intelligence": return { category: "top" };
+    case "grid-intelligence": return { category: "world" };
     case "front-page":
     default:
       return { category: "top" };
